@@ -167,7 +167,7 @@ def fal(jsonfile,p="E:\\82\\"):
 def coco(pathBase="e:\\82\\ANNO"):
     os.chdir(pathBase)
     resultSrcfile=[
-        str(os.listdir()[x]).replace(".json","jpg") for x in 
+        str(os.listdir()[x]).replace(".json",".jpg") for x in 
         range(len(os.listdir())) if ".json" in os.listdir()[x]
                 ]
     os.chdir("e:\\82\\src")
@@ -178,7 +178,6 @@ def coco(pathBase="e:\\82\\ANNO"):
             os.chdir(dateDir)
             arcs=[z for z in os.listdir() if z.endswith(".zip")]
             for targetArc in arcs:
-                tab={"srcSrcfile":[]}
                 try:
                     arc=ZipFile(targetArc,"r")
                 except:
@@ -192,9 +191,9 @@ def coco(pathBase="e:\\82\\ANNO"):
                 jpgInArcBad=[
                 arc.infolist()[x].filename for x in
                 range(len(arc.infolist())) if 
-                arc.infolist()[x].filename.endswith(".jpg")
-                 and arc.infolist()[x].file_size==0
-                 ]
+                arc.infolist()[x].filename.endswith(".jpg") and 
+                arc.infolist()[x].file_size==0
+                ]
                 for z in resultSrcfile:
                     for y in jpgInArc:
                         if y.endswith(z):
@@ -206,7 +205,7 @@ def coco(pathBase="e:\\82\\ANNO"):
             os.chdir("..")
         os.chdir("..")
     return print(str(founds))
-coco()
+#coco()
 
 def undone(path="e:\\82"):
     os.chdir(path)
@@ -311,4 +310,4 @@ def claarc(p="e:\\82\\src"):
         os.chdir("..")
     print("..done with "+str(countArc)+" archives")
     return None
-#claarc()
+claarc()
