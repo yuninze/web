@@ -162,10 +162,74 @@ def fal(jsonfile,p="E:\\82\\"):
     [print(str(z)+": "+str(k[z])) for z in e.keys()]
     print(idea*5)
     return None
-#fal("11118_120716.json","detectS")
+#fal("11116_122014.json")
 
-def claarc(p):
-    os.chdir(p)
+def coco(pathBase="e:\\82\\ANNO"):
+    os.chdir(pathBase)
+    resultSrcfile=[
+        str(os.listdir()[x]).replace(".json","jpg") for x in 
+        range(len(os.listdir())) if ".json" in os.listdir()[x]
+                ]
+    os.chdir("e:\\82\\src")
+    countArc,founds=0,0
+    for chasuDir in os.listdir():
+        os.chdir(chasuDir)
+        for dateDir in os.listdir():
+            os.chdir(dateDir)
+            arcs=[z for z in os.listdir() if z.endswith(".zip")]
+            for targetArc in arcs:
+                tab={"srcSrcfile":[]}
+                try:
+                    arc=ZipFile(targetArc,"r")
+                except:
+                    raise OSError("..unexpected file in the last depth")
+                jpgInArc=[
+                arc.infolist()[x].filename for x in
+                range(len(arc.infolist())) if 
+                arc.infolist()[x].filename.endswith(".jpg") and 
+                arc.infolist()[x].file_size!=0
+                ]
+                jpgInArcBad=[
+                arc.infolist()[x].filename for x in
+                range(len(arc.infolist())) if 
+                arc.infolist()[x].filename.endswith(".jpg")
+                 and arc.infolist()[x].file_size==0
+                 ]
+                for z in resultSrcfile:
+                    for y in jpgInArc:
+                        if y.endswith(z):
+                            arc.extract(y,path="e:\\82\\coco\\")
+                            print("..found: "+str(z)+" >> "+str(arc.filename))
+                            founds+=1
+                        else:
+                            continue
+            os.chdir("..")
+        os.chdir("..")
+    return print(str(founds))
+coco()
+
+def undone(path="e:\\82"):
+    os.chdir(path)
+    doneSrcfile=[]
+    okCount,ngCount=0,0
+    for z in [os.listdir()[x] for x in range(len(os.listdir())) if ".json" in os.listdir()[x]]:
+        j=json.load(open(z,"r",encoding=enc))
+        srcValue,pid=srcKeyname(j,"importData_filename")
+        for y in range(len(j["result"])):
+            try:
+                doneSrcfile[len(doneSrcfile):]=[j["result"][y][srcValue]]
+                okCount+=1
+            except:
+                if len(j["result"][y])<=2:
+                    ngCount+=1
+                else:
+                    raise Exception("..Parsing Failure at Position "+str(j["result"][y]["dataID"]))
+    print("....Parsing Done")
+    return doneSrcfile,okCount,ngCount
+
+def claarc(p="e:\\82\\src"):
+    doneSrcfile,okCount,ngCount=undone()
+    os.chdir("src")
     if len([u for u in os.listdir() if os.path.isdir(u)==True])>1:
         manyDirsInRoot=True
     else:
@@ -190,7 +254,7 @@ def claarc(p):
                 range(len(arc.infolist())) if arc.infolist()[x].filename.endswith(".jpg")
                  and arc.infolist()[x].file_size==0]
                 if len(jpgInArcBad)!=0:
-                    set(map(print,[l for l in jpgInArcBad])),input("badfile found: "+str(arc.filename))
+                    set(map(print,[l for l in jpgInArcBad])),#input("badfile found: "+str(arc.filename))
                 tab["SHOULDER"][len(tab["SHOULDER"]):]=[x for x in jpgInArc if "[SHOULDER]" in x]
                 for x in jpgInArc:
                     if "A_BLUE" in x:
@@ -211,15 +275,33 @@ def claarc(p):
                         tab["BC"][len(tab["BC"]):]=[x]
                     elif "C_YELLOW" in x:
                         tab["BC"][len(tab["BC"]):]=[x]
+
+                print(str(okCount)+":::"+str(ngCount))
+                k={"A":None,"BC":None,"SHOULDER":None}
+                for z in tab.keys():
+                    k[z]=len(tab[z])
+                print(str((k["A"]))+"--"+str((k["BC"]))+"--"+str((k["SHOULDER"])))
+                tab={
+                    "A":list(set(tab["A"])-set(doneSrcfile)),
+                    "BC":list(set(tab["BC"])-set(doneSrcfile)),
+                    "SHOULDER":list(set(tab["SHOULDER"])-set(doneSrcfile))
+                    }
+                print(str(len(tab["A"]))+"--"+str(len(tab["BC"]))+"--"+str(len(tab["SHOULDER"])))
+                #input()
                 for o in tab.keys():
-                    namestring=arc.filename+"_"+o+"_"+str(len(tab[o]))
-                    for p in tab[o]:
-                        print("extracting: "+str(p))
-                        arc.extract(p,path=namestring)
-                    with open(namestring+".csv","w") as r:
-                        csv.writer(r).writerow(["filename_"+str(o).lower()])
+                    if len(tab[o])==0:
+                        pass
+                    elif len(tab[o])>0:
+                        namestring=arc.filename+"_"+o+"_"+str(len(tab[o]))
+                        pathstring=str(arc.filename+"/").replace(".zip","")
+                        dirstring=str(arc.filename).replace(".zip","")
                         for p in tab[o]:
-                            csv.writer(r).writerow([p])
+                            print("extracting: "+str(p))
+                            arc.extract(p,path=namestring+"//"+dirstring)
+                        with open(namestring+".csv","w") as r:
+                            csv.writer(r).writerow(["filename"])
+                            for p in tab[o]:
+                                csv.writer(r).writerow([pathstring+p])
                     pd.read_csv(namestring+".csv",encoding=enc).to_csv(namestring+".csv",encoding=enc,index=False)
                     print("archiving: "+namestring+".zip")
                     shutil.make_archive(format="zip",root_dir=namestring,base_name=namestring)
@@ -229,4 +311,4 @@ def claarc(p):
         os.chdir("..")
     print("..done with "+str(countArc)+" archives")
     return None
-#claarc(p="E:\\82\\claarc")
+#claarc()
