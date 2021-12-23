@@ -16,13 +16,19 @@ for x in range(len(bo.index)):
         y.iloc[x]=re.findall(r"\((\d+.\d+).\)",y.iloc[x])[0]
 bo.loc[:,"work":]=bo.loc[:,"work":].applymap(lambda t:round(float(t),1))
 bo.loc[:,"work"]=bo.loc[:,"work"].apply(int)
+
+
+bo.query("(af>9)",inplace=False).query("((af>19)&(audit>29)&(disputeRate<12))|((af>29)&(audit>49)&(disputeRate<17))|((audit>39)&(workedTime>15000)&(disputeRate<8))")
+
 bo0=bo[bo["af"]>10]
 bo0=bo0[bo0["work"]>29]
 bo0=bo0[bo0["disputeRate"]<15]
+bo.query("(af>9)",inplace=False).query("((af>19)&(audit>29)&(disputeRate<12))|((af>29)&(audit>49)&(disputeRate<17))|((audit>39)&(workedTime>15000)&(disputeRate<8))")
+
 bo0.to_excel("boResult.xlsx")
 
 
-bo=bo[bo]
+총 작업 수 20개 이하고 올피니시드가 0
 
 
 
