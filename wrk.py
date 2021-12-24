@@ -1,21 +1,48 @@
-import pandas as pd;import os;import re
-os.chdir("e:\\auditor")
+import os
+import math
+import re
+import pandas as pd
+
+def purify(fo,path="e://auditor"):
+    os.chdir(path)
+    if ".xls" not in fo:
+        try:
+            str(fo).replace()
+
+
+    udf=pd.read_excel(fo,usecols="A:I,K,L,N:P",na_filter=False).drop([0])
+    sheetfile=[u for u in os.listdir() if ".xls" in u]
+    csvfile=[u for u in os.listdir() if ".csv" in u]
+    for u in sheetfile:
+        pass
+    uname=str(u)
+    
+    udf.columns=[
+        "id","mail","name","nick",
+        "work","audit",
+        "reaudit","audited","allFinished",
+        "dispute","disputeRate",
+        "workedTime","workedTimeMean","workedTimeBasis"
+        ]
+    udf.set_index("id",inplace=True)
+    udf.dropna(axis=0,inplace=True)
+    udf.index=udf.index.map(int)
+    for t in range(len(udf.index)):
+        for s in {udf.workedTime,udf.workedTimeMean}:
+            s.iloc[t]=re.findall(r"\((\d+.\d+).\)",s.iloc[t])[0]
+    udf.loc[:,"work":]=udf.loc[:,"work":].applymap(lambda r:round(float(r),1))
+    udf.loc[:,["work","audit","reaudit","audited","allFinished","dispute"]].apply(int)
+    return udf
+        
+def auditor():
+    return None
 
 ta=pd.read_csv("ta.csv",na_filter=False)
 
 ta.columns=["id","name","mail","nick","phone","auditor"]
 
 
-bo=pd.read_excel("da.xls",usecols="A:I,K,L,N:P",na_filter=False).drop([0])
-bo.columns=["id","mail","name","nick","work","audit","reaudit","audited","af","dispute","disputeRate","workedTime","workedTimeMean","workedTimeBasis"]
-bo.set_index("id",inplace=True)
-bo.index=bo.index.map(int)
-bo.dropna(axis=0,inplace=True)
-for x in range(len(bo.index)):
-    for y in (bo.workedTime,bo.workedTimeMean):
-        y.iloc[x]=re.findall(r"\((\d+.\d+).\)",y.iloc[x])[0]
-bo.loc[:,"work":]=bo.loc[:,"work":].applymap(lambda t:round(float(t),1))
-bo.loc[:,"work"]=bo.loc[:,"work"].apply(int)
+
 
 
 bo.query("(af>9)",inplace=False).query("((af>19)&(audit>29)&(disputeRate<12))|((af>29)&(audit>49)&(disputeRate<17))|((audit>39)&(workedTime>15000)&(disputeRate<8))")
