@@ -54,11 +54,30 @@ bo.query("(af>9)",inplace=False).query("((af>19)&(audit>29)&(disputeRate<12))|((
 
 bo0.to_excel("boResult.xlsx")
 
-
 총 작업 수 20개 이하고 올피니시드가 0
 
+test=pd.DataFrame()
 
 
+
+pm=pd.read_excel("pmo.xlsx")
+ta=pd.read_excel("ta.xlsx")
+
+test=pd.concat([ta,pm],ignore_index=False,axis=0,join="inner",verify_integrity=True)
+
+pm.set_index("name",inplace=True)
+
+pm=pm.applymap(lambda fuck:str(fuck).strip())
+ta=ta.applymap(lambda fuck:str(fuck).strip())
+
+test.merge(ta,left_on=["name","citizenNumber","phoneNumber","userLoc","schoolHx","jobCode","zangAe","imSin","gyungDan","boHun","daMunWha","goDing","deDing","twoJob","backSu","muZik","lowIncome","backbackSu","feminist","foreignMarrying","bukHan","selfEmpolyed","aihubHx","cwHx"],right_on=["name","citizenNumber","phoneNumber","userLoc","schoolHx","jobCode","zangAe","imSin","gyungDan","boHun","daMunWha","goDing","deDing","twoJob","backSu","muZik","lowIncome","backbackSu","feminist","foreignMarrying","bukHan","selfEmpolyed","aihubHx","cwHx"])
+
+pm.merge(ta,left_index=True,right_index=True)
+
+pd.concat
+
+
+ta[~ta.index.duplicated()]
 
 bo,ta=(z.dropna(axis=0,inplace=False).set_index("id") for z in (bo,ta))
 ta=ta[["mail","name","nick","phone","auditor"]]
