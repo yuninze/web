@@ -166,10 +166,8 @@ def fal(jsonfile,p="E:\\82\\"):
 
 def coco(pathBase="e:\\82\\ANNO"):
     os.chdir(pathBase)
-    resultSrcfile=[
-        str(os.listdir()[x]).replace(".json",".jpg") for x in 
-        range(len(os.listdir())) if ".json" in os.listdir()[x]
-                ]
+    resultSrcfile=[str(os.listdir()[x]).replace(".json",".jpg") for x in 
+    range(len(os.listdir())) if ".json" in os.listdir()[x]]
     os.chdir("e:\\82\\src")
     countArc,founds=0,0
     for chasuDir in os.listdir():
@@ -184,13 +182,15 @@ def coco(pathBase="e:\\82\\ANNO"):
                     raise OSError("..unexpected file in the last depth")
                 jpgInArc=[
                 arc.infolist()[x].filename for x in
-                range(len(arc.infolist())) if 
+                range(
+                len(arc.infolist())) if 
                 arc.infolist()[x].filename.endswith(".jpg") and 
                 arc.infolist()[x].file_size!=0
                 ]
                 jpgInArcBad=[
                 arc.infolist()[x].filename for x in
-                range(len(arc.infolist())) if 
+                range(
+                len(arc.infolist())) if 
                 arc.infolist()[x].filename.endswith(".jpg") and 
                 arc.infolist()[x].file_size==0
                 ]
@@ -274,19 +274,15 @@ def claarc(p="e:\\82\\src"):
                         tab["BC"][len(tab["BC"]):]=[x]
                     elif "C_YELLOW" in x:
                         tab["BC"][len(tab["BC"]):]=[x]
-
                 print(str(okCount)+":::"+str(ngCount))
                 k={"A":None,"BC":None,"SHOULDER":None}
                 for z in tab.keys():
                     k[z]=len(tab[z])
-                print(str((k["A"]))+"--"+str((k["BC"]))+"--"+str((k["SHOULDER"])))
                 tab={
                     "A":list(set(tab["A"])-set(doneSrcfile)),
                     "BC":list(set(tab["BC"])-set(doneSrcfile)),
                     "SHOULDER":list(set(tab["SHOULDER"])-set(doneSrcfile))
                     }
-                print(str(len(tab["A"]))+"--"+str(len(tab["BC"]))+"--"+str(len(tab["SHOULDER"])))
-                #input()
                 for o in tab.keys():
                     if len(tab[o])==0:
                         pass
