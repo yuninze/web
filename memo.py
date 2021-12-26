@@ -1,13 +1,12 @@
+from os import name
+from wrk import purify
+
+
 print("take care of utw")
 os.chdir(arcDirPath)
 foFromArc=arc.extractall(members=(set(arcil)-set(g)),path="")
 print("..utw extracted: "+arc.filename)
 foForEach=foFromArc.replace("e:\\82\\done\\",(arcDirPath.replace("\\done\\","\\cat\\utw\\"))+"\\")
-
-os.chdir("e:\\pd")
-a,b={pd.read_excel(z) for z in ("a.xls","b.xls")}
-a,b={z.set_index(y) for z,y in (a,b),("","")}
-pd.merge(a,b,left_index=True,right_index=True).sort_values("UserID").to_csv("ab.csv",encoding="utf-8-sig")
 
 try:
     os.makedirs(os.path.dirname(foForEach),exist_ok=True)
@@ -22,8 +21,15 @@ finally:
     ng1+=1
 
 
-                if any(y in [x for x in jpgInArc] for y in ["A_BLUE","A_WHITE","A_YELLOW"]):
-                    a[len(a):]=[y]
+0. purify
+1. indexing by name
+2. .....fillna
+3. fill wage-related object
+4. .......
+2. concat bo,ta
+3. 
+
+
 
     for y in shoulder:
         if y in arc.namelist():

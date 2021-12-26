@@ -1,22 +1,31 @@
 import os
-import math
 import re
 import pandas as pd
+import math
 
-def purify(fo,path="e://auditor"):
+def purify2(fo,path="C://"):
     os.chdir(path)
-    if ".xls" not in fo:
-        try:
-            str(fo).replace()
+    try:
+        u=pd.read_excel(fo,na_filter=False)
+    except:
+        u=pd.read_csv(fo,encoding="utf-8")
+    u.columns=[
+        "date","name","mail","phone","cn","cn0","loc","edu",
+        "job","zangae","preg","gzy","bohun","damunwha",
+        "choding","daeding",
+        "jobtwo","jobno","jobloss","lowincome","jobless",
+        "mobuzang","visamarry","bukhan","selfempoly",
+        "aihubHx","icHx","consent0","consent1"
+    ]
+    u.drop(["consent0","consent1"],axis=1,inplace=True)
+    u.drop_duplicates(subset=["name","mail"],inplace=True)
+    u.set_index("name",inplace=True)
+    u.cn.apply(lambda x:"-".join([x[:6],x[6:]]))
+    return u
 
-
+def purify(fo,path="Y://FRIEND//yun_work"):
+    os.chdir(path)
     udf=pd.read_excel(fo,usecols="A:I,K,L,N:P",na_filter=False).drop([0])
-    sheetfile=[u for u in os.listdir() if ".xls" in u]
-    csvfile=[u for u in os.listdir() if ".csv" in u]
-    for u in sheetfile:
-        pass
-    uname=str(u)
-    
     udf.columns=[
         "id","mail","name","nick",
         "work","audit",
@@ -24,8 +33,7 @@ def purify(fo,path="e://auditor"):
         "dispute","disputeRate",
         "workedTime","workedTimeMean","workedTimeBasis"
         ]
-    udf.set_index("id",inplace=True)
-    udf.dropna(axis=0,inplace=True)
+    udf.set_index("id").dropna(axis=0,inplace=True)
     udf.index=udf.index.map(int)
     for t in range(len(udf.index)):
         for s in {udf.workedTime,udf.workedTimeMean}:
@@ -42,7 +50,7 @@ ta=pd.read_csv("ta.csv",na_filter=False)
 ta.columns=["id","name","mail","nick","phone","auditor"]
 
 
-
+(lambda x:"-".join([x[:3],x[5:9],x[6:10]]))
 
 
 bo.query("(af>9)",inplace=False).query("((af>19)&(audit>29)&(disputeRate<12))|((af>29)&(audit>49)&(disputeRate<17))|((audit>39)&(workedTime>15000)&(disputeRate<8))")
