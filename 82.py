@@ -1,7 +1,9 @@
-import os,json,csv,shutil
+import os,json,csv,glob,shutil
 import sys
 import pandas as pd;import datetime as dt;from zipfile import ZipFile
+from pathlib import Path
 from basic import listfile
+
 ima,enc,idea=str((dt.datetime.now()).strftime("%m%d")),"utf-8-sig","=="
 sys.setrecursionlimit(1000000)
 
@@ -15,6 +17,53 @@ def strCheck(prop):
 
 def pathStrip(s):
     return str(s).upper().replace("D:\\82\\","")
+
+def jsoncopy():
+    os.chdir("Y:\\home\\mlops\\workspace\\gov_car_segment\\preprocess_data\\rawdata_1206")
+    pass
+
+ggg=[]
+for chasudir in os.listdir():
+    os.chdir(chasudir)
+    for datedir in os.listdir():
+        os.chdir(datedir)
+        for arc in glob.glob("*.zip"):
+            arc=ZipFile(arc,"r")
+            print(arc.filename)
+            jpgInArc=[arc.infolist()[x].filename for x in range(len(arc.infolist())) if arc.infolist()[x].filename.endswith(".jpg") and arc.infolist()[x].file_size!=0]
+            ggg[len(ggg):]=jpgInArc
+        os.chdir("..")
+    os.chdir("..")
+with open("e:\\listfile.csv","w") as r:
+    csv.writer(r).writerow(["filename"])
+    for x in ggg:
+        csv.writer(r).writerow([x])
+pd.read_csv("e:\\listfile.csv",encoding="utf-8-sig").to_csv("e:\\listfile.csv",encoding="utf-8-sig",index=False)
+
+def lachk():
+    os.chdir("E:\\82\\result\\PRJ-3602\\ANNOTATION")
+    for channeldir in os.listdir():
+        os.chdir(channeldir)
+        for colordir in os.listdir():
+            os.chdir(colordir)
+            for seriesdir in os.listdir():
+                os.chdir(seriesdir)
+                a=glob.glob("*.json")
+                for jsonfile in a:
+                    j=json.load(open(jsonfile,"r"))
+                    did=str(j["dataID"])
+                    for z in range(len(j["data_set_info"]["data"])):                   
+                        if len(j["data_set_info"]["data"][z]["value"]["object_Label"])==2:
+                            if j["data_set_info"]["data"][z]["value"]["object_Label"]["lane_attribute"]=="":
+                                print(str(Path(jsonfile).absolute())+":::"+did)
+                            else:
+                                pass
+                        else:
+                            pass
+                os.chdir("..")
+            os.chdir("..")
+        os.chdir("..")
+    return None
 
 def arcList(fo):
     arcList=ZipFile(fo,"r").infolist()

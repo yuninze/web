@@ -1,5 +1,5 @@
 from os import name
-from wrk import purify
+from work import purify
 
 
 print("take care of utw")
