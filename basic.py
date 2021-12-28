@@ -48,7 +48,7 @@ def listfile(arc,p="d:\\"):
         csv.writer(open(namestring,"a",newline="",encoding="utf-8-sig")).writerow([x])
     pd.read_csv(namestring,encoding="utf-8-sig").to_csv(namestring,encoding="utf-8-sig",index=False)
     return None
-#listfile("11118_detectS_typeA_121708.zip",p="E:\\82\\result")
+listfile("PRJ-3541.zip",p="C:\\Users\\yinze\\Downloads")
 
 def greatPuzzle_ZeungZuck():
     p="D:\\greatPuzzle\\1126_greatpuzzle\\"
