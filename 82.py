@@ -18,9 +18,17 @@ def strCheck(prop):
 def pathStrip(s):
     return str(s).upper().replace("D:\\82\\","")
 
-def jsoncopy():
-    os.chdir("Y:\\home\\mlops\\workspace\\gov_car_segment\\preprocess_data\\rawdata_1206")
-    pass
+
+
+for root,dirs,file in os.walk('Y:\\home\\mlops\\workspace\\gov_car_segment\\preprocess_data\\rawdata_1206'):
+    for filename in file:
+        if filename.endswith(".json"):
+            filepath=os.path.join(root,filename)
+            pathstring=filepath.replace("Y:\\home\\mlops\\workspace\\gov_car_segment\\preprocess_data\\rawdata_1206","e:\\82\\ML")
+            os.makedirs(os.path.dirname(pathstring),exist_ok=True)
+            shutil.copy(filepath,pathstring)
+            print("Copied: "+filepath)
+
 
 ggg=[]
 for chasudir in os.listdir():
@@ -34,6 +42,7 @@ for chasudir in os.listdir():
             ggg[len(ggg):]=jpgInArc
         os.chdir("..")
     os.chdir("..")
+ggg=set(ggg)
 with open("e:\\listfile.csv","w") as r:
     csv.writer(r).writerow(["filename"])
     for x in ggg:
@@ -41,7 +50,7 @@ with open("e:\\listfile.csv","w") as r:
 pd.read_csv("e:\\listfile.csv",encoding="utf-8-sig").to_csv("e:\\listfile.csv",encoding="utf-8-sig",index=False)
 
 def lachk():
-    os.chdir("E:\\82\\result\\PRJ-3602\\ANNOTATION")
+    os.chdir("E:\\82\\result\\umseon\\ANNOTATION")
     for channeldir in os.listdir():
         os.chdir(channeldir)
         for colordir in os.listdir():
@@ -52,14 +61,25 @@ def lachk():
                 for jsonfile in a:
                     j=json.load(open(jsonfile,"r"))
                     did=str(j["dataID"])
-                    for z in range(len(j["data_set_info"]["data"])):                   
+                    for z in range(len(j["data_set_info"]["data"])):
+                        try:
+                            j["dataID"]
+                            j["data_set_info"]["sourceValue"]
+                            j["data_set_info"]["data"][z]["objectID"]
+                            j["data_set_info"]["data"][z]["value"]["metainfo"]
+                            j["data_set_info"]["data"][z]["value"]["annotation"]
+                            j["data_set_info"]["data"][z]["value"]["points"]
+                            j["data_set_info"]["data"][z]["value"]["object_Label"]
+                            j["data_set_info"]["data"][z]["value"]["extra"]
+                        except:
+                            raise IndexError("Unusual Content:::"+str(Path(jsonfile).absolute()))
                         if len(j["data_set_info"]["data"][z]["value"]["object_Label"])==2:
                             if j["data_set_info"]["data"][z]["value"]["object_Label"]["lane_attribute"]=="":
                                 print(str(Path(jsonfile).absolute())+":::"+did)
                             else:
                                 pass
                         else:
-                            pass
+                            print("ok :"+str(Path(jsonfile)))
                 os.chdir("..")
             os.chdir("..")
         os.chdir("..")

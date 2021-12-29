@@ -30,4 +30,4 @@ def mgreeda(p,fo):
     pd.DataFrame(l).to_csv(fo+".csv",encoding=enc,index=False)
     pd.read_csv(fo+".csv",encoding=enc).to_csv(fo+".csv",encoding=enc,index=False)
     return None
-mgreeda("E:\\mGreeda","11211_122709.json")
+mgreeda("E:\\mGreeda","11211_122910.json")
