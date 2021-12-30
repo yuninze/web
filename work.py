@@ -69,20 +69,22 @@ ta=pd.merge("","",left_index=True,right_index=True,how="outer")
 
 [x.set_index(["project_id","login_id","member_nm"],inplace=True) for x in [a,b]]
 
-[x.set_index(["id","mail","name"],inplace=True) for x in [da,dbc,ds,na,nbc,ns]]
-[x.reset_index(inplace=True) for x in [da,dbc,ds,na,nbc,ns]]
-
-c=pd.concat([da,dbc,ds,na,nbc,ns],axis=0)
-c=pd.concat([da,dbc,ds,na,nbc,ns]).drop("nick",axis=1).groupby(["id","mail","name"]).sum()
-
 
 [x.loc[:,"work":].applymap(lambda w:float(w)) for x in [da,dbc,ds,na,nbc,ns]]
 
 def purify2(fo):
+    """
+    TA_hyunbum_sheet
+
+    Returns::: DataFrame
+    """
     try:
-        u=pd.read_excel(fo,na_filter=False).reset_index()
+        u=pd.read_excel(fo+".xlsx",na_filter=False)
     except:
-        u=pd.read_csv(fo,encoding="utf-8").reset_index()
+        try:
+            u=pd.read_csv(fo+".csv",encoding="utf-8")
+        except:
+            u=pd.read_csv(fo+".csv",encoding="utf-8-sig")
     u.columns=[
         "date","name","mail","phone","cn","cn0","loc","edu",
         "job","zangae","preg","gzy","bohun","damunwha",
@@ -91,24 +93,17 @@ def purify2(fo):
         "mobuzang","visamarry","bukhan","selfempoly",
         "aihubHx","icHx","consent0","consent1"
     ]
-    u.
     u.drop(["consent0","consent1","date","cn0"],axis=1,inplace=True)
     u.drop_duplicates(subset=["name","mail"],inplace=True)
-    u.set_index("name",inplace=True)
+    #u.set_index("name",inplace=True)
+    u.loc[:,["name","mail","cn","phone"]]=u.loc[:,["name","mail","cn","phone"]].applymap(lambda a:str(a).strip())
+    for x in u.index:
+        if len(u.loc[x,"phone"])==9:
+            u.loc[x,"phone"]="0"+u.loc[x,"phone"]+"0"
+        elif len(u.loc[x,"phone"])==10:
+            u.loc[x,"phone"]="0"+u.loc[x,"phone"]
     u.cn=u.cn.apply(lambda a:"-".join([a[:6],a[6:]]))
-
-
-    for x in ta.index:
-        if len(ta.loc[x,"phone"])==9:
-            ta.loc[x,"phone"]="0"+ta.loc[x,"phone"]+"0"
-        elif len(ta.loc[x,"phone"])==10:
-            ta.loc[x,"phone"]="0"+ta.loc[x,"phone"]
-    lambda x:"-".join([x[:3],x[5:9],x[6:10]])
-    for x in range(len(c.index)):
-        if "crowdworks" in c.index[x][1]:
-            c.drop(c.iloc[x],inplace=True)
-    
-
+    u.phone=u.phone.apply(lambda x:"-".join((x[:3],x[3:7],x[7:])))
     return u
 
 def purify(fo,danga):
@@ -124,40 +119,37 @@ def purify(fo,danga):
         "work","audit",
         "reaudit","audited","allFinished",
         "dispute","disputeRate",
-        "workedTime","workedTimeMean","workedTimeBasis"
+        "TWT","WTPJ","WTPJB"
         ]
     udf.set_index("id").dropna(axis=0,inplace=True)
     udf.index=udf.index.map(int)
     for t in range(len(udf.index)):
-        for s in [udf.workedTime,udf.workedTimeMean]:
+        for s in [udf.TWT,udf.WTPJ]:
             s.iloc[t]=re.findall(r"\((\d+.\d+).\)",s.iloc[t])[0]
-    udf.loc[:,"work":]=udf.loc[:,"work":].applymap(lambda r:round(float(r),1))
-    udf.loc[:,["work","audit","reaudit","audited","allFinished","dispute"]]=udf.loc[:,["work","audit","reaudit","audited","allFinished","dispute"]].applymap(int)
-    #udf["workedTimePerJob"]=0
-    #udf["earningPerHour"]=0
-    #udf["earningPerDay"]=0
-    #udf["workedTimePerMonth"]=0
+    udf.loc[:,"work":]=udf.loc[:,"work":].applymap(lambda fuck:float(fuck))
+    udf["EPS"]=0
+    udf["EPH"]=0
     for c in udf.index:
-        if udf.loc[c,"workedTime"]>0:
-            try:
-                udf.loc[c,"workedTimePerJob"]=(udf.loc[c,"workedTime"]/60)/(udf.loc[c,"work"])
-                udf.loc[c,"earningPerHour"]=danga/(udf.loc[c,"workedTimePerJob"]/60)
-                udf.loc[c,"earningPerDay"]=udf.loc[c,"earningPerHour"]/24
-                udf.loc[c,"workedTimePerMonth"]=udf.loc[c,"workedTime"]/31*60
-            except:
-                udf.loc[c,"workedTimePerJob"]=0
-                udf.loc[c,"earningPerHour"]=0
-                udf.loc[c,"earningPerDay"]=0
-                udf.loc[c,"workedTimePerMonth"]=0
+        if udf.loc[c,"TWT"]>0:
+            udf.loc[c,"EPS"]=(danga*udf.loc[c,"work"])/(udf.loc[c,"TWT"])
+            udf.loc[c,"EPH"]=udf.loc[c,"EPS"]*3600
+            udf.loc[c,"TE"]=float(udf.loc[c,"work"]*danga)
+            udf.loc[c,"TE1000"]=float((udf.loc[c,"work"]*danga)/1000)
+            udf.loc[c,"JPH"]=float(udf.loc[c,"WTPJ"]/3600)
         else:
-            udf.loc[c,"workedTime"]=0
-            udf.loc[c,"workedTimePerJob"]=0
-    def uuu(number):
+            udf.loc[c,"EPS"]=0.33
+            udf.loc[c,"EPH"]=0.33
+    def fuck(number):
         return round(number,4)
-    udf.loc[:,"workedTimePerJob":"workedTimePerMonth"]=udf.loc[:,"workedTimePerJob":"workedTimePerMonth"].applymap(uuu)
+    udf.loc[:,"WTPJ":]=udf.loc[:,"WTPJ":].applymap(fuck)
     return udf
+
 [x.set_index(["id","mail","name","nick"],inplace=True) for x in [a,b,c,d,e,f]]
-pd.DataFrame().groupby(["id","mail","name","nick"]).transform("sum")
+aa=pd.concat([a,b,c,d,e,f],ignore_index=False)
+aa.reset_index(inplace=True)
+aa=aa.groupby(["id","mail","name","nick"]).transform("sum")
+aa.loc[:,"EPS":]=aa.loc[:,"EPS":].applymap(lambda p:round(p/6,4))
+aa.drop_duplicates(subset=["id","mail","name","nick"],inplace=True)
 
 def uu(x):
     if x>0:

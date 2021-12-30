@@ -18,6 +18,17 @@ def strCheck(prop):
 def pathStrip(s):
     return str(s).upper().replace("D:\\82\\","")
 
+def achim():
+    arc=ZipFile("82.zip","r")
+    with open("82.zip.csv","w") as csvfile:
+        csv.writer(csvfile).writerow(["filename"])
+        a=0
+        while a<100001:
+            for filename in [arc.infolist()[x].filename for x in range(len(arc.infolist())) if arc.infolist()[x].filename.endswith(".jpg")==True]:
+                csv.writer(csvfile).writerow([filename])
+                a+=1
+    pd.read_csv("82.zip.csv",encoding="utf-8-sig").to_csv("82.zip.csv",index=False,encoding=enc)
+
 
 
 for root,dirs,file in os.walk('Y:\\home\\mlops\\workspace\\gov_car_segment\\preprocess_data\\rawdata_1206'):
@@ -50,7 +61,7 @@ with open("e:\\listfile.csv","w") as r:
 pd.read_csv("e:\\listfile.csv",encoding="utf-8-sig").to_csv("e:\\listfile.csv",encoding="utf-8-sig",index=False)
 
 def lachk():
-    os.chdir("E:\\82\\result\\umseon\\ANNOTATION")
+    os.chdir("C:\\Users\\yinze\\Downloads\\82\\fastboot\\ANNOTATION")
     for channeldir in os.listdir():
         os.chdir(channeldir)
         for colordir in os.listdir():
@@ -59,27 +70,46 @@ def lachk():
                 os.chdir(seriesdir)
                 a=glob.glob("*.json")
                 for jsonfile in a:
-                    j=json.load(open(jsonfile,"r"))
+                    j=json.load(open(jsonfile,encoding="utf-8"))
                     did=str(j["dataID"])
                     for z in range(len(j["data_set_info"]["data"])):
-                        try:
-                            j["dataID"]
-                            j["data_set_info"]["sourceValue"]
-                            j["data_set_info"]["data"][z]["objectID"]
-                            j["data_set_info"]["data"][z]["value"]["metainfo"]
-                            j["data_set_info"]["data"][z]["value"]["annotation"]
-                            j["data_set_info"]["data"][z]["value"]["points"]
-                            j["data_set_info"]["data"][z]["value"]["object_Label"]
-                            j["data_set_info"]["data"][z]["value"]["extra"]
-                        except:
-                            raise IndexError("Unusual Content:::"+str(Path(jsonfile).absolute()))
+                        if len(j["data_set_info"]["data"][z]["value"]["metainfo"])!=5:
+                            print("METAINFO: "+str(Path(jsonfile).absolute())+":::"+did),input()
+                        if j["data_set_info"]["data"][z]["value"]["annotation"]!="POLYGONS":
+                            print("POLYGONS: "+str(Path(jsonfile).absolute())+":::"+did),input()
+                        if len(j["data_set_info"]["data"][z]["value"]["points"])<1:
+                            print("POINTS: "+str(Path(jsonfile).absolute())+":::"+did),input()
+                        for objectKeyName in j["data_set_info"]["data"][z]["value"]["object_Label"].keys():
+                            if "vehicle" in objectKeyName:
+                                if len(j["data_set_info"]["data"][z]["value"]["object_Label"])!=3:
+                                    raise IndexError("Unusual/Vehicle/object_Label: "+str(Path(jsonfile).absolute())+":::"+did)
+                                elif j["data_set_info"]["data"][z]["value"]["extra"]["value"]!="vehicle":
+                                    raise IndexError("Unusual/Vehicle/extra/value: "+str(Path(jsonfile).absolute())+":::"+did)
+                                elif j["data_set_info"]["data"][z]["value"]["extra"]["color"]!="#096ecd":
+                                    raise IndexError("Unusual/Lane/extra/color: "+str(Path(jsonfile).absolute())+":::"+did)
+                            elif "lane" in objectKeyName:
+                                if len(j["data_set_info"]["data"][z]["value"]["object_Label"])!=2:
+                                    raise IndexError("Unusual Content/Lane: "+str(Path(jsonfile).absolute())+":::"+did)
+                                elif j["data_set_info"]["data"][z]["value"]["extra"]["value"]!="lane":
+                                    raise IndexError("Unusual/Lane/extra/value: "+str(Path(jsonfile).absolute())+":::"+did)
+                                elif j["data_set_info"]["data"][z]["value"]["extra"]["color"]=="#096ecd":
+                                    raise IndexError("Unusual/Lane/extra/color: "+str(Path(jsonfile).absolute())+":::"+did)
                         if len(j["data_set_info"]["data"][z]["value"]["object_Label"])==2:
                             if j["data_set_info"]["data"][z]["value"]["object_Label"]["lane_attribute"]=="":
-                                print(str(Path(jsonfile).absolute())+":::"+did)
-                            else:
-                                pass
-                        else:
-                            print("ok :"+str(Path(jsonfile)))
+                                print("lane_ERROR: "+str(Path(jsonfile).absolute())+":::"+did),input()
+                                j["data_set_info"]["data"][z]["value"]["object_Label"]["lane_type"]="lane_shoulder"
+                                j["data_set_info"]["data"][z]["value"]["object_Label"]["lane_attribute"]="single_solid"
+                                print("written")
+                            else:print("OK: "+str(Path(jsonfile).absolute())+":::"+did)
+                        elif len(j["data_set_info"]["data"][z]["value"]["object_Label"])==3:
+                            if j["data_set_info"]["data"][z]["value"]["object_Label"]["vehicle_type"]=="":
+                                print("vehicle_ERROR: "+str(Path(jsonfile).absolute())+":::"+did),input()
+                                j["data_set_info"]["data"][z]["value"]["object_Label"]["vehicle_type"]="vehicle_bus"
+                                j["data_set_info"]["data"][z]["value"]["object_Label"]["vehicle_attribute"]="violation"
+                                j["data_set_info"]["data"][z]["value"]["object_Label"]["vehicle_shown"]="hidden"
+                                print("written")
+                            else:print("OK: "+str(Path(jsonfile).absolute())+":::"+did)
+                    json.dump(j,open(jsonfile,"w",encoding="utf-8"),ensure_ascii=False,indent=2)
                 os.chdir("..")
             os.chdir("..")
         os.chdir("..")
