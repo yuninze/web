@@ -132,18 +132,18 @@ def purify(fo,danga):
         for s in [udf.workedTime,udf.workedTimeMean]:
             s.iloc[t]=re.findall(r"\((\d+.\d+).\)",s.iloc[t])[0]
     udf.loc[:,"work":]=udf.loc[:,"work":].applymap(lambda r:round(float(r),1))
-    udf.loc[:,["work","audit","reaudit","audited","allFinished","dispute"]].applymap(int)
-    udf["workedTimePerJob"]=0
-    udf["earningPerHour"]=0
-    udf["earningPerDay"]=0
-    udf["workedTimePerMonth"]=0
+    udf.loc[:,["work","audit","reaudit","audited","allFinished","dispute"]]=udf.loc[:,["work","audit","reaudit","audited","allFinished","dispute"]].applymap(int)
+    #udf["workedTimePerJob"]=0
+    #udf["earningPerHour"]=0
+    #udf["earningPerDay"]=0
+    #udf["workedTimePerMonth"]=0
     for c in udf.index:
         if udf.loc[c,"workedTime"]>0:
             try:
-                udf.loc[c,"workedTimePerJob"]=udf.loc[c,"workedTime"]/(udf.loc[c,"allFinished"]+udf.loc[c,"dispute"])
-                udf.loc[c,"earningPerHour"]=(danga*3600)/udf.loc[c,"workedTimePerJob"]
+                udf.loc[c,"workedTimePerJob"]=(udf.loc[c,"workedTime"]/60)/(udf.loc[c,"work"])
+                udf.loc[c,"earningPerHour"]=danga/(udf.loc[c,"workedTimePerJob"]/60)
                 udf.loc[c,"earningPerDay"]=udf.loc[c,"earningPerHour"]/24
-                udf.loc[c,"workedTimePerMonth"]=udf.loc[c,"workedTime"]/31*3600
+                udf.loc[c,"workedTimePerMonth"]=udf.loc[c,"workedTime"]/31*60
             except:
                 udf.loc[c,"workedTimePerJob"]=0
                 udf.loc[c,"earningPerHour"]=0
@@ -157,6 +157,7 @@ def purify(fo,danga):
     udf.loc[:,"workedTimePerJob":"workedTimePerMonth"]=udf.loc[:,"workedTimePerJob":"workedTimePerMonth"].applymap(uuu)
     return udf
 [x.set_index(["id","mail","name","nick"],inplace=True) for x in [a,b,c,d,e,f]]
+pd.DataFrame().groupby(["id","mail","name","nick"]).transform("sum")
 
 def uu(x):
     if x>0:
