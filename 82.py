@@ -295,7 +295,8 @@ def undone(srckey,path="e:/82"):
         for y in range(len(j["result"])):
             if j["result"][y]["unableToWork"]==0:
                 try:
-                    doneSrcfilename[len(doneSrcfilename):]=[j["result"][y]["falsibi"][srcKey]]
+                    n=str(j["result"][y]["falsibi"][srcKey])
+                    doneSrcfilename[len(doneSrcfilename):]=[n[n.find("IMAGE/"):]]
                     okCount+=1
                 except:
                     if len(j["result"][y])<=2:
@@ -309,30 +310,35 @@ def undone(srckey,path="e:/82"):
 
 def undoing(srckey,jsonfilepath,arcfilepath):
     doneSrcfilename=undone(srckey,path=jsonfilepath)[0]
-    for name in doneSrcfilename:
-        doneSrcfilename[name.index()]=name[name.find("IMAGE/"):]
+    print("doneSrcfilename has been loaded.")
     arcNamelist,arcPathString=dict(),dict()
     for r,d,f in os.walk(arcfilepath):
         for filename in f:
             if filename.endswith(".zip"):
                 arcFilePathString=os.path.join(r,filename)
-                arcNamelist[arcFilePathString]={ZipFile(arcFilePathString).namelist()[x] for x in 
-                range(len(ZipFile(arcFilePathString).namelist())) if 
-                ZipFile(arcFilePathString).namelist()[x].endswith(".jpg")==True}
+                arc=ZipFile(arcFilePathString)
+                arcNamelist[arcFilePathString]={arc.namelist()[x] for x in 
+                range(len(arc.namelist())) if arc.namelist()[x].endswith(".jpg")==True}
                 arcPathString[arcFilePathString]=r
+                print("arcNamelist for "+arc.filename+" has been loaded.")
     doneSrcfilename=set(doneSrcfilename)
     for arcName in arcNamelist.keys():
         arcNamelist[arcName]={arcNamelist[arcName]-doneSrcfilename}
+        print("doneSrcfilename has been truncated from "+str(os.path.basename(arcName))+".")
     iterCount=0
+    totalFileCount=0
     for arcName in arcNamelist.keys():
         fileCount=0
         for filename in arcNamelist[arcName]:
             print("EXTRACTING: "+filename+">"+str(os.path.basename(arcName)))
             ZipFile(arcName).extract(member=filename,path="D:/82/"+str(iterCount))
             fileCount+=1
+            totalFileCount+=1
             if fileCount==80000:
                 iterCount+=1
+                print("filecount limit reached.")
                 continue
+    print("SUCCESS: "+str(totalFileCount)+", "+str(iterCount))
 
 def doneSrcfile():
     count=0

@@ -74,7 +74,7 @@ ta=pd.merge("","",left_index=True,right_index=True,how="outer")
 
 def purify2(fo):
     """
-    TA_hyunbum_sheet
+    TA Hyunbum sheet
 
     Returns::: DataFrame
     """
