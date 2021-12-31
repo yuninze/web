@@ -18,7 +18,7 @@ def strCheck(prop):
 def pathStrip(s):
     return str(s).upper().replace("D:\\82\\","")
 
-def achim():
+def garaAO():
     arc=ZipFile("82.zip","r")
     with open("82.zip.csv","w") as csvfile:
         csv.writer(csvfile).writerow(["filename"])
@@ -27,38 +27,20 @@ def achim():
             for filename in [arc.infolist()[x].filename for x in range(len(arc.infolist())) if arc.infolist()[x].filename.endswith(".jpg")==True]:
                 csv.writer(csvfile).writerow([filename])
                 a+=1
-    pd.read_csv("82.zip.csv",encoding="utf-8-sig").to_csv("82.zip.csv",index=False,encoding=enc)
+    pd.read_csv("82.zip.csv",encoding=enc).to_csv("82.zip.csv",index=False,encoding=enc)
 
-
-
-for root,dirs,file in os.walk('Y:\\home\\mlops\\workspace\\gov_car_segment\\preprocess_data\\rawdata_1206'):
-    for filename in file:
-        if filename.endswith(".json"):
-            filepath=os.path.join(root,filename)
-            pathstring=filepath.replace("Y:\\home\\mlops\\workspace\\gov_car_segment\\preprocess_data\\rawdata_1206","e:\\82\\ML")
-            os.makedirs(os.path.dirname(pathstring),exist_ok=True)
-            shutil.copy(filepath,pathstring)
-            print("Copied: "+filepath)
-
-
-ggg=[]
-for chasudir in os.listdir():
-    os.chdir(chasudir)
-    for datedir in os.listdir():
-        os.chdir(datedir)
-        for arc in glob.glob("*.zip"):
-            arc=ZipFile(arc,"r")
-            print(arc.filename)
-            jpgInArc=[arc.infolist()[x].filename for x in range(len(arc.infolist())) if arc.infolist()[x].filename.endswith(".jpg") and arc.infolist()[x].file_size!=0]
-            ggg[len(ggg):]=jpgInArc
-        os.chdir("..")
-    os.chdir("..")
-ggg=set(ggg)
-with open("e:\\listfile.csv","w") as r:
-    csv.writer(r).writerow(["filename"])
-    for x in ggg:
-        csv.writer(r).writerow([x])
-pd.read_csv("e:\\listfile.csv",encoding="utf-8-sig").to_csv("e:\\listfile.csv",encoding="utf-8-sig",index=False)
+def getjsonfile(path):
+    count=0
+    for root,dirs,file in os.walk(path):
+        for filename in file:
+            if filename.endswith(".json"):
+                filepath=os.path.join(root,filename)
+                pathstring=filepath.replace(path,"e:\\82\\ML")
+                os.makedirs(os.path.dirname(pathstring),exist_ok=True)
+                shutil.copy(filepath,pathstring)
+                count+=1
+                print("COPIED: "+filepath+": "+str(count))
+    print("DONE: "+str(count)+" files")
 
 def lachk():
     os.chdir("C:\\Users\\yinze\\Downloads\\82\\fastboot\\ANNOTATION")
@@ -161,9 +143,10 @@ def srcKeyname(jsonfile,word):
         word=int(word)
     pid=jsonfile["projectID"]
     for x in range(len(jsonfile["result"])):
-        for key in jsonfile["result"][x]:
-                if key.startswith(word):
-                    return key,str(pid)
+        if jsonfile["result"][x]["unableToWork"]==0:
+            for key in jsonfile["result"][x]["falsibi"]:
+                    if key.startswith(word):
+                        return key,str(pid)
 
 def fal(jsonfile,p="E:\\82\\"):
     if len(jsonfile)!=17:
@@ -263,8 +246,8 @@ def fal(jsonfile,p="E:\\82\\"):
     return None
 #fal("11116_122014.json")
 
-def coco(pathBase="e:\\82\\ANNO"):
-    os.chdir(pathBase)
+def coco(path="e:\\82\\ANNO"):
+    os.chdir(path)
     resultSrcfile=[str(os.listdir()[x]).replace(".json",".jpg") for x in 
     range(len(os.listdir())) if ".json" in os.listdir()[x]]
     os.chdir("e:\\82\\src")
@@ -286,13 +269,6 @@ def coco(pathBase="e:\\82\\ANNO"):
                 arc.infolist()[x].filename.endswith(".jpg") and 
                 arc.infolist()[x].file_size!=0
                 ]
-                jpgInArcBad=[
-                arc.infolist()[x].filename for x in
-                range(
-                len(arc.infolist())) if 
-                arc.infolist()[x].filename.endswith(".jpg") and 
-                arc.infolist()[x].file_size==0
-                ]
                 for z in resultSrcfile:
                     for y in jpgInArc:
                         if y.endswith(z):
@@ -306,24 +282,80 @@ def coco(pathBase="e:\\82\\ANNO"):
     return print(str(founds))
 #coco()
 
-def undone(path="e:\\82"):
+def undone(srckey,path="e:/82"):
     os.chdir(path)
-    doneSrcfile=[]
-    okCount,ngCount=0,0
-    for z in [os.listdir()[x] for x in range(len(os.listdir())) if ".json" in os.listdir()[x]]:
+    doneSrcfilename=[]
+    okCount,ngCount,utwCount=0,0,0
+    a=[os.listdir()[x] for x in range(len(os.listdir())) if ".json" in os.listdir()[x]]
+    if len(a)==0:
+        raise OSError("None of jsonfile in the specified path.")
+    for z in a:
         j=json.load(open(z,"r",encoding=enc))
-        srcValue,pid=srcKeyname(j,"importData_filename")
+        srcKey=srcKeyname(j,srckey)[0]
         for y in range(len(j["result"])):
-            try:
-                doneSrcfile[len(doneSrcfile):]=[j["result"][y][srcValue]]
-                okCount+=1
-            except:
-                if len(j["result"][y])<=2:
-                    ngCount+=1
-                else:
-                    raise Exception("..Parsing Failure at Position "+str(j["result"][y]["dataID"]))
-    print("....Parsing Done")
-    return doneSrcfile,okCount,ngCount
+            if j["result"][y]["unableToWork"]==0:
+                try:
+                    doneSrcfilename[len(doneSrcfilename):]=[j["result"][y]["falsibi"][srcKey]]
+                    okCount+=1
+                except:
+                    if len(j["result"][y])<=2:
+                        ngCount+=1
+                    else:
+                        raise Exception("PARSING FAILIURE: "+z+": "+str(j["result"][y]["dataID"]))
+            elif j["result"][y]["unableToWork"]==1:
+                utwCount+=1
+    print("SUCCESS: "+str(okCount)+", "+str(ngCount)+", "+str(utwCount))
+    return doneSrcfilename,okCount,ngCount
+
+def undoing(srckey,jsonfilepath,arcfilepath):
+    doneSrcfilename=undone(srckey,path=jsonfilepath)[0]
+    for name in doneSrcfilename:
+        doneSrcfilename[name.index()]=name[name.find("IMAGE/"):]
+    arcNamelist,arcPathString=dict(),dict()
+    for r,d,f in os.walk(arcfilepath):
+        for filename in f:
+            if filename.endswith(".zip"):
+                arcFilePathString=os.path.join(r,filename)
+                arcNamelist[arcFilePathString]={ZipFile(arcFilePathString).namelist()[x] for x in 
+                range(len(ZipFile(arcFilePathString).namelist())) if 
+                ZipFile(arcFilePathString).namelist()[x].endswith(".jpg")==True}
+                arcPathString[arcFilePathString]=r
+    doneSrcfilename=set(doneSrcfilename)
+    for arcName in arcNamelist.keys():
+        arcNamelist[arcName]={arcNamelist[arcName]-doneSrcfilename}
+    iterCount=0
+    for arcName in arcNamelist.keys():
+        fileCount=0
+        for filename in arcNamelist[arcName]:
+            print("EXTRACTING: "+filename+">"+str(os.path.basename(arcName)))
+            ZipFile(arcName).extract(member=filename,path="D:/82/"+str(iterCount))
+            fileCount+=1
+            if fileCount==80000:
+                iterCount+=1
+                continue
+
+def doneSrcfile():
+    count=0
+    namelisttarget=ZipFile("c:/82.zip","r").namelist()
+    namelistjson=[]
+    for x in namelisttarget:
+        namelistjson[len(namelistjson):]=[x.replace("2021-12-29/ANNOTATION/","").replace("json","jpg")]
+    os.chdir("E:/82/target")
+    for chasudir in os.listdir():
+        os.chdir(chasudir)
+        for datedir in os.listdir():
+            os.chdir(datedir)
+            for zipfile in glob.glob("*.zip"):
+                arc=ZipFile(zipfile,"r") 
+                for namej in namelistjson:
+                    for namea in arc.namelist():
+                        if namea.endswith(namej):
+                            arc.extract(member=namea,path="C:/82")
+                            namelistjson.remove(namej)
+                            print("SUCCESS: "+str(namea))
+                            count+=1
+            os.chdir("..")
+        os.chdir("..")
 
 def claarc(p="e:\\82\\src"):
     doneSrcfile,okCount,ngCount=undone()
