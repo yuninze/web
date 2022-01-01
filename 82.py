@@ -359,9 +359,9 @@ def undoing(srckey,jsonfilepath,arcfilepath):
         arcNamelistCnt[key]=len(arcNamelist[key])
     arcNamelistCntTotal=sum([x for x in arcNamelistCnt.values()])
     iterCount=1
+    fileCount=0
     totalExtractedCount=0
     for arcName in arcNamelist.keys():
-        fileCount=0
         if len(arcNamelist[arcName])==0:
             continue
         for fileInArc in arcNamelist[arcName]:
@@ -396,6 +396,7 @@ def undoing(srckey,jsonfilepath,arcfilepath):
                 +
                 str(iterCount),base_name=newArcname)
                 iterCount+=1
+                fileCount=0
                 continue
     print(
     "SUCCESS: "
