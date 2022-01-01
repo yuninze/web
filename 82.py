@@ -46,8 +46,8 @@ def getjsonfile(path):
                 print("COPIED: "+filepath+": "+str(count))
     print("DONE: "+str(count)+" files")
 
-def lachk():
-    os.chdir("C:\\Users\\yinze\\Downloads\\82\\fastboot\\ANNOTATION")
+def lachk(path="C:/82/ANNOTATION"):
+    os.chdir(path)
     for channeldir in os.listdir():
         os.chdir(channeldir)
         for colordir in os.listdir():
@@ -56,6 +56,10 @@ def lachk():
                 os.chdir(seriesdir)
                 a=glob.glob("*.json")
                 for jsonfile in a:
+                    if os.stat(jsonfile).st_size==0:
+                        os.remove(jsonfile)
+                        print("...DELETED: "+jsonfile)
+                        continue
                     j=json.load(open(jsonfile,encoding="utf-8"))
                     did=str(j["dataID"])
                     for z in range(len(j["data_set_info"]["data"])):
@@ -82,19 +86,18 @@ def lachk():
                                     raise IndexError("Unusual/Lane/extra/color: "+str(Path(jsonfile).absolute())+":::"+did)
                         if len(j["data_set_info"]["data"][z]["value"]["object_Label"])==2:
                             if j["data_set_info"]["data"][z]["value"]["object_Label"]["lane_attribute"]=="":
-                                print("lane_ERROR: "+str(Path(jsonfile).absolute())+":::"+did),input()
+                                print("lane_ERROR: "+str(Path(jsonfile).absolute())+":::"+did)
                                 j["data_set_info"]["data"][z]["value"]["object_Label"]["lane_type"]="lane_shoulder"
                                 j["data_set_info"]["data"][z]["value"]["object_Label"]["lane_attribute"]="single_solid"
                                 print("written")
-                            else:print("OK: "+str(Path(jsonfile).absolute())+":::"+did)
                         elif len(j["data_set_info"]["data"][z]["value"]["object_Label"])==3:
                             if j["data_set_info"]["data"][z]["value"]["object_Label"]["vehicle_type"]=="":
-                                print("vehicle_ERROR: "+str(Path(jsonfile).absolute())+":::"+did),input()
+                                print("vehicle_ERROR: "+str(Path(jsonfile).absolute())+":::"+did)
                                 j["data_set_info"]["data"][z]["value"]["object_Label"]["vehicle_type"]="vehicle_bus"
                                 j["data_set_info"]["data"][z]["value"]["object_Label"]["vehicle_attribute"]="violation"
                                 j["data_set_info"]["data"][z]["value"]["object_Label"]["vehicle_shown"]="hidden"
                                 print("written")
-                            else:print("OK: "+str(Path(jsonfile).absolute())+":::"+did)
+                        print("OK: "+str(Path(jsonfile).absolute())+":::"+did)
                     json.dump(j,open(jsonfile,"w",encoding="utf-8"),ensure_ascii=False,indent=2)
                 os.chdir("..")
             os.chdir("..")
@@ -358,12 +361,10 @@ def undoing(srckey,jsonfilepath,arcfilepath):
     iterCount=1
     totalExtractedCount=0
     for arcName in arcNamelist.keys():
+        fileCount=0
         if len(arcNamelist[arcName])==0:
-            pass
-        else:
-            fileCount=0
-            totalExtractedCount+=len(arcNamelist[arcName])
-            fileCount+=len(arcNamelist[arcName])
+            continue
+        for fileInArc in arcNamelist[arcName]:
             print(
             "EXTRACTING: "
             +
@@ -378,16 +379,24 @@ def undoing(srckey,jsonfilepath,arcfilepath):
             str(arcNamelistCntTotal)
             )
             arc=ZipFile(arcName,"r")
-            arc.extractall(members=arcNamelist[arcName],path="E:/82/"+str(iterCount))
+            arc.extract(
+            member=fileInArc,path="E:/82/"
+            +
+            str(iterCount)
+            )
+            totalExtractedCount+=1
+            fileCount+=1
             if fileCount>70000:
-                iterCount+=1
-                newArcname="569_11408_"+str(iterCount)+"_"+str(fileCount)+".zip"
+                newArcname="569_11408_"+str(iterCount)+"_"+str(fileCount)
                 print(
-                "filecount limit reached. Archiving: "+newArcname
+                "filecount limit reached. Archiving: "+newArcname+".zip"
                 )
-                shutil.make_archive(format="zip",root_dir="E:/82/"+str(iterCount),base_name=newArcname)
+                shutil.make_archive(
+                format="zip",root_dir="E:/82/"
+                +
+                str(iterCount),base_name=newArcname)
+                iterCount+=1
                 continue
-        arc.close()
     print(
     "SUCCESS: "
     +
@@ -497,7 +506,8 @@ def claarc(p="e:\\82\\src"):
                     namestring
                     +
                     ".csv",
-                    encoding=enc).to_csv(
+                    encoding=enc
+                    ).to_csv(
                     namestring
                     +
                     ".csv",
