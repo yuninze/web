@@ -35,7 +35,7 @@ def arcList(fo):
 
 def listfile(arc,p="d:\\"):
     os.chdir(p)
-    print("providing listfile")
+    print("Providing listfile")
     c=[]
     for x in ZipFile(arc,"r").namelist():
         if ".jpg" in x:
@@ -48,7 +48,7 @@ def listfile(arc,p="d:\\"):
         csv.writer(open(namestring,"a",newline="",encoding="utf-8-sig")).writerow([x])
     pd.read_csv(namestring,encoding="utf-8-sig").to_csv(namestring,encoding="utf-8-sig",index=False)
     return None
-listfile("PRJ-3541.zip",p="C:\\Users\\yinze\\Downloads")
+listfile("0.zip",p="E:/82/0")
 
 def greatPuzzle_ZeungZuck():
     p="D:\\greatPuzzle\\1126_greatpuzzle\\"

@@ -1,9 +1,9 @@
 import os,json,csv,glob,shutil
 import sys
+from typing import Counter
 import pandas as pd;import datetime as dt;from zipfile import ZipFile
 from pathlib import Path
-from basic import listfile
-
+#####################################################################
 ima,enc,idea=str((dt.datetime.now()).strftime("%m%d")),"utf-8-sig","=="
 sys.setrecursionlimit(1000000)
 
@@ -24,7 +24,11 @@ def garaAO():
         csv.writer(csvfile).writerow(["filename"])
         a=0
         while a<100001:
-            for filename in [arc.infolist()[x].filename for x in range(len(arc.infolist())) if arc.infolist()[x].filename.endswith(".jpg")==True]:
+            for filename in [
+                arc.infolist()[x].filename for x in range(
+                len(arc.infolist())) if 
+                arc.infolist()[x].filename.endswith(".jpg")==True
+                ]:
                 csv.writer(csvfile).writerow([filename])
                 a+=1
     pd.read_csv("82.zip.csv",encoding=enc).to_csv("82.zip.csv",index=False,encoding=enc)
@@ -302,43 +306,99 @@ def undone(srckey,path="e:/82"):
                     if len(j["result"][y])<=2:
                         ngCount+=1
                     else:
-                        raise Exception("PARSING FAILIURE: "+z+": "+str(j["result"][y]["dataID"]))
+                        raise Exception(
+                        "PARSING FAILIURE: "
+                        +
+                        z
+                        +
+                        ": "
+                        +
+                        str(j["result"][y]["dataID"])
+                        )
             elif j["result"][y]["unableToWork"]==1:
                 utwCount+=1
-    print("SUCCESS: "+str(okCount)+", "+str(ngCount)+", "+str(utwCount))
+    print("DONE, CNT: "+str(okCount)+", "+str(ngCount)+", "+str(utwCount))
     return doneSrcfilename,okCount,ngCount
 
 def undoing(srckey,jsonfilepath,arcfilepath):
     doneSrcfilename=undone(srckey,path=jsonfilepath)[0]
     print("doneSrcfilename has been loaded.")
+    arcBad=ZipFile("E:/82/0/569_11408_0_72465.zip","r")
+    arcNamelistBad=[
+                    arcBad.infolist()[x].filename for x in range(len(arcBad.infolist())) 
+                    if arcBad.infolist()[x].filename.endswith(".jpg")==True 
+                    and arcBad.infolist()[x].file_size!=0
+    ]
+    arcBad.close()
     arcNamelist,arcPathString=dict(),dict()
     for r,d,f in os.walk(arcfilepath):
         for filename in f:
             if filename.endswith(".zip"):
                 arcFilePathString=os.path.join(r,filename)
-                arc=ZipFile(arcFilePathString)
-                arcNamelist[arcFilePathString]={arc.namelist()[x] for x in 
-                range(len(arc.namelist())) if arc.namelist()[x].endswith(".jpg")==True}
-                arcPathString[arcFilePathString]=r
-                print("arcNamelist for "+arc.filename+" has been loaded.")
-    doneSrcfilename=set(doneSrcfilename)
+                arc=ZipFile(arcFilePathString,"r")
+                undoneSrcfilename=[
+                    arc.infolist()[x].filename for x in range(len(arc.infolist())) 
+                    if arc.infolist()[x].filename.endswith(".jpg")==True 
+                    and arc.infolist()[x].file_size!=0
+                ]
+                next=(set(undoneSrcfilename)-set(doneSrcfilename))-set(arcNamelistBad)
+                arcNamelist[arcFilePathString]=list(next)
+                print(
+                "arcNamelist for "
+                +
+                arc.filename+"/"+str(len(undoneSrcfilename))+"/"+str(len(next))
+                +
+                " has been loaded."
+                )
+                arc.close()
+    arcNamelistCnt=dict()
+    for key in arcNamelist.keys():
+        arcNamelistCnt[key]=len(arcNamelist[key])
+    arcNamelistCntTotal=sum([x for x in arcNamelistCnt.values()])
+    iterCount=1
+    totalExtractedCount=0
     for arcName in arcNamelist.keys():
-        arcNamelist[arcName]={arcNamelist[arcName]-doneSrcfilename}
-        print("doneSrcfilename has been truncated from "+str(os.path.basename(arcName))+".")
-    iterCount=0
-    totalFileCount=0
-    for arcName in arcNamelist.keys():
-        fileCount=0
-        for filename in arcNamelist[arcName]:
-            print("EXTRACTING: "+filename+">"+str(os.path.basename(arcName)))
-            ZipFile(arcName).extract(member=filename,path="D:/82/"+str(iterCount))
-            fileCount+=1
-            totalFileCount+=1
-            if fileCount==80000:
+        if len(arcNamelist[arcName])==0:
+            pass
+        else:
+            fileCount=0
+            totalExtractedCount+=len(arcNamelist[arcName])
+            fileCount+=len(arcNamelist[arcName])
+            print(
+            "EXTRACTING: "
+            +
+            str(arcName)
+            +
+            "..."
+            +
+            str(totalExtractedCount)
+            +
+            "/"
+            +
+            str(arcNamelistCntTotal)
+            )
+            arc=ZipFile(arcName,"r")
+            arc.extractall(members=arcNamelist[arcName],path="E:/82/"+str(iterCount))
+            if fileCount>70000:
                 iterCount+=1
-                print("filecount limit reached.")
+                newArcname="569_11408_"+str(iterCount)+"_"+str(fileCount)+".zip"
+                print(
+                "filecount limit reached. Archiving: "+newArcname
+                )
+                shutil.make_archive(format="zip",root_dir="E:/82/"+str(iterCount),base_name=newArcname)
                 continue
-    print("SUCCESS: "+str(totalFileCount)+", "+str(iterCount))
+        arc.close()
+    print(
+    "SUCCESS: "
+    +
+    str(totalExtractedCount)
+    +
+    ", "
+    +
+    str(iterCount)
+    )
+    return None
+undoing("sourceValue","C:/Users/yinze/Downloads/82/done","E:/82/target")
 
 def doneSrcfile():
     count=0
@@ -357,9 +417,8 @@ def doneSrcfile():
                     for namea in arc.namelist():
                         if namea.endswith(namej):
                             arc.extract(member=namea,path="C:/82")
-                            namelistjson.remove(namej)
-                            print("SUCCESS: "+str(namea))
                             count+=1
+                            print("SUCCESS: "+str(namea)+": "+str(count))
             os.chdir("..")
         os.chdir("..")
 
@@ -434,7 +493,17 @@ def claarc(p="e:\\82\\src"):
                             csv.writer(r).writerow(["filename"])
                             for p in tab[o]:
                                 csv.writer(r).writerow([pathstring+p])
-                    pd.read_csv(namestring+".csv",encoding=enc).to_csv(namestring+".csv",encoding=enc,index=False)
+                    pd.read_csv(
+                    namestring
+                    +
+                    ".csv",
+                    encoding=enc).to_csv(
+                    namestring
+                    +
+                    ".csv",
+                    encoding=enc,
+                    index=False
+                    )
                     print("archiving: "+namestring+".zip")
                     shutil.make_archive(format="zip",root_dir=namestring,base_name=namestring)
                     countArc+=1
@@ -443,4 +512,3 @@ def claarc(p="e:\\82\\src"):
         os.chdir("..")
     print("..done with "+str(countArc)+" archives")
     return None
-claarc()
