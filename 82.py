@@ -345,15 +345,16 @@ def undoing(srckey,jsonfilepath,arcfilepath):
                     and arc.infolist()[x].file_size!=0
                 ]
                 next=(set(undoneSrcfilename)-set(doneSrcfilename))-set(arcNamelistBad)
-                if len(next)==False:
+                if len(next)==0:
                     print("DISREGARDING: "+str(arc.filename))
+                    arc.close()
                     continue
                 else:
                     arcNamelist[arcFilePathString]=list(next)
                 print(
                 "arcNamelist for "
                 +
-                arc.filename+"/"+str(len(undoneSrcfilename))+"/"+str(len(next))
+                arc.filename+":"+str(len(next))+"/"+str(len(undoneSrcfilename))
                 +
                 " has been loaded."
                 )
@@ -366,22 +367,22 @@ def undoing(srckey,jsonfilepath,arcfilepath):
     fileCount=0
     totalExtractedCount=0
     for arcName in arcNamelist.keys():
-        print(
-        "EXTRACTING: "
-        +
-        str(arcName)
-        +
-        "..."
-        +
-        str(totalExtractedCount)
-        +
-        "/"
-        +
-        str(arcNamelistCntTotal)
-        )
         arc=ZipFile(arcName,"r")
         fileCntInArc=len(arc.namelist())
         if fileCntInArc+fileCount<70000:
+            print(
+            "EXTRACTING: "
+            +
+            str(arcName)
+            +
+            "..."
+            +
+            str(totalExtractedCount)
+            +
+            "/"
+            +
+            str(arcNamelistCntTotal)
+            )
             arc.extractall(
             members=arcNamelist[arcName],path="E:/82/"
             +
