@@ -345,7 +345,11 @@ def undoing(srckey,jsonfilepath,arcfilepath):
                     and arc.infolist()[x].file_size!=0
                 ]
                 next=(set(undoneSrcfilename)-set(doneSrcfilename))-set(arcNamelistBad)
-                arcNamelist[arcFilePathString]=list(next)
+                if len(next)==False:
+                    print("DISREGARDING: "+str(arc.filename))
+                    continue
+                else:
+                    arcNamelist[arcFilePathString]=list(next)
                 print(
                 "arcNamelist for "
                 +
@@ -362,42 +366,41 @@ def undoing(srckey,jsonfilepath,arcfilepath):
     fileCount=0
     totalExtractedCount=0
     for arcName in arcNamelist.keys():
-        if len(arcNamelist[arcName])==0:
-            continue
-        for fileInArc in arcNamelist[arcName]:
-            print(
-            "EXTRACTING: "
-            +
-            str(arcName)
-            +
-            "..."
-            +
-            str(totalExtractedCount)
-            +
-            "/"
-            +
-            str(arcNamelistCntTotal)
-            )
-            arc=ZipFile(arcName,"r")
-            arc.extract(
-            member=fileInArc,path="E:/82/"
+        print(
+        "EXTRACTING: "
+        +
+        str(arcName)
+        +
+        "..."
+        +
+        str(totalExtractedCount)
+        +
+        "/"
+        +
+        str(arcNamelistCntTotal)
+        )
+        arc=ZipFile(arcName,"r")
+        fileCntInArc=len(arc.namelist())
+        if fileCntInArc+fileCount<70000:
+            arc.extractall(
+            members=arcNamelist[arcName],path="E:/82/"
             +
             str(iterCount)
             )
-            totalExtractedCount+=1
-            fileCount+=1
-            if fileCount>70000:
-                newArcname="569_11408_"+str(iterCount)+"_"+str(fileCount)
-                print(
-                "filecount limit reached. Archiving: "+newArcname+".zip"
-                )
-                shutil.make_archive(
-                format="zip",root_dir="E:/82/"
-                +
-                str(iterCount),base_name=newArcname)
-                iterCount+=1
-                fileCount=0
-                continue
+            totalExtractedCount+=fileCntInArc
+            fileCount+=fileCntInArc
+        elif fileCount>70000:
+            newArcname="569_11408_"+str(iterCount)+"_"+str(fileCount)
+            print(
+            "filecount limit has excceded. Archiving: "+newArcname+".zip"
+            )
+            shutil.make_archive(
+            format="zip",root_dir="E:/82/"
+            +
+            str(iterCount),base_name=newArcname)
+            iterCount+=1
+            fileCount=0
+            continue
     print(
     "SUCCESS: "
     +
