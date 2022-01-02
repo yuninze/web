@@ -369,6 +369,7 @@ def undoing(srckey,jsonfilepath,arcfilepath):
     for arcName in arcNamelist.keys():
         arc=ZipFile(arcName,"r")
         fileCntInArc=len(arc.namelist())
+        totalExtractedCount+=fileCntInArc
         if fileCntInArc+fileCount<70000:
             print(
             "EXTRACTING: "
