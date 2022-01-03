@@ -1,6 +1,10 @@
 from os import name
 from work import purify
 
+def EndSwitch(VarBool):
+    while VarBool:
+        for x in ["--","//","\\\\"]:
+            print("\b\b"+x,end="")
 
 print("take care of utw")
 os.chdir(arcDirPath)

@@ -5,7 +5,7 @@ enc="utf-8-sig"
 
 def purify0(fileObjectName):
     """
-    Unconditionally converts a sheetfile into
+    Unconditionally converts a DE-derived sheetfile into
     a csvfile with sanitized name of columns and data-types.
 
     Returns:: Csvfile
@@ -106,9 +106,36 @@ def purify2(fo):
     u.phone=u.phone.apply(lambda x:"-".join((x[:3],x[3:7],x[7:])))
     return u
 
-def purify(fo,danga):
+def purifyboa(fo,danga):
     """
-    Results sanitized dataframe from the sheet,
+    
+    """
+    udf=pd.read_excel(fo,usecols="A,B,F,I,K",na_filter=False).drop([0])
+    udf.columns=[
+    "id","mail",
+    "allFinished","compliance",
+    "TWT"]
+    udf.set_index("id",inplace=True)
+    udf.index=udf.index.map(int)
+    for x in range(len(udf.index)):
+        udf.iloc[x].loc["TWT"]=re.findall(r"\((\d+.\d+).\)",udf.iloc[x].loc["TWT"])[0]
+    udf.loc[:,"allFinished":]=udf.loc[:,"allFinished":].applymap(lambda f:float(f))
+    udf["EPS"]=0
+    udf["EPH"]=0
+    for c in udf.index:
+        if udf.loc[c,"TWT"]>0:
+            udf.loc[c,"TE"]=float(udf.loc[c,"work"]*danga)
+            udf.loc[c,"TE1000"]=float((udf.loc[c,"work"]*danga)/1000)
+            udf.loc[c,"EPS"]=(danga*udf.loc[c,"work"])/(udf.loc[c,"TWT"])
+            udf.loc[c,"EPH"]=udf.loc[c,"EPS"]*3600
+            udf.loc[c,"JPH"]=float(udf.loc[c,"WTPJ"]/3600)
+        else:
+            udf.loc[c,"EPS"]=float(sum(udf.EPS)/len(udf.EPS))
+            udf.loc[c,"EPH"]=float(sum(udf.EPH)/len(udf.EPH))
+
+def purifyboz(fo,danga):
+    """
+    Results sanitized dataframe from BO-derived sheetfile,
     with additional stats regarding of danga.
     
     Returns:::Dataframe
@@ -116,11 +143,9 @@ def purify(fo,danga):
     udf=pd.read_excel(fo,usecols="A:I,K,L,N:P",na_filter=False).drop([0])
     udf.columns=[
         "id","mail","name","nick",
-        "work","audit",
-        "reaudit","audited","allFinished",
-        "dispute","disputeRate",
-        "TWT","WTPJ","WTPJB"
-        ]
+        "work","audit","reaudit","audited","allFinished","dispute","disputeRate",
+        "TWT","WTPJ","WTPJB"]
+    udf.drop(["name","nick"],axis=1,inplace=True)
     udf.set_index("id").dropna(axis=0,inplace=True)
     udf.index=udf.index.map(int)
     for t in range(len(udf.index)):
@@ -131,25 +156,28 @@ def purify(fo,danga):
     udf["EPH"]=0
     for c in udf.index:
         if udf.loc[c,"TWT"]>0:
-            udf.loc[c,"EPS"]=(danga*udf.loc[c,"work"])/(udf.loc[c,"TWT"])
-            udf.loc[c,"EPH"]=udf.loc[c,"EPS"]*3600
             udf.loc[c,"TE"]=float(udf.loc[c,"work"]*danga)
             udf.loc[c,"TE1000"]=float((udf.loc[c,"work"]*danga)/1000)
+            udf.loc[c,"EPS"]=(danga*udf.loc[c,"work"])/(udf.loc[c,"TWT"])
+            udf.loc[c,"EPH"]=udf.loc[c,"EPS"]*3600
             udf.loc[c,"JPH"]=float(udf.loc[c,"WTPJ"]/3600)
         else:
-            udf.loc[c,"EPS"]=0.33
-            udf.loc[c,"EPH"]=0.33
+            udf.loc[c,"EPS"]=float(sum(udf.EPS)/len(udf.EPS))
+            udf.loc[c,"EPH"]=float(sum(udf.EPH)/len(udf.EPH))
     def fuck(number):
         return round(number,4)
     udf.loc[:,"WTPJ":]=udf.loc[:,"WTPJ":].applymap(fuck)
     return udf
 
-[x.set_index(["id","mail","name","nick"],inplace=True) for x in [a,b,c,d,e,f]]
-aa=pd.concat([a,b,c,d,e,f],ignore_index=False)
+target=[cda,cdbc,cds,cna,cnbc,cns]
+target=[lda,ldbc,lds,lna,lnbc,lns]
+[x.set_index(["id","mail"],inplace=True) for x in target]
+aa=pd.concat(target,ignore_index=False)
 aa.reset_index(inplace=True)
-aa=aa.groupby(["id","mail","name","nick"]).transform("sum")
-aa.loc[:,"EPS":]=aa.loc[:,"EPS":].applymap(lambda p:round(p/6,4))
+bb=aa.groupby(["id","mail"]).transform("sum")
+bb.loc[:,["EPS","EPH","JPH"]]=bb.loc[:,["EPS","EPH","JPH"]].applymap(lambda p:round(p/6,4))
 aa.drop_duplicates(subset=["id","mail","name","nick"],inplace=True)
+aa.loc[:,["EPS","EPH","JPH"]]=aa.loc[:,["EPS","EPH","JPH"]].applymap(lambda p:round(p/2,4))
 
 def uu(x):
     if x>0:
