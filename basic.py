@@ -14,6 +14,11 @@ def strCheck(prop):
 def pathStrip(s):
     return str(s).upper().replace("D:\\82\\","")
 
+def EndSwitch(switch):
+    while switch:
+        for x in ["--","//","\\\\"]:
+            print("\b\b"+x,end="")
+
 def arcList(fo):
     try:
         arcList=ZipFile(fo,"r").infolist()
@@ -48,7 +53,6 @@ def listfile(arc,p="d:\\"):
         csv.writer(open(namestring,"a",newline="",encoding="utf-8-sig")).writerow([x])
     pd.read_csv(namestring,encoding="utf-8-sig").to_csv(namestring,encoding="utf-8-sig",index=False)
     return None
-listfile("0.zip",p="E:/82/0")
 
 def greatPuzzle_ZeungZuck():
     p="D:\\greatPuzzle\\1126_greatpuzzle\\"
@@ -307,14 +311,3 @@ def aihub82(fo,p="D:\\aihub82"):
                 csv.writer(a).writerow([z])
     pd.read_csv(listfileNameBC,encoding=enc).to_csv(listfileNameBC,encoding=enc,index=False)
     return print("..done: jpgfileNumber: "+str(jpgfileNumber))
-#aihub82(fo="20211129_DETECT_11836.zip",p="E:\\82\\0\\done_piloting\\28차_DETECT_62039\\20211129_DETECT_11836")
-
-#listfileImgSeq("D:\\82")
-#aihub82("20211126_DETECT_11571.zip","Z:\\CW_Data\\가공검수필요\\27차_DETECT_58407\\20211126_DETECT_11571\\")
-#fal("11118_120716.json","detectS")
-#listfile("sample.zip",p="e:\\")
-#dcs("D:\\designComma")
-#objN1("C:\\save\\aum_result_data_4")
-#objN0("livesecu_result_data_3360.json","name_GB9TBX")
-#objN1("livesecu_result_data_156841.json")
-#objN0("livesecu_result_data_371829.json","name_GB9TBX")

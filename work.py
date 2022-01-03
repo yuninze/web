@@ -108,7 +108,10 @@ def purify2(fo):
 
 def purifyboa(fo,danga):
     """
+    Results sanitized dataframe from BO-derived sheetfile,
+    with additional stats regarding of danga.
     
+    Returns:::Dataframe
     """
     udf=pd.read_excel(fo,usecols="A,B,F,I,K",na_filter=False).drop([0])
     udf.columns=[
@@ -117,21 +120,30 @@ def purifyboa(fo,danga):
     "TWT"]
     udf.set_index("id",inplace=True)
     udf.index=udf.index.map(int)
-    for x in range(len(udf.index)):
-        udf.iloc[x].loc["TWT"]=re.findall(r"\((\d+.\d+).\)",udf.iloc[x].loc["TWT"])[0]
-    udf.loc[:,"allFinished":]=udf.loc[:,"allFinished":].applymap(lambda f:float(f))
+    def GetValInSec(object):
+        if type(object)==str:
+            pass
+        else:
+            object=str(object)
+        return float(re.findall(r"\((\d+.\d+).\)",object)[0])
+    udf.TWT=udf.TWT.apply(GetValInSec)
+    udf.loc[:,"allFinished":]=udf.loc[:,"allFinished":].applymap(float)
     udf["EPS"]=0
     udf["EPH"]=0
     for c in udf.index:
         if udf.loc[c,"TWT"]>0:
-            udf.loc[c,"TE"]=float(udf.loc[c,"work"]*danga)
-            udf.loc[c,"TE1000"]=float((udf.loc[c,"work"]*danga)/1000)
-            udf.loc[c,"EPS"]=(danga*udf.loc[c,"work"])/(udf.loc[c,"TWT"])
+            udf.loc[c,"TE"]=udf.loc[c,"allFinished"]*danga
+            udf.loc[c,"TE1000"]=(udf.loc[c,"allFinished"]*danga)/1000
+            udf.loc[c,"EPS"]=(danga*udf.loc[c,"allFinished"])/(udf.loc[c,"TWT"])
             udf.loc[c,"EPH"]=udf.loc[c,"EPS"]*3600
-            udf.loc[c,"JPH"]=float(udf.loc[c,"WTPJ"]/3600)
+            udf.loc[c,"JPH"]=(udf.loc[c,"TWT"]/udf.loc[c,"allFinished"])/3600
         else:
-            udf.loc[c,"EPS"]=float(sum(udf.EPS)/len(udf.EPS))
-            udf.loc[c,"EPH"]=float(sum(udf.EPH)/len(udf.EPH))
+            udf.loc[c,"EPS"]=sum(udf.EPS)/len(udf.EPS)
+            udf.loc[c,"EPH"]=sum(udf.EPH)/len(udf.EPH)
+    def sex(number):
+        return round(number,4)
+    udf.loc[:,"allFinished":]=udf.loc[:,"allFinished":].applymap(sex)
+    return udf
 
 def purifyboz(fo,danga):
     """

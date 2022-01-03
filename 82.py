@@ -15,6 +15,12 @@ def strCheck(prop):
     else:
         raise TypeError("no such prop")
 
+def EndSwitch(switch):
+    while switch:
+        for x in ["--","//","\\\\"]:
+            print("\b\b"+x,end="")
+    return None
+
 def pathStrip(s):
     return str(s).upper().replace("D:\\82\\","")
 
@@ -46,7 +52,7 @@ def getjsonfile(path):
                 print("COPIED: "+filepath+": "+str(count))
     print("DONE: "+str(count)+" files")
 
-def lachk(path="C:/82/ANNOTATION"):
+def lachk(path="C:/ANNOTATION"):
     os.chdir(path)
     for channeldir in os.listdir():
         os.chdir(channeldir)
@@ -112,11 +118,11 @@ def arcList(fo):
         if ".jp" in arcList[z].filename:
             if arcList[z].file_size!=0:
                 file[len(file):]=[arcList[z].filename]
-            #elif arcList[z].file_size==0:
-                #fileBad[len(fileBad):]=[arcList[z].filename]
+            elif arcList[z].file_size==0:
+                fileBad[len(fileBad):]=[arcList[z].filename]
             else:
                 continue
-    return file,#fileBad
+    return file,fileBad
     
 def arcListInDir(p=os.getcwd()):
     os.chdir("src")
@@ -127,9 +133,10 @@ def arcListInDir(p=os.getcwd()):
         os.chdir(detect)
         for detectAndNormal in os.listdir():
             os.chdir(detectAndNormal)
-            for arcfile in tuple(z for z in os.listdir() if ".zip" in z and ".csv" not in z):
+            for arcfile in tuple(z for z in os.listdir() 
+            if ".zip" in z and ".csv" not in z):
                 fileInArc[len(fileInArc):]=arcList(arcfile)[0]
-                #fileInArcBad[len(fileInArcBad):]=arcList(arcfile)[1]
+                fileInArcBad[len(fileInArcBad):]=arcList(arcfile)[1]
                 arcname[len(arcname):]=[os.path.realpath(arcfile)]
             os.chdir("..")
         os.chdir("..")
@@ -137,7 +144,6 @@ def arcListInDir(p=os.getcwd()):
     print(arcname)
     print("...current workplace: "+os.getcwd()+os.linesep+idea*5)
     return fileInArc,arcname
-#arcListInDir(p="E:\\82\\intact\\done_org")
 
 def srcKeyname(jsonfile,word):
     try:
@@ -309,15 +315,8 @@ def undone(srckey,path="e:/82"):
                     if len(j["result"][y])<=2:
                         ngCount+=1
                     else:
-                        raise Exception(
-                        "PARSING FAILIURE: "
-                        +
-                        z
-                        +
-                        ": "
-                        +
-                        str(j["result"][y]["dataID"])
-                        )
+                        raise Exception("PARSING FAILIURE: "+z+": "+
+                        str(j["result"][y]["dataID"]))
             elif j["result"][y]["unableToWork"]==1:
                 utwCount+=1
     print("DONE, CNT: "+str(okCount)+", "+str(ngCount)+", "+str(utwCount))
@@ -326,12 +325,13 @@ def undone(srckey,path="e:/82"):
 def undoing(srckey,jsonfilepath,arcfilepath):
     doneSrcfilename=undone(srckey,path=jsonfilepath)[0]
     print("doneSrcfilename has been loaded.")
-    arcBad=ZipFile("E:/82/0/569_11408_0_72465.zip","r")
-    arcNamelistBad=[
-                    arcBad.infolist()[x].filename for x in range(len(arcBad.infolist())) 
-                    if arcBad.infolist()[x].filename.endswith(".jpg")==True 
-                    and arcBad.infolist()[x].file_size!=0
-    ]
+    arcNamelistBad=[]
+    for x in ["E:/82/0/569_11408_0_72465.zip","E:/82/0/569_11408_1_75922.zip"]:
+        arcBad=ZipFile(x,"r")
+        arcNamelistBad[len(arcNamelistBad):]=[arcBad.infolist()[x].filename for x in 
+        range(len(arcBad.infolist())) 
+        if arcBad.infolist()[x].filename.endswith(".jpg")==True 
+        and arcBad.infolist()[x].file_size!=0]
     arcBad.close()
     arcNamelist,arcPathString=dict(),dict()
     for r,d,f in os.walk(arcfilepath):
@@ -339,11 +339,9 @@ def undoing(srckey,jsonfilepath,arcfilepath):
             if filename.endswith(".zip"):
                 arcFilePathString=os.path.join(r,filename)
                 arc=ZipFile(arcFilePathString,"r")
-                undoneSrcfilename=[
-                    arc.infolist()[x].filename for x in range(len(arc.infolist())) 
+                undoneSrcfilename=[arc.infolist()[x].filename for x in range(len(arc.infolist())) 
                     if arc.infolist()[x].filename.endswith(".jpg")==True 
-                    and arc.infolist()[x].file_size!=0
-                ]
+                    and arc.infolist()[x].file_size!=0]
                 next=(set(undoneSrcfilename)-set(doneSrcfilename))-set(arcNamelistBad)
                 if len(next)==0:
                     print("DISREGARDING: "+str(arc.filename))
@@ -351,67 +349,34 @@ def undoing(srckey,jsonfilepath,arcfilepath):
                     continue
                 else:
                     arcNamelist[arcFilePathString]=list(next)
-                print(
-                "arcNamelist for "
-                +
-                arc.filename+":"+str(len(next))+"/"+str(len(undoneSrcfilename))
-                +
-                " has been loaded."
-                )
+                print("arcNamelist for "+
+                arc.filename+":"+str(len(next))+"/"+str(len(undoneSrcfilename))+
+                " has been loaded.")
                 arc.close()
     arcNamelistCnt=dict()
     for key in arcNamelist.keys():
         arcNamelistCnt[key]=len(arcNamelist[key])
     arcNamelistCntTotal=sum([x for x in arcNamelistCnt.values()])
-    iterCount=1
+    print("arcNamelist total: "+str(arcNamelistCntTotal))
+    iterCount=2
     fileCount=0
-    totalExtractedCount=0
+    extractedCount=0
     for arcName in arcNamelist.keys():
         arc=ZipFile(arcName,"r")
-        fileCntInArc=len(arc.namelist())
-        totalExtractedCount+=fileCntInArc
-        if fileCntInArc+fileCount<70000:
-            print(
-            "EXTRACTING: "
-            +
-            str(arcName)
-            +
-            "..."
-            +
-            str(totalExtractedCount)
-            +
-            "/"
-            +
-            str(arcNamelistCntTotal)
-            )
-            arc.extractall(
-            members=arcNamelist[arcName],path="E:/82/"
-            +
-            str(iterCount)
-            )
-            totalExtractedCount+=fileCntInArc
-            fileCount+=fileCntInArc
-        elif fileCount>70000:
-            newArcname="569_11408_"+str(iterCount)+"_"+str(fileCount)
-            print(
-            "filecount limit has excceded. Archiving: "+newArcname+".zip"
-            )
-            shutil.make_archive(
-            format="zip",root_dir="E:/82/"
-            +
-            str(iterCount),base_name=newArcname)
-            iterCount+=1
-            fileCount=0
-            continue
-    print(
-    "SUCCESS: "
-    +
-    str(totalExtractedCount)
-    +
-    ", "
-    +
-    str(iterCount)
-    )
+        for file in arcNamelist[arcName]:
+            if fileCount>70000:
+                newArcname="569_11408_"+str(iterCount)+"_"+str(fileCount)
+                print("filecount limit has excceded. ARCHIVING: "+newArcname+".zip")
+                os.chdir("E:/82/src_archive")
+                shutil.make_archive(format="zip",
+                root_dir="E:/82/"+str(iterCount),base_name=newArcname,base_dir=str(iterCount)+"/IMAGE")
+                iterCount+=1
+                fileCount=0
+            print("EXTRACTING: "+str(file)+"..."+str(extractedCount)+"/"+str(arcNamelistCntTotal))
+            arc.extract(member=file,path="E:/82/"+str(iterCount))
+            extractedCount+=1
+            fileCount+=1
+    print("SUCCESS: "+str(extractedCount)+", "+str(iterCount))
     return None
 undoing("sourceValue","C:/Users/yinze/Downloads/82/done","E:/82/target")
 
