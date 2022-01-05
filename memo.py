@@ -1,6 +1,48 @@
 from os import name
 from work import purify
 
+
+d[["zangae","preg","gzy","bohun","damunwha","choding","daeding","jobtwo","jobno","jobloss","lowincome","jobless","mobuzang","visamarry","bukhan","selfempoly","aihubhx","ichx"]]="X"
+
+for fuck in d.index:
+    col=d.loc[fuck]
+    row=col.loc["variety"]
+    if "장애" in row:
+        col.loc["zangae"]="O"
+    elif "임신" in row:
+        col.loc["preg"]="O"
+    elif "단절" in row:
+        col.loc["gzy"]="O"
+    elif "보훈" in row:
+        col.loc["bohun"]="O"
+    elif "다문화" in row:
+        col.loc["damunwha"]="O"
+    elif "초등" in row:
+        col.loc["choding"]="O"
+    elif "대학생" in row:
+        col.loc["daeding"]="O"
+    elif "투잡" in row:
+        col.loc["jobtwo"]="O"
+    elif "미취업자" in row:
+        col.loc["jobno"]="O"
+    elif "실직자" in row:
+        col.loc["jobloss"]="O"
+    elif "저소득" in row:
+        col.loc["lowincome"]="O"
+    elif "장기실업" in row:
+        col.loc["jobless"]="O"
+    elif "가장" in row:
+        col.loc["mobuzang"]="O"
+    elif "이주" in row:
+        col.loc["visamarry"]="O"
+    elif "북한" in row:
+        col.loc["bukhan"]="O"
+    elif "자영업" in row:
+        col.loc["selfempoly"]="O"
+    elif "AI" in row:
+        col.loc["aihubhx"]="O"
+
+
 def EndSwitch(VarBool):
     while VarBool:
         for x in ["--","//","\\\\"]:

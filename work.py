@@ -168,14 +168,14 @@ def purifyboz(fo,danga):
     udf["EPH"]=0
     for c in udf.index:
         if udf.loc[c,"TWT"]>0:
-            udf.loc[c,"TE"]=float(udf.loc[c,"work"]*danga)
-            udf.loc[c,"TE1000"]=float((udf.loc[c,"work"]*danga)/1000)
-            udf.loc[c,"EPS"]=(danga*udf.loc[c,"work"])/(udf.loc[c,"TWT"])
+            udf.loc[c,"TE"]=udf.loc[c,"work"]*danga
+            udf.loc[c,"TE1000"]=(udf.loc[c,"work"]*danga)/1000
+            udf.loc[c,"EPS"]=(danga*udf.loc[c,"work"])/udf.loc[c,"TWT"]
             udf.loc[c,"EPH"]=udf.loc[c,"EPS"]*3600
-            udf.loc[c,"JPH"]=float(udf.loc[c,"WTPJ"]/3600)
+            udf.loc[c,"JPH"]=udf.loc[c,"WTPJ"]/3600
         else:
-            udf.loc[c,"EPS"]=float(sum(udf.EPS)/len(udf.EPS))
-            udf.loc[c,"EPH"]=float(sum(udf.EPH)/len(udf.EPH))
+            udf.loc[c,"EPS"]=sum(udf.EPS)/len(udf.EPS)
+            udf.loc[c,"EPH"]=sum(udf.EPH)/len(udf.EPH)
     def fuck(number):
         return round(number,4)
     udf.loc[:,"WTPJ":]=udf.loc[:,"WTPJ":].applymap(fuck)
@@ -183,13 +183,15 @@ def purifyboz(fo,danga):
 
 target=[cda,cdbc,cds,cna,cnbc,cns]
 target=[lda,ldbc,lds,lna,lnbc,lns]
+[x.reset_index(inplace=True) for x in target]
 [x.set_index(["id","mail"],inplace=True) for x in target]
 aa=pd.concat(target,ignore_index=False)
-aa.reset_index(inplace=True)
+
 bb=aa.groupby(["id","mail"]).transform("sum")
 bb.loc[:,["EPS","EPH","JPH"]]=bb.loc[:,["EPS","EPH","JPH"]].applymap(lambda p:round(p/6,4))
 aa.drop_duplicates(subset=["id","mail","name","nick"],inplace=True)
 aa.loc[:,["EPS","EPH","JPH"]]=aa.loc[:,["EPS","EPH","JPH"]].applymap(lambda p:round(p/2,4))
+aaa.loc[:,"EPS":]=aaa.loc[:,"EPS":].applymap(lambda p:round(p/6,4))
 
 def uu(x):
     if x>0:

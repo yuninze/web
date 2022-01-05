@@ -367,7 +367,7 @@ def undoing(srckey,jsonfilepath,arcfilepath):
             if fileCount>70000:
                 newArcname="569_11408_"+str(iterCount)+"_"+str(fileCount)
                 print("filecount limit has excceded. ARCHIVING: "+newArcname+".zip")
-                os.chdir("E:/82/src_archive")
+                os.chdir("E:/82/")
                 shutil.make_archive(format="zip",
                 root_dir="E:/82/"+str(iterCount),base_name=newArcname,base_dir=str(iterCount)+"/IMAGE")
                 iterCount+=1
