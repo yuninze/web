@@ -188,10 +188,138 @@ target=[lda,ldbc,lds,lna,lnbc,lns]
 aa=pd.concat(target,ignore_index=False)
 
 bb=aa.groupby(["id","mail"]).transform("sum")
-bb.loc[:,["EPS","EPH","JPH"]]=bb.loc[:,["EPS","EPH","JPH"]].applymap(lambda p:round(p/6,4))
-aa.drop_duplicates(subset=["id","mail","name","nick"],inplace=True)
-aa.loc[:,["EPS","EPH","JPH"]]=aa.loc[:,["EPS","EPH","JPH"]].applymap(lambda p:round(p/2,4))
+
+
+aa.drop_duplicates(subset=["id","mail"],inplace=True)
+.applymap(lambda p:round(p/2,4))
 aaa.loc[:,"EPS":]=aaa.loc[:,"EPS":].applymap(lambda p:round(p/6,4))
+
+
+def GetValInSec(object):
+    try:
+        if type(object) is not str:
+            object=str(object)
+            return float(re.findall(r"\((\d+.\d+).\)",object)[0])
+    except:
+        return "strange"
+
+def CnDashing(object):
+    if type(object) is not str:
+        object=str(object)
+    object.replace("-","")
+    return "-".join([object[:6],object[6:]])
+
+def PnDashing(object):
+    if type(object) is not str:
+        object=str(object)
+    object.replace("-","")
+    return "-".join([x[:3],x[3:7],x[7:]])
+
+d[
+        "zangae","preg","gzy","bohun","damunwha",
+        "choding","daeding",
+        "jobtwo","jobno","jobloss","lowincome","jobless",
+        "mobuzang","visamarry","bukhan","selfempoly",
+        "aihubhx","ichx"]=None
+
+for x in d.index:
+    row=d.loc[x,"variety"]
+    try:
+    if "장애" in row:
+        d.loc[x,"zangae"]="O"
+    elif "임신" in row:
+        d.loc[x,"preg"]="O"
+    elif "단절" in row:
+        d.loc[x,"gzy"]="O"
+    elif "보훈" in row:
+        d.loc[x,"bohun"]="O"
+    elif "다문화" in row:
+        d.loc[x,"damunwha"]="O"
+    elif "초등" in row:
+        d.loc[x,"choding"]="O"
+    elif "대학생" in row:
+        d.loc[x,"daeding"]="O"
+    elif "투잡" in row:
+        d.loc[x,"jobtwo"]="O"
+    elif "미취업자" in row:
+        d.loc[x,"jobno"]="O"
+    elif "실직자" in row:
+        d.loc[x,"jobloss"]="O"
+    elif "저소득" in row:
+        d.loc[x,"lowincome"]="O"
+    elif "장기실업" in row:
+        d.loc[x,"jobless"]="O"
+    elif "가장" in row:
+        d.loc[x,"mobuzang"]="O"
+    elif "이주" in row:
+        d.loc[x,"visamarry"]="O"
+    elif "북한" in row:
+        d.loc[x,"bukhan"]="O"
+    elif "자영업" in row:
+        d.loc[x,"selfempoly"]="O"
+    elif "AI" in row:
+        d.loc[x,"aihubhx"]="O"
+
+    def DivisionByOccurance(object,occurance):
+        if type(occurance) is not int:
+            occurance=occurance//1
+        elif type(object) is not float:
+            object=float(object)
+        else:
+            pass
+        return round(object/occurance,4)
+
+TargetObjects=[]
+TargetObjects=["WTPJ","WTPJB","EPS","EPH","JPH"]
+for x in df.index:
+    factor=df.loc[x,"occurance"]
+    for y in TargetObjects:
+        df.loc[x,y]=DivisionByOccurance(df.loc[x,y],factor)
+    
+
+            
+def NanToStr(object):
+    if type(object) is not str:
+        try:
+            return str(object)
+        except:
+            return object
+    else:
+        return object
+
+def ForcedJobCoding(object):
+    try:
+        int(object)
+        return str(object)
+    except:
+        return "0"
+
+c 단가 10
+l 단가 70
+x 6 projects
+purifyboa x 12 sheets
+concatenate and classify by ggggggggggggggg
+
+def queuing():
+arc=ZipFile(zipfile,"r")
+infolist=arc.infolist()
+arcnamelist=[infolist[x] for x in range(len(infolist)) if infolist[x].endswith(".jpg")]
+
+factor=2000
+
+blockcount=len(donefilename)//factor
+blocknumber=len(donefilename)%factor
+blockindex=0
+
+donefilenamelist=[]
+donefilenameblock=dict()
+
+for x in range(blockSize)
+    [blockindex:blockcontent for blockindex,blockcontent in range(blockcount),[donefilenamelist for x in range(blockSize 
+
+
+for x in bb.index:
+    factor=bb.loc[x,]
 
 def uu(x):
     if x>0:
@@ -252,3 +380,46 @@ for z in bo.index:
             CEs["CEa"]=0.6
         else:
             CEs["CEa"]=0.9
+
+
+d=pd.DataFrame()
+
+for x in d.index:
+    row=d.loc[x,"variety"]
+    try:
+        if "장애" in row:
+            d.loc[x,"zangae"]="O"
+        elif "임신" in row:
+            d.loc[x,"preg"]="O"
+        elif "단절" in row:
+            d.loc[x,"gzy"]="O"
+        elif "보훈" in row:
+            d.loc[x,"bohun"]="O"
+        elif "다문화" in row:
+            d.loc[x,"damunwha"]="O"
+        elif "초등" in row:
+            d.loc[x,"choding"]="O"
+        elif "대학생" in row:
+            d.loc[x,"daeding"]="O"
+        elif "투잡" in row:
+            d.loc[x,"jobtwo"]="O"
+        elif "미취업자" in row:
+            d.loc[x,"jobno"]="O"
+        elif "실직자" in row:
+            d.loc[x,"jobloss"]="O"
+        elif "저소득" in row:
+            d.loc[x,"lowincome"]="O"
+        elif "장기실업" in row:
+            d.loc[x,"jobless"]="O"
+        elif "가장" in row:
+            d.loc[x,"mobuzang"]="O"
+        elif "이주" in row:
+            d.loc[x,"visamarry"]="O"
+        elif "북한" in row:
+            d.loc[x,"bukhan"]="O"
+        elif "자영업" in row:
+            d.loc[x,"selfempoly"]="O"
+        elif "AI" in row:
+            d.loc[x,"aihubhx"]="O"
+    except:
+        print(str(x))
