@@ -194,6 +194,17 @@ aa.drop_duplicates(subset=["id","mail"],inplace=True)
 .applymap(lambda p:round(p/2,4))
 aaa.loc[:,"EPS":]=aaa.loc[:,"EPS":].applymap(lambda p:round(p/6,4))
 
+def GetNumInSec(object):
+    try:
+        if type(object) is not str:
+            object=str(object)
+            return float(re.findall(r"\((\d+.\d+).\)",object)[0])
+    except:
+        return "RITCHRD"
+
+def GetNumInMean(objectsum,objectlen):
+    objectlen=objectlen//1
+    return objectsum/objectlen
 
 def GetValInSec(object):
     try:
@@ -260,24 +271,20 @@ for x in d.index:
     elif "AI" in row:
         d.loc[x,"aihubhx"]="O"
 
-    def DivisionByOccurance(object,occurance):
-        if type(occurance) is not int:
-            occurance=occurance//1
-        elif type(object) is not float:
-            object=float(object)
-        else:
-            pass
-        return round(object/occurance,4)
-
-TargetObjects=[]
+def DivisionByOccurance(object,occurance):
+    if type(occurance) is not int:
+        occurance=occurance//1
+    elif type(object) is not float:
+        object=float(object)
+    else:
+        pass
+    return round(object/occurance,4)
 TargetObjects=["WTPJ","WTPJB","EPS","EPH","JPH"]
 for x in df.index:
     factor=df.loc[x,"occurance"]
     for y in TargetObjects:
         df.loc[x,y]=DivisionByOccurance(df.loc[x,y],factor)
     
-
-            
 def NanToStr(object):
     if type(object) is not str:
         try:
