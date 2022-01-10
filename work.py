@@ -5,7 +5,7 @@ enc="utf-8-sig"
 
 def purify0(fileObjectName):
     """
-    Unconditionally converts a DE-derived sheetfile into
+    Unconditionally converts a DP-derived sheetfile into
     a csvfile with sanitized name of columns and data-types.
 
     Returns:: Csvfile
