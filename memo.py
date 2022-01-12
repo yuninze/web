@@ -1,6 +1,22 @@
 from os import name
 from work import purify
 
+def queuing():
+arc=ZipFile(zipfile,"r")
+infolist=arc.infolist()
+arcnamelist=[infolist[x] for x in range(len(infolist)) if infolist[x].endswith(".jpg")]
+
+factor=2000
+
+blockcount=len(donefilename)//factor
+blocknumber=len(donefilename)%factor
+blockindex=0
+
+donefilenamelist=[]
+donefilenameblock=dict()
+
+for x in range(blockSize)
+    [blockindex:blockcontent for blockindex,blockcontent in range(blockcount),[donefilenamelist for x in range(blockSize 
 
 d[["zangae","preg","gzy","bohun","damunwha","choding","daeding","jobtwo","jobno","jobloss","lowincome","jobless","mobuzang","visamarry","bukhan","selfempoly","aihubhx","ichx"]]="X"
 

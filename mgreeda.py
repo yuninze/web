@@ -76,4 +76,5 @@ def oppai(path,fileObject):
     filenamestring="wonzin_"+ima+"_"+str(len(jsonpath))+".csv"
     DictToCsv(canvas,filenamestring)
     return None
-oppai("c:/","Wonzin_2022-01-09_24.json")
+oppai("c:/","11489_result_57c0531e13.json")
+
