@@ -53,6 +53,8 @@ def getjsonfile(path):
     print("DONE: "+str(count)+" files")
 
 def lachk(path="C:/ANNOTATION"):
+    car,bus,truck,bike,normal,danger,violation=0,0,0,0,0,0,0
+    single_solid,single_dashed,double_solid,left_dashed_double,right_dashed_double=0,0,0,0,0
     os.chdir(path)
     for channeldir in os.listdir():
         os.chdir(channeldir)
@@ -68,46 +70,85 @@ def lachk(path="C:/ANNOTATION"):
                         continue
                     j=json.load(open(jsonfile,encoding="utf-8"))
                     did=str(j["dataID"])
-                    for z in range(len(j["data_set_info"]["data"])):
-                        if len(j["data_set_info"]["data"][z]["value"]["metainfo"])!=5:
+                    dsi=j["data_set_info"]["data"]
+                    for z in range(len(dsi)):
+                        if len(dsi[z]["value"]["metainfo"])!=5:
                             print("METAINFO: "+str(Path(jsonfile).absolute())+":::"+did),input()
-                        if j["data_set_info"]["data"][z]["value"]["annotation"]!="POLYGONS":
+                        if dsi[z]["value"]["annotation"]!="POLYGONS":
                             print("POLYGONS: "+str(Path(jsonfile).absolute())+":::"+did),input()
-                        if len(j["data_set_info"]["data"][z]["value"]["points"])<1:
+                        if len(dsi[z]["value"]["points"])<1:
                             print("POINTS: "+str(Path(jsonfile).absolute())+":::"+did),input()
-                        for objectKeyName in j["data_set_info"]["data"][z]["value"]["object_Label"].keys():
+                        for objectKeyName in dsi[z]["value"]["object_Label"].keys():
                             if "vehicle" in objectKeyName:
-                                if len(j["data_set_info"]["data"][z]["value"]["object_Label"])!=3:
+                                if len(dsi[z]["value"]["object_Label"])!=3:
                                     raise IndexError("Unusual/Vehicle/object_Label: "+str(Path(jsonfile).absolute())+":::"+did)
-                                elif j["data_set_info"]["data"][z]["value"]["extra"]["value"]!="vehicle":
+                                elif dsi[z]["value"]["extra"]["value"]!="vehicle":
                                     raise IndexError("Unusual/Vehicle/extra/value: "+str(Path(jsonfile).absolute())+":::"+did)
-                                elif j["data_set_info"]["data"][z]["value"]["extra"]["color"]!="#096ecd":
+                                elif dsi[z]["value"]["extra"]["color"]!="#096ecd":
                                     raise IndexError("Unusual/Lane/extra/color: "+str(Path(jsonfile).absolute())+":::"+did)
+                                if dsi[z]["value"]["object_Label"]["vehicle_type"]=="vehicle_car":
+                                    car+=1
+                                elif dsi[z]["value"]["object_Label"]["vehicle_type"]=="vehicle_bus":
+                                    bus+=1
+                                elif dsi[z]["value"]["object_Label"]["vehicle_type"]=="vehicle_truck":
+                                    truck+=1
+                                elif dsi[z]["value"]["object_Label"]["vehicle_type"]=="vehicle_bike":
+                                    bike+=1
+                                if dsi[z]["value"]["object_Label"]["vehicle_attribute"]=="normal":
+                                    normal+=1
+                                elif dsi[z]["value"]["object_Label"]["vehicle_attribute"]=="danger":
+                                    danger+=1
+                                elif dsi[z]["value"]["object_Label"]["vehicle_attribute"]=="violation":
+                                    violation+=1
                             elif "lane" in objectKeyName:
-                                if len(j["data_set_info"]["data"][z]["value"]["object_Label"])!=2:
+                                if len(dsi[z]["value"]["object_Label"])!=2:
                                     raise IndexError("Unusual Content/Lane: "+str(Path(jsonfile).absolute())+":::"+did)
-                                elif j["data_set_info"]["data"][z]["value"]["extra"]["value"]!="lane":
+                                elif dsi[z]["value"]["extra"]["value"]!="lane":
                                     raise IndexError("Unusual/Lane/extra/value: "+str(Path(jsonfile).absolute())+":::"+did)
-                                elif j["data_set_info"]["data"][z]["value"]["extra"]["color"]=="#096ecd":
+                                elif dsi[z]["value"]["extra"]["color"]=="#096ecd":
                                     raise IndexError("Unusual/Lane/extra/color: "+str(Path(jsonfile).absolute())+":::"+did)
-                        if len(j["data_set_info"]["data"][z]["value"]["object_Label"])==2:
-                            if j["data_set_info"]["data"][z]["value"]["object_Label"]["lane_attribute"]=="":
+                                if dsi[z]["value"]["object_Label"]["lane_attribute"]=="single_solid":
+                                    single_solid=+1
+                                elif dsi[z]["value"]["object_Label"]["lane_attribute"]=="double_solid":
+                                    double_solid=+1
+                                elif dsi[z]["value"]["object_Label"]["lane_attribute"]=="single_dashed":
+                                    single_dashed=+1
+                                elif dsi[z]["value"]["object_Label"]["lane_attribute"]=="left_dashed_double":
+                                    left_dashed_double=+1
+                                elif dsi[z]["value"]["object_Label"]["lane_attribute"]=="right_dashed_double":
+                                    right_dashed_double=+1
+                        if len(dsi[z]["value"]["object_Label"])==2:
+                            if dsi[z]["value"]["object_Label"]["lane_attribute"]=="":
                                 print("lane_ERROR: "+str(Path(jsonfile).absolute())+":::"+did)
-                                j["data_set_info"]["data"][z]["value"]["object_Label"]["lane_type"]="lane_shoulder"
-                                j["data_set_info"]["data"][z]["value"]["object_Label"]["lane_attribute"]="single_solid"
+                                dsi[z]["value"]["object_Label"]["lane_type"]="lane_shoulder"
+                                dsi[z]["value"]["object_Label"]["lane_attribute"]="single_solid"
                                 print("written")
-                        elif len(j["data_set_info"]["data"][z]["value"]["object_Label"])==3:
-                            if j["data_set_info"]["data"][z]["value"]["object_Label"]["vehicle_type"]=="":
+                        elif len(dsi[z]["value"]["object_Label"])==3:
+                            if dsi[z]["value"]["object_Label"]["vehicle_type"]=="":
                                 print("vehicle_ERROR: "+str(Path(jsonfile).absolute())+":::"+did)
-                                j["data_set_info"]["data"][z]["value"]["object_Label"]["vehicle_type"]="vehicle_bus"
-                                j["data_set_info"]["data"][z]["value"]["object_Label"]["vehicle_attribute"]="violation"
-                                j["data_set_info"]["data"][z]["value"]["object_Label"]["vehicle_shown"]="hidden"
+                                dsi[z]["value"]["object_Label"]["vehicle_type"]="vehicle_bus"
+                                dsi[z]["value"]["object_Label"]["vehicle_attribute"]="violation"
+                                dsi[z]["value"]["object_Label"]["vehicle_shown"]="hidden"
                                 print("written")
                         print("OK: "+str(Path(jsonfile).absolute())+":::"+did)
-                    json.dump(j,open(jsonfile,"w",encoding="utf-8"),ensure_ascii=False,indent=2)
+                    #json.dump(j,open(jsonfile,"w",encoding="utf-8"),ensure_ascii=False,indent=0)
                 os.chdir("..")
             os.chdir("..")
         os.chdir("..")
+    print(
+    "car: "+str(car),
+    "bus: "+str(bus),
+    "truck: "+str(truck),
+    "bike: "+str(bike),
+    "normal: "+str(normal),
+    "danger: "+str(danger),
+    "violation: "+str(violation),
+    "gggggg"+
+    str(single_solid),
+    str(single_dashed),
+    str(double_solid),
+    str(left_dashed_double),
+    str(right_dashed_double))
     return None
 
 def arcList(fo):

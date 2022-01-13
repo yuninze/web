@@ -1,4 +1,3 @@
-import os
 import re
 import pandas as pd
 enc="utf-8-sig"
@@ -48,29 +47,6 @@ def ta0(fileObjectName):
     else:
         assert IndexError("FileObject is irrelevant to DETA")
     return df.set_index(["pid","mail","name"]).stack()
-
-def nurakaud(fo):
-    df=pd.read_excel(fo,usecols=["A:D,F"]).reset_index()
-    df["by"]=df.groupby(["id"])["포인트적립"].transform("sum")
-    df.loc[:,"by"]*10
-
-a=pd.read_excel("1524a.xlsx",na_filter=False)
-b=pd.read_excel("1524b.xlsx",na_filter=False)
-
-a=pd.read_excel("2427a.xlsx",na_filter=False)
-b=pd.read_excel("2427b.xlsx",na_filter=False)
-
-[z.drop("Unnamed: 0",axis=1,inplace=True) for z in [a,b]]
-pd.concat([a,b]).groupby(["project_id","login_id","member_nm"]).sum()
-#unconditioanlly merging
-
-ta=pd.merge("","",left_index=True,right_index=True,how="outer")
-#index-based 
-
-[x.set_index(["project_id","login_id","member_nm"],inplace=True) for x in [a,b]]
-
-
-[x.loc[:,"work":].applymap(lambda w:float(w)) for x in [da,dbc,ds,na,nbc,ns]]
 
 def purify2(fo):
     """
@@ -181,19 +157,6 @@ def purifyboz(fo,danga):
     udf.loc[:,"WTPJ":]=udf.loc[:,"WTPJ":].applymap(fuck)
     return udf
 
-target=[cda,cdbc,cds,cna,cnbc,cns]
-target=[lda,ldbc,lds,lna,lnbc,lns]
-[x.reset_index(inplace=True) for x in target]
-[x.set_index(["id","mail"],inplace=True) for x in target]
-aa=pd.concat(target,ignore_index=False)
-
-bb=aa.groupby(["id","mail"]).transform("sum")
-
-
-aa.drop_duplicates(subset=["id","mail"],inplace=True)
-.applymap(lambda p:round(p/2,4))
-aaa.loc[:,"EPS":]=aaa.loc[:,"EPS":].applymap(lambda p:round(p/6,4))
-
 def GetNumInSec(object):
     try:
         if type(object) is not str:
@@ -235,7 +198,6 @@ d[
 
 for x in d.index:
     row=d.loc[x,"variety"]
-    try:
     if "장애" in row:
         d.loc[x,"zangae"]="O"
     elif "임신" in row:
@@ -279,6 +241,7 @@ def DivisionByOccurance(object,occurance):
     else:
         pass
     return round(object/occurance,4)
+
 TargetObjects=["WTPJ","WTPJB","EPS","EPH","JPH"]
 for x in df.index:
     factor=df.loc[x,"occurance"]
@@ -301,12 +264,6 @@ def ForcedJobCoding(object):
     except:
         return "0"
 
-c 단가 10
-l 단가 70
-x 6 projects
-purifyboa x 12 sheets
-concatenate and classify by ggggggggggggggg
-
 def queuing():
 arc=ZipFile(zipfile,"r")
 infolist=arc.infolist()
@@ -325,49 +282,7 @@ for x in range(blockSize)
     [blockindex:blockcontent for blockindex,blockcontent in range(blockcount),[donefilenamelist for x in range(blockSize 
 
 
-for x in bb.index:
-    factor=bb.loc[x,]
 
-def uu(x):
-    if x>0:
-        return x/6
-    elif x==0:
-        return 0
-    else:
-        return x
-
-bo.query("(af>9)",inplace=False).query("((af>19)&(audit>29)&(disputeRate<12))|((af>29)&(audit>49)&(disputeRate<17))|((audit>39)&(workedTime>15000)&(disputeRate<8))")
-bo.query("(af>9)",inplace=False).query("((af>19)&(audit>29)&(disputeRate<12))|((af>29)&(audit>49)&(disputeRate<17))|((audit>39)&(workedTime>15000)&(disputeRate<8))")
-
-bo0.to_excel("boResult.xlsx")
-
-
-
-pm=pd.read_excel("pmo.xlsx")
-ta=pd.read_excel("ta.xlsx")
-
-test=pd.concat([ta,pm],ignore_index=False,axis=0,join="inner",verify_integrity=True)
-
-pm.set_index("name",inplace=True)
-
-pm=pm.applymap(lambda fuck:str(fuck).strip())
-ta=ta.applymap(lambda fuck:str(fuck).strip())
-
-test.merge(ta,left_on=["name","citizenNumber","phoneNumber","userLoc","schoolHx","jobCode","zangAe","imSin","gyungDan","boHun","daMunWha","goDing","deDing","twoJob","backSu","muZik","lowIncome","backbackSu","feminist","foreignMarrying","bukHan","selfEmpolyed","aihubHx","cwHx"],right_on=["name","citizenNumber","phoneNumber","userLoc","schoolHx","jobCode","zangAe","imSin","gyungDan","boHun","daMunWha","goDing","deDing","twoJob","backSu","muZik","lowIncome","backbackSu","feminist","foreignMarrying","bukHan","selfEmpolyed","aihubHx","cwHx"])
-
-pm.merge(ta,left_index=True,right_index=True)
-
-pd.concat
-
-
-ta[~ta.index.duplicated()]
-
-bo,ta=(z.dropna(axis=0,inplace=False).set_index("id") for z in (bo,ta))
-ta=ta[["mail","name","nick","phone","auditor"]]
-ta.drop(ta.auditor.index[ta.auditor!="O"],inplace=True)
-ta.index,bo.index=[z.index.map(int) for z in [ta,bo]]
-[z.reset_index() for z in [ta,bo]]
-ta=ta.merge(bo,left_on=["id","mail","nick","name"],right_on=["id","mail","nick","name"])
 bo["perf"]=None
 CEs={"CEa":None,"CEb":None,"CEc":None,"CEd":None,"CEe":None,"CEf":None,"CEg":None}
 CSs={"work":None,"audit":None,"dr":None,"wt":None,"wtPerWork":None,"wtBasis":None}
@@ -387,46 +302,3 @@ for z in bo.index:
             CEs["CEa"]=0.6
         else:
             CEs["CEa"]=0.9
-
-
-d=pd.DataFrame()
-
-for x in d.index:
-    row=d.loc[x,"variety"]
-    try:
-        if "장애" in row:
-            d.loc[x,"zangae"]="O"
-        elif "임신" in row:
-            d.loc[x,"preg"]="O"
-        elif "단절" in row:
-            d.loc[x,"gzy"]="O"
-        elif "보훈" in row:
-            d.loc[x,"bohun"]="O"
-        elif "다문화" in row:
-            d.loc[x,"damunwha"]="O"
-        elif "초등" in row:
-            d.loc[x,"choding"]="O"
-        elif "대학생" in row:
-            d.loc[x,"daeding"]="O"
-        elif "투잡" in row:
-            d.loc[x,"jobtwo"]="O"
-        elif "미취업자" in row:
-            d.loc[x,"jobno"]="O"
-        elif "실직자" in row:
-            d.loc[x,"jobloss"]="O"
-        elif "저소득" in row:
-            d.loc[x,"lowincome"]="O"
-        elif "장기실업" in row:
-            d.loc[x,"jobless"]="O"
-        elif "가장" in row:
-            d.loc[x,"mobuzang"]="O"
-        elif "이주" in row:
-            d.loc[x,"visamarry"]="O"
-        elif "북한" in row:
-            d.loc[x,"bukhan"]="O"
-        elif "자영업" in row:
-            d.loc[x,"selfempoly"]="O"
-        elif "AI" in row:
-            d.loc[x,"aihubhx"]="O"
-    except:
-        print(str(x))
