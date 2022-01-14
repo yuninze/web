@@ -1,4 +1,4 @@
-import re
+import re,os
 import pandas as pd
 enc="utf-8-sig"
 
@@ -58,6 +58,12 @@ def ForcingJobCode(object):
         return str(object)
     except:
         return "101010"
+
+def IsAudit(dataframeAlikeObject): #Check Whether Audit or Work
+    dataframeAlikeObject=str(dataframeAlikeObject)
+    dataframe=pd.read_excel(dataframeAlikeObject,nrows=5)
+    if dataframe.shape[0]!=16:
+        return 0 or 1
 
 def ta0(fileObjectName):
     """
@@ -182,37 +188,24 @@ def purifyz(fo,danga):
     udf.loc[:,"WTPJ":]=udf.loc[:,"WTPJ":].applymap(fuck)
     return udf
 
-def purify0(fileObjectName):
+def fuckfuck(zdanga,adanga,path="c:/"):
     """
-    Unconditionally converts a DP-derived sheetfile into
-    a csvfile with sanitized name of columns and data-types.
-    Returns:: Csvfile
     """
-    if ".xlsx" in fileObjectName:
-        fileObject=pd.read_excel(fileObjectName,na_filter=False)
-        str(fileObjectName).replace("xlsx","csv")
-        fileObject.to_csv(fileObjectName,index=False,encoding=enc)
-        df=pd.read_csv(fileObjectName,encoding=enc).reset_index()
-    elif ".csv" in fileObjectName:
-        df=pd.read_csv(fileObjectName,encoding=enc).reset_index()
-    if len(df.columns)==4:
-        df.columns=["pid","name","mail","count0"]
-    elif len(df.columns)==5:
-        df.columns=["pid","name","mail","count0","count1"]
-    df.pid=df.pid.apply(int)
-    return df
+    fuck=[path+x for x in os.listdir(path) if x.endswith(".xls")]
+    TargetObjects=["WTPJ","WTPJB","EPS","EPH","JPH"]
+    audit,zakup=dict()
+    for x in fuck:
+        if IsAudit(x):
+            audit[x]=purifya(x,adanga)
+        else:
+            zakup[x]=purifyz(x,zdanga)
+    for o,p in audit:
+        for x in audit[o].index:
+            factor=audit[o].loc[x,"occurance"]
+        for y in TargetObjects:
+            df.loc[x,y]=DivisionByOccurance(df.loc[x,y],factor)
+            auditAll=
 
-def fuckfuck(path):
-    """
-    fuckfufkcf
-    """
-    
-
-TargetObjects=["WTPJ","WTPJB","EPS","EPH","JPH"]
-for x in df.index:
-    factor=df.loc[x,"occurance"]
-    for y in TargetObjects:
-        df.loc[x,y]=DivisionByOccurance(df.loc[x,y],factor)
 
 d[
         "zangae","preg","gzy","bohun","damunwha",
