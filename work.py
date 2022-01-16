@@ -1,27 +1,31 @@
-import re,os
+import re,os,math
 import pandas as pd
+from pandas.core.indexes.multi import MultiIndex
 enc="utf-8-sig"
 
 def GetNumInSec(object):
-    try:
-        if type(object) is not str:
-            object=str(object)
+    if type(object) is str:
+        if len(object)<8:
+            return 1.1
+        else:
             return float(re.findall(r"\((\d+.\d+).\)",object)[0])
-    except:
-        return "RITCHRD"
+    elif math.isnan(object):
+        return 1.1
 
 def GetNumInMean(objectsum,objectlen):
     objectlen=objectlen//1
     return objectsum/objectlen
 
 def DivisionByOccurance(object,occurance):
-    if type(occurance) is not int:
-        occurance=occurance//1
-    elif type(object) is not float:
-        object=float(object)
-    else:
+    if isinstance(object,(int,float)):
         pass
-    return round(object/occurance,4)
+    else:
+        object=float(object)
+    if isinstance(occurance,(int,float)):
+        occurance=occurance//1
+    else:
+        occurance=int(occurance)
+    return round(object/occurance,5)
 
 def CnDashing(object):
     if type(object) is not str:
@@ -33,7 +37,7 @@ def PnDashing(object):
     if type(object) is not str:
         object=str(object)
     object.replace("-","")
-    return "-".join([x[:3],x[3:7],x[7:]])
+    return "-".join([object[:3],object[3:7],object[7:]])
 
 def NanToStr(object):
     if type(object) is not str:
@@ -47,8 +51,6 @@ def NanToStr(object):
 def sex(number):
     if type(number) is float:
         return round(number,5)
-    elif type(number) is int:
-        return number
     else:
         return number
 
@@ -59,9 +61,13 @@ def ForcingJobCode(object):
     except:
         return "101010"
 
-def IsAudit(dataframeAlikeObject): #Check Whether Audit or Work
-    dataframeAlikeObject=str(dataframeAlikeObject)
-    dataframe=pd.read_excel(dataframeAlikeObject,nrows=5)
+def IsAudit(dataFrameAlikeObject):
+    """
+    Check Whether DataFrame is Audit or Work.
+
+    Results 0: Work or 1: Audit
+    """
+    dataframe=pd.read_excel(dataFrameAlikeObject,nrows=5)
     if dataframe.shape[0]!=16:
         return 0 or 1
 
@@ -71,8 +77,6 @@ def ta0(fileObjectName):
     convert columns into per-index stacked rows.
     converted per-index stacked rows would be
     a new component of multi-indexes.
-    Unsatisfying values in the dataframe turned into NaN.
-    Returns::: DataFrame
     """
     df=pd.read_csv(fileObjectName,encoding=enc).reset_index()
     colnum=len(df.columns)
@@ -92,7 +96,6 @@ def ta0(fileObjectName):
 def HbToNia(fileObjectName):
     """
     TA Hyunbum sheet
-    Returns::: DataFrame
     """
     try:
         u=pd.read_excel(fileObjectName+".xlsx",na_filter=False)
@@ -121,44 +124,43 @@ def HbToNia(fileObjectName):
                 u.loc[x,"phone"]="0"+u.loc[x,"phone"]
         else:
             pass
-    u.cn=u.cn.apply(lambda a:CnDashing(a))
-    u.phone=u.phone.apply(lambda a:PnDashing(a))
+    u.cn=u.cn.apply(CnDashing)
+    u.phone=u.phone.apply(PnDashing)
     return u
 
 def purifya(fo,danga):
     """
     Results sanitized dataframe from BO-derived sheetfile,
     with additional stats regarding of danga.
-    Returns:::Dataframe
     """
     udf=pd.read_excel(fo,usecols="A,B,F,I,K",na_filter=False).drop([0])
     udf.columns=[
     "id","mail",
-    "AF","compliance",
+    "work","compliance",
     "TWT"]
     udf.set_index("id",inplace=True)
     udf.index=udf.index.map(int)
     udf.TWT=udf.TWT.apply(GetNumInSec)
-    udf.loc[:,"AF":]=udf.loc[:,"AF":].applymap(float)
+    print(udf.TWT)
+    udf.loc[:,"work":]=udf.loc[:,"work":].applymap(float)
     udf["EPS"],udf["EPH"]=0,0
-    for c in udf.index:
-        if udf.loc[c,"TWT"]>1:
-            udf.loc[c,"TE"]=udf.loc[c,"AF"]*danga
-            udf.loc[c,"TE1000"]=(udf.loc[c,"AF"]*danga)/1000
-            udf.loc[c,"EPS"]=(danga*udf.loc[c,"AF"])/udf.loc[c,"TWT"]
-            udf.loc[c,"EPH"]=udf.loc[c,"EPS"]*3600
-            udf.loc[c,"JPH"]=(udf.loc[c,"TWT"]/udf.loc[c,"AF"])/3600
+    for x in udf.index:
+        if udf.loc[x,"TWT"]>0:
+            udf.loc[x,"TE"]=udf.loc[x,"work"]*danga
+            udf.loc[x,"TE1000"]=(udf.loc[x,"work"]*danga)/1000
+            udf.loc[x,"EPS"]=udf.loc[x,"TE"]/udf.loc[x,"TWT"]
+            udf.loc[x,"EPH"]=udf.loc[x,"EPS"]*3600
+            udf.loc[x,"JPH"]=(udf.loc[x,"TWT"]/udf.loc[x,"work"])/3600
         else:
-            udf.loc[c,"EPS"]=sum(udf.EPS)/len(udf.EPS)
-            udf.loc[c,"EPH"]=sum(udf.EPH)/len(udf.EPH)
-    udf.loc[:,"AF":]=udf.loc[:,"AF":].applymap(sex)
-    return udf
+            udf.loc[x,"EPS"]=sum(udf.EPS)/len(udf.EPS)
+            udf.loc[x,"EPH"]=sum(udf.EPH)/len(udf.EPH)
+    udf.loc[:,"work":]=udf.loc[:,"work":].applymap(sex)
+    return udf.reset_index()
 
 def purifyz(fo,danga):
     """
     Results sanitized dataframe from BO-derived sheetfile,
     with additional stats regarding of danga.
-    Returns:::Dataframe
     """
     udf=pd.read_excel(fo,usecols="A:I,K,L,N:P",na_filter=False).drop([0])
     udf.columns=[
@@ -168,9 +170,8 @@ def purifyz(fo,danga):
     udf.drop(["name","nick"],axis=1,inplace=True)
     udf.set_index("id").dropna(axis=0,inplace=True)
     udf.index=udf.index.map(int)
-    for t in range(len(udf.index)):
-        for s in [udf.TWT,udf.WTPJ]:
-            s.iloc[t]=re.findall(r"\((\d+.\d+).\)",s.iloc[t])[0]
+    udf.loc[:,["TWT","WTPJ"]]=udf.loc[:,["TWT","WTPJ"]].applymap(GetNumInSec)
+    print(udf.TWT)
     udf.loc[:,"work":]=udf.loc[:,"work":].applymap(float)
     udf["EPS"],udf["EPH"]=0,0
     for c in udf.index:
@@ -178,7 +179,7 @@ def purifyz(fo,danga):
             udf.loc[c,"TE"]=udf.loc[c,"work"]*danga
             udf.loc[c,"TE1000"]=(udf.loc[c,"work"]*danga)/1000
             udf.loc[c,"EPS"]=(danga*udf.loc[c,"work"])/udf.loc[c,"TWT"]
-            udf.loc[c,"EPH"]=udf.loc[c,"EPS"]*3600
+            udf.loc[c,"EPH"]=udf.loc[c,"EPS"]*360
             udf.loc[c,"JPH"]=udf.loc[c,"WTPJ"]/3600
         else:
             udf.loc[c,"EPS"]=sum(udf.EPS)/len(udf.EPS)
@@ -186,116 +187,62 @@ def purifyz(fo,danga):
     def fuck(number):
         return round(number,4)
     udf.loc[:,"WTPJ":]=udf.loc[:,"WTPJ":].applymap(fuck)
-    return udf
+    return udf.reset_index()
 
 def fuckfuck(zdanga,adanga,path="c:/"):
     """
+    Concatenate, group, aggregate sheets in path.
+
+    Always uses ["id","mail"] as index.
     """
-    fuck=[path+x for x in os.listdir(path) if x.endswith(".xls")]
-    TargetObjects=["WTPJ","WTPJB","EPS","EPH","JPH"]
-    audit,zakup=dict()
+    if zdanga<1:
+        zdanga=10
+    if adanga<1:
+        adanga=10
+    fuck=(path+x for x in os.listdir(path) if x.endswith(".xls"))
+    idx=["id","mail"]
+    cols=["EPS","EPH","JPH"]
+    audit,zakup={},{}
     for x in fuck:
         if IsAudit(x):
             audit[x]=purifya(x,adanga)
         else:
             zakup[x]=purifyz(x,zdanga)
-    for o,p in audit:
-        for x in audit[o].index:
-            factor=audit[o].loc[x,"occurance"]
-        for y in TargetObjects:
-            df.loc[x,y]=DivisionByOccurance(df.loc[x,y],factor)
-            auditAll=
-
-
-d[
-        "zangae","preg","gzy","bohun","damunwha",
-        "choding","daeding",
-        "jobtwo","jobno","jobloss","lowincome","jobless",
-        "mobuzang","visamarry","bukhan","selfempoly",
-        "aihubhx","ichx"]=None
-
-for x in d.index:
-    row=d.loc[x,"variety"]
-    if "장애" in row:
-        d.loc[x,"zangae"]="O"
-    elif "임신" in row:
-        d.loc[x,"preg"]="O"
-    elif "단절" in row:
-        d.loc[x,"gzy"]="O"
-    elif "보훈" in row:
-        d.loc[x,"bohun"]="O"
-    elif "다문화" in row:
-        d.loc[x,"damunwha"]="O"
-    elif "초등" in row:
-        d.loc[x,"choding"]="O"
-    elif "대학생" in row:
-        d.loc[x,"daeding"]="O"
-    elif "투잡" in row:
-        d.loc[x,"jobtwo"]="O"
-    elif "미취업자" in row:
-        d.loc[x,"jobno"]="O"
-    elif "실직자" in row:
-        d.loc[x,"jobloss"]="O"
-    elif "저소득" in row:
-        d.loc[x,"lowincome"]="O"
-    elif "장기실업" in row:
-        d.loc[x,"jobless"]="O"
-    elif "가장" in row:
-        d.loc[x,"mobuzang"]="O"
-    elif "이주" in row:
-        d.loc[x,"visamarry"]="O"
-    elif "북한" in row:
-        d.loc[x,"bukhan"]="O"
-    elif "자영업" in row:
-        d.loc[x,"selfempoly"]="O"
-    elif "AI" in row:
-        d.loc[x,"aihubhx"]="O"
-
-
-
-def queuing():
-arc=ZipFile(zipfile,"r")
-infolist=arc.infolist()
-arcnamelist=[infolist[x] for x in range(len(infolist)) if infolist[x].endswith(".jpg")]
-
-targetlistlen=10005
-1999
-3999
-5999
-7999
-
-9999
-residue 9999:
-factor=2000
-
-blockcount=len(donefilename)//factor
-blocknumber=len(donefilename)%factor
-blockindex=0
-
-donefilenamelist=[]
-donefilenameblock=dict()
-
-for x in range(blockSize)
-    [blockindex:blockcontent for blockindex,blockcontent in range(blockcount),[donefilenamelist for x in range(blockSize 
-
-
-
-bo["perf"]=None
-CEs={"CEa":None,"CEb":None,"CEc":None,"CEd":None,"CEe":None,"CEf":None,"CEg":None}
-CSs={"work":None,"audit":None,"dr":None,"wt":None,"wtPerWork":None,"wtBasis":None}
-for z in bo.index:
-    for y in bo.loc[z,"mail"]:
-        if "naver.com" in y:
-            CEs["CEa"]=0.9
-        elif "nate.com" in y:
-            CEs["CEa"]=0.7
-        elif "hanmail.net" in y:
-            CEs["CEa"]=0.8
-        elif "daum.net" in y:
-            CEs["CEa"]=0.7
-        elif "gmail.com" in y:
-            CEs["CEa"]=1.1
-        elif "hotmail.com" in y:
-            CEs["CEa"]=0.6
-        else:
-            CEs["CEa"]=0.9
+    cache=[]
+    for frames in (audit,zakup):
+        if len(frames)==0:
+            continue
+        frame=[v.set_index(idx,inplace=True) for v in frames.values()]
+        frame=pd.concat(frames.values())
+        frameOrgIdx=frame.index
+        frame.work=frame.work.apply(int)
+        frame.TWT=frame.TWT.apply(float)
+        #print(frame)
+        try:
+            frame=frame.groupby(level=frame.index.names)
+        except:
+            raise IndexError(f"Groupbying by {idx} failed")
+        finally:
+            #Get count of each multiindexes
+            frameIdxLen=frameOrgIdx.value_counts()
+            frameIdxLen.name="occurance"
+            frameIdxLen.index=MultiIndex.from_tuples(frameIdxLen.index,names=idx)
+            frame=frame.sum()
+            if len(frame.index)==len(frameOrgIdx):
+                raise IndexError("Analoguous index length")
+            if len(frameIdxLen.index)!=len(frame.index):
+                raise IndexError(
+                f"Index length mismatch ({len(frameIdxLen)}:{len(frame.index)})")
+            frame=frame.merge(frameIdxLen,left_index=True,right_index=True)
+            #Divide average stats columns by occurnace
+            for x in frame.index:
+                factor=frame.loc[x,"occurance"]
+                if frames is audit:
+                    pass
+                elif frames is zakup:
+                    cols+=["WTPJ","WTPJB"]
+                for y in cols:
+                    frame.loc[x,y]=DivisionByOccurance(frame.loc[x,y],factor)
+        #Load the final product
+        cache+=[frame.drop("occurance",axis=1)]
+    return cache

@@ -6,6 +6,8 @@ arc=ZipFile(zipfile,"r")
 infolist=arc.infolist()
 arcnamelist=[infolist[x] for x in range(len(infolist)) if infolist[x].endswith(".jpg")]
 
+queuing by genComp
+
 factor=2000
 
 blockcount=len(donefilename)//factor
