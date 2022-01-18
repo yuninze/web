@@ -19,32 +19,40 @@ def DictToCsv(object,namestring):
         pd.read_csv(namestring,encoding=enc).to_csv(namestring,encoding=enc,index=False)
         return None
 
-def jurye(p,fo):
-    os.chdir(p)
-    j=json.load(open(fo,"r",encoding="utf-8-sig"))
-    jj=j["result"]
-    l=[]
-    for x in range(len(jj)):
-        d=dict()
-        d["dataID"]=jj[x]["dataID"]
-        d["신청일"]=str(ima)
-        d["이름"]=jj[x]["userName"]["data"][0]["value"]
-        d["전번"]=str(jj[x]["userPhone"]["data"][0]["value"]).replace("010","(010)")
-        d["연령대"]=jj[x]["userAge"]["data"][0]["value"][0]["value"]
-        d["상담시각대"]=jj[x]["availTime"]["data"][0]["value"][0]["value"]
-        d["지역"]=jj[x]["userLoc"]["data"][0]["value"][0]["value"]
-        d["동의"]="동의함"
-        if jj[x]["isVisitClinic"]["data"][0]["value"][0]["value"]=="false":
-            d["안과방문주기"]="안과안감"
+def noan(path,fileObject):
+    os.chdir(path)
+    jsondata=CallJson(fileObject)
+    jsonpath=jsondata["result"]
+    canvas=[]
+    for z in range(len(jsonpath)):
+        paper=dict()
+        paper["전달일"]=ima
+        paper["성함"]=jsonpath[z]["username"]["data"][0]["value"]
+        userphone=str(jsonpath[z]["userphone"]["data"][0]["value"])
+        paper["전번"]="-".join([userphone[:3],userphone[3:7],userphone[7:]])
+        paper["연령대"]=jsonpath[z]["useragerange"]["data"][0]["value"][0]["value"]
+        paper["지역"]=jsonpath[z]["userloc"]["data"][0]["value"][0]["value"]
+        useravailtime=jsonpath[z]["useravailtime"]["data"][0]["value"]
+        useravailtime=[useravailtime[z]["value"] for z in range(len(useravailtime))]
+        paper["상담시각대"]="\n".join(useravailtime[z] for z in range(len(useravailtime)))
+        paper["안과주기적방문여부"]=jsonpath[z]["visitclinc"]["data"][0]["value"][0]["value"]
+        if jsonpath[z]["visitclinc"]["data"][0]["value"][0]["value"]=="안과안감":
+            paper["안과방문주기"]="안과안감"
         else:
-            d["안과방문주기"]=jj[x]["visitFreq"]["data"][0]["value"][0]["value"]
-        d["3년내수술여부"]=jj[x]["Hx"]["data"][0]["value"]
-        d["시력보조도구여부"]=jj[x]["meganeIs"]["data"][0]["value"][0]["value"]
-        d["안경렌즈기간"]=jj[x]["meganeHx"]["data"][0]["value"]
-        d["노안/백내장의심"]=jj[x]["selfCheck"]["data"][0]["value"][0]["value"]
-        l[len(l):]=[d]
-    pd.DataFrame(l).to_csv(fo+".csv",encoding=enc,index=False)
-    pd.read_csv(fo+".csv",encoding=enc).to_csv(fo+".csv",encoding=enc,index=False)
+            paper["안과방문주기"]=jsonpath[z]["visitclinicfreq"]["data"][0]["value"][0]["value"]
+        aftervisitprocess=jsonpath[z]["aftervisitprocess"]["data"][0]["value"]
+        avp=[aftervisitprocess[z]["value"] for z in range(len(aftervisitprocess))]
+        paper["내원후희망프로세스"]="\n".join(avp[z] for z in range(len(avp)))
+        sx0=jsonpath[z]["sx0"]["data"][0]["value"]
+        sx0=[sx0[z]["value"] for z in range(len(sx0))]
+        paper["증상체크리스트1"]="\n".join(sx0[z] for z in range(len(sx0)))
+        sx1=jsonpath[z]["sx1"]["data"][0]["value"]
+        sx1=[sx1[z]["value"] for z in range(len(sx1))]
+        paper["증상체크리스트2"]="\n".join(sx1[z] for z in range(len(sx1)))
+        paper["id"]=str(jsonpath[z]["dataID"])
+        canvas[len(canvas):]=[paper]
+    filenamestring="jurye_"+ima+"_"+str(len(jsonpath))+".csv"
+    DictToCsv(canvas,filenamestring)
     return None
 
 def oppai(path,fileObject):
@@ -76,5 +84,3 @@ def oppai(path,fileObject):
     filenamestring="wonzin_"+ima+"_"+str(len(jsonpath))+".csv"
     DictToCsv(canvas,filenamestring)
     return None
-oppai("c:/","11489_result_57c0531e13.json")
-
