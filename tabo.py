@@ -46,7 +46,10 @@ def occdiv(object,factor):
 def meaning(objectsum,objectlen):
     if objectlen==0:
         objectlen=1
-    return objectsum/(objectlen//1)
+    try:
+        return objectsum/(objectlen//1)
+    except TypeError:
+        raise ZeroDivisionError(f"Foremost argument {objectsum} is 0")
 
 def dashingcn(object):
     if type(object) is not str:
@@ -124,17 +127,21 @@ def concoction(path,auditDanga,zakupDanga):
     #framefileObject collection with pathstring
     sheetfiles=[path+z for z in os.listdir(path) if ".xlsx" in z]
     frames={}
+    #Confirm whether frame type
     for framename in sheetfiles:
         if isaudit(framename)=="zakup":
             danga=zakupDanga
+            basis="complyRate"
         elif isaudit(framename)=="audit":
             danga=auditDanga
+            basis="auditRate"
+        #Purify upon frame type
         frames[framename]|=purify(framename,danga)[0]
-    #Concatenating
-    frame=pd.concat([y for x,y in frames.items()],axis=0)
-    #Groupbying
+    #Unconditional concatenate
+    frame=pd.concat([y for x,y in frames.items()],axis=0,ignore_index=False)
+    #Groupby
     frame=frame.groupby(by=frame.index.names)
-    #Summing
+    #Transform by sum
     frame=frame.transform("sum")
     #Aggregate index occurance
     frame.loc[:,"occurance"]=frame.index.value_counts()
