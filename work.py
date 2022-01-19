@@ -1,10 +1,4 @@
 def ta0(fileObjectName):
-    """
-    Based on complicated multi-indexes,
-    convert columns into per-index stacked rows.
-    converted per-index stacked rows would be
-    a new component of multi-indexes.
-    """
     df=pd.read_csv(fileObjectName,encoding=enc).reset_index()
     colnum=len(df.columns)
     try:
