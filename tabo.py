@@ -176,3 +176,16 @@ frame.drop("occurance",axis=1,inplace=True)
 frame.reset_index(inplace=True)
 frame.drop(["nick","id"],axis=1,inplace=True)
 frame.set_index(["mail","name"],inplace=True)
+
+#Set target columns
+targetcols="A,CE,CF,CT,DM"
+#Load sheetfile object
+a=pd.read_excel("1_82_stats_220118_fromRow282.xlsx",
+sheet_name=1,na_filter=False,nrows=4000,usecols=targetcols)
+def stringtozero(scalar):
+	if isinstance(scalar,str):
+		return 0
+	elif isinstance(scalar,(int,float)):
+		return scalar
+#Groupbying, transforming
+#Filter dupe indexes only
