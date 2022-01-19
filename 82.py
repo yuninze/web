@@ -136,19 +136,9 @@ def lachk(path="C:/ANNOTATION"):
             os.chdir("..")
         os.chdir("..")
     print(
-    "car: "+str(car),
-    "bus: "+str(bus),
-    "truck: "+str(truck),
-    "bike: "+str(bike),
-    "normal: "+str(normal),
-    "danger: "+str(danger),
-    "violation: "+str(violation),
-    "gggggg"+
-    str(single_solid),
-    str(single_dashed),
-    str(double_solid),
-    str(left_dashed_double),
-    str(right_dashed_double))
+    f"car: {car}, bus: {bus}, truck: {truck}, bike: {bike}, \n"+
+    f"normal: {normal}, danger: {danger}, violation: {violation}"
+    )
     return None
 
 def arcList(fo):

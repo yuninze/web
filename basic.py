@@ -38,18 +38,23 @@ def arcList(fo):
     except:
         return None,print("bad zipfile: "+fo)
 
-def listfile(arc,p="d:\\"):
+def listfile(arcfile,p="d:/"):
     os.chdir(p)
     print("Providing listfile")
-    c=[]
-    for x in ZipFile(arc,"r").namelist():
-        if ".jpg" in x:
-            c[len(c):]=[x]
-        else:
-            continue
-    namestring=str(arc).replace(".zip",".csv")
+    filenames=[]
+    filebad=[]
+    arcList=ZipFile(arcfile).infolist()
+    for z in range(len(arcList)):
+        if ".jp" in arcList[z].filename:
+            if arcList[z].file_size!=0:
+                filenames[len(filenames):]=[arcList[z].filename]
+            elif arcList[z].file_size==0:
+                filebad[len(filebad):]=[arcList[z].filename]
+            else:
+                continue
+    namestring=str(arcfile).replace(".zip",".csv")
     csv.writer(open(namestring,"w",newline="",encoding="utf-8-sig")).writerow(["filename"])
-    for x in c:
+    for x in filenames:
         csv.writer(open(namestring,"a",newline="",encoding="utf-8-sig")).writerow([x])
     pd.read_csv(namestring,encoding="utf-8-sig").to_csv(namestring,encoding="utf-8-sig",index=False)
     return None
