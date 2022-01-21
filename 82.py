@@ -54,7 +54,6 @@ def getjsonfile(path):
 
 def lachk(path="C:/ANNOTATION"):
     car,bus,truck,bike,normal,danger,violation=0,0,0,0,0,0,0
-    single_solid,single_dashed,double_solid,left_dashed_double,right_dashed_double=0,0,0,0,0
     os.chdir(path)
     for channeldir in os.listdir():
         os.chdir(channeldir)
@@ -72,64 +71,32 @@ def lachk(path="C:/ANNOTATION"):
                     did=str(j["dataID"])
                     dsi=j["data_set_info"]["data"]
                     for z in range(len(dsi)):
-                        if len(dsi[z]["value"]["metainfo"])!=5:
-                            print("METAINFO: "+str(Path(jsonfile).absolute())+":::"+did),input()
-                        if dsi[z]["value"]["annotation"]!="POLYGONS":
-                            print("POLYGONS: "+str(Path(jsonfile).absolute())+":::"+did),input()
-                        if len(dsi[z]["value"]["points"])<1:
-                            print("POINTS: "+str(Path(jsonfile).absolute())+":::"+did),input()
-                        for objectKeyName in dsi[z]["value"]["object_Label"].keys():
-                            if "vehicle" in objectKeyName:
-                                if len(dsi[z]["value"]["object_Label"])!=3:
-                                    raise IndexError("Unusual/Vehicle/object_Label: "+str(Path(jsonfile).absolute())+":::"+did)
-                                elif dsi[z]["value"]["extra"]["value"]!="vehicle":
-                                    raise IndexError("Unusual/Vehicle/extra/value: "+str(Path(jsonfile).absolute())+":::"+did)
-                                elif dsi[z]["value"]["extra"]["color"]!="#096ecd":
-                                    raise IndexError("Unusual/Lane/extra/color: "+str(Path(jsonfile).absolute())+":::"+did)
-                                if dsi[z]["value"]["object_Label"]["vehicle_type"]=="vehicle_car":
-                                    car+=1
-                                elif dsi[z]["value"]["object_Label"]["vehicle_type"]=="vehicle_bus":
-                                    bus+=1
-                                elif dsi[z]["value"]["object_Label"]["vehicle_type"]=="vehicle_truck":
-                                    truck+=1
-                                elif dsi[z]["value"]["object_Label"]["vehicle_type"]=="vehicle_bike":
-                                    bike+=1
-                                if dsi[z]["value"]["object_Label"]["vehicle_attribute"]=="normal":
-                                    normal+=1
-                                elif dsi[z]["value"]["object_Label"]["vehicle_attribute"]=="danger":
-                                    danger+=1
-                                elif dsi[z]["value"]["object_Label"]["vehicle_attribute"]=="violation":
-                                    violation+=1
-                            elif "lane" in objectKeyName:
-                                if len(dsi[z]["value"]["object_Label"])!=2:
-                                    raise IndexError("Unusual Content/Lane: "+str(Path(jsonfile).absolute())+":::"+did)
-                                elif dsi[z]["value"]["extra"]["value"]!="lane":
-                                    raise IndexError("Unusual/Lane/extra/value: "+str(Path(jsonfile).absolute())+":::"+did)
-                                elif dsi[z]["value"]["extra"]["color"]=="#096ecd":
-                                    raise IndexError("Unusual/Lane/extra/color: "+str(Path(jsonfile).absolute())+":::"+did)
-                                if dsi[z]["value"]["object_Label"]["lane_attribute"]=="single_solid":
-                                    single_solid=+1
-                                elif dsi[z]["value"]["object_Label"]["lane_attribute"]=="double_solid":
-                                    double_solid=+1
-                                elif dsi[z]["value"]["object_Label"]["lane_attribute"]=="single_dashed":
-                                    single_dashed=+1
-                                elif dsi[z]["value"]["object_Label"]["lane_attribute"]=="left_dashed_double":
-                                    left_dashed_double=+1
-                                elif dsi[z]["value"]["object_Label"]["lane_attribute"]=="right_dashed_double":
-                                    right_dashed_double=+1
-                        if len(dsi[z]["value"]["object_Label"])==2:
-                            if dsi[z]["value"]["object_Label"]["lane_attribute"]=="":
-                                print("lane_ERROR: "+str(Path(jsonfile).absolute())+":::"+did)
-                                dsi[z]["value"]["object_Label"]["lane_type"]="lane_shoulder"
-                                dsi[z]["value"]["object_Label"]["lane_attribute"]="single_solid"
-                                print("written")
-                        elif len(dsi[z]["value"]["object_Label"])==3:
-                            if dsi[z]["value"]["object_Label"]["vehicle_type"]=="":
-                                print("vehicle_ERROR: "+str(Path(jsonfile).absolute())+":::"+did)
-                                dsi[z]["value"]["object_Label"]["vehicle_type"]="vehicle_bus"
-                                dsi[z]["value"]["object_Label"]["vehicle_attribute"]="violation"
-                                dsi[z]["value"]["object_Label"]["vehicle_shown"]="hidden"
-                                print("written")
+                        if len(dsi[z]["value"]["object_Label"])==3:
+                            if dsi[z]["value"]["object_Label"]["vehicle_type"]=="vehicle_car":
+                                car+=1
+                            elif dsi[z]["value"]["object_Label"]["vehicle_type"]=="vehicle_bus":
+                                bus+=1
+                            elif dsi[z]["value"]["object_Label"]["vehicle_type"]=="vehicle_truck":
+                                truck+=1
+                            elif dsi[z]["value"]["object_Label"]["vehicle_type"]=="vehicle_bike":
+                                bike+=1
+                            if dsi[z]["value"]["object_Label"]["vehicle_attribute"]=="normal":
+                                normal+=1
+                            elif dsi[z]["value"]["object_Label"]["vehicle_attribute"]=="danger":
+                                danger+=1
+                            elif dsi[z]["value"]["object_Label"]["vehicle_attribute"]=="violation":
+                                violation+=1
+                        elif len(dsi[z]["value"]["object_Label"])==2:
+                            if dsi[z]["value"]["object_Label"]["lane_attribute"]=="single_solid":
+                                single_solid=+1
+                            elif dsi[z]["value"]["object_Label"]["lane_attribute"]=="double_solid":
+                                double_solid=+1
+                            elif dsi[z]["value"]["object_Label"]["lane_attribute"]=="single_dashed":
+                                single_dashed=+1
+                            elif dsi[z]["value"]["object_Label"]["lane_attribute"]=="left_dashed_double":
+                                left_dashed_double=+1
+                            elif dsi[z]["value"]["object_Label"]["lane_attribute"]=="right_dashed_double":
+                                right_dashed_double=+1
                         print("OK: "+str(Path(jsonfile).absolute())+":::"+did)
                     #json.dump(j,open(jsonfile,"w",encoding="utf-8"),ensure_ascii=False,indent=0)
                 os.chdir("..")

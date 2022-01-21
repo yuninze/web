@@ -1,3 +1,5 @@
+from functools import cache
+from operator import index
 import pandas as pd
 import re,os,math
 
@@ -5,9 +7,9 @@ def removeblank(scalar):
     if type(scalar) is float or int:
         return scalar
     elif pd.isnull(scalar):
-        return 1
+        return 1.0
     elif math.isnan(scalar):
-        return 1
+        return 1.0
     else:
         return scalar
 
@@ -18,14 +20,14 @@ def getvalue(strwithnum):
 	    raise ValueError(f"Unusual content {strwithnum}")
 
 def getflatnum(scalar):
-    if isinstance(scalar,(str,float)):
+    if isinstance(scalar,str):
         try:
             return int(scalar)
         except:
-            print(f"{scalar} is a literal cannot be typed to an integer")
+            print(f"{scalar} is a literal cannot be typed to a float")
             return scalar
     elif isinstance(scalar,int):
-        return scalar
+        return float(scalar)
     else:
         raise TypeError(f"Unusual input scalar {scalar}")
 
@@ -75,12 +77,12 @@ def dashingpn(object):
     return "-".join([object[:3],object[3:7],object[7:]])
 
 def jobcoding(object):
-    if isinstance(object,str):
+    if isinstance(object,str)!=True:
         try:
             return int(str(object).strip())
         except:
             print(f"Substitution failed for {object}")
-            return 777
+            return 61394
     elif isinstance(object,(float,int)):
         return int(object)
 
@@ -155,34 +157,37 @@ def concoction(path,auditDanga,zakupDanga):
         if factor!=1:
             for h in (basis,'EPS','EPH','JPH'):
                 frame.loc[i,h]=occdiv(frame.loc[i,h],factor)
+    #Sanitize temp columns
+    frame.drop("occurance",axis=1,inplace=True)
+    #Index sanitization for pii merging
+    frame.reset_index(inplace=True)
+    frame.drop(["nick","id"],axis=1,inplace=True)
+    frame.set_index(["mail","name"],inplace=True)
+    #Try to open pii frame
+    try:
+        pii=pd.read_csv("pii.csv").drop("Unnamed: 0",axis=1,inplace=True)
+    except:
+        raise OSError("PII file does not exist")
+    #Set index by name and mail
+    pii.set_index(['mail','name'],inplace=True)
 
-#Unconditional concatenating
-frame=pd.concat([a,b,c,d,e,f],axis=0)
-#Groupbying
-frame=frame.groupby(by=frame.index.names)
-#Transforming
-frame=frame.transform("sum")
-#Aggregate index counts
-frame.loc[:,"occurance"]=frame.index.value_counts()
-#Remove duplicated indexes
-frame.reset_index(inplace=True)
-frame.drop_duplicates(subset=["id","mail","name","nick"],inplace=True)
-frame.set_index(["id","mail","name","nick"],inplace=True)
+    
 
 
-#Mean-based stats should be divided by factor or 'occurance//1'
-for i in frame.index:
-    factor=frame.loc[i,"occurance"]
-    if factor!=1:
-        for h in (basis,'EPS','EPH','JPH'):
-            frame.loc[i,h]=occdiv(frame.loc[i,h],factor)
-#Sanitize temp columns
-frame.drop("occurance",axis=1,inplace=True)
 
-#Index sanitization for pii merging
-frame.reset_index(inplace=True)
-frame.drop(["nick","id"],axis=1,inplace=True)
-frame.set_index(["mail","name"],inplace=True)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #Set target columns
 targetcols="A,CE,CF,CT,DM"
@@ -196,3 +201,42 @@ def stringtozero(scalar):
 		return scalar
 #Groupbying, transforming
 #Filter dupe indexes only
+
+#Pii to variety
+for fuck in d.index:
+    col=d.loc[fuck]
+    row=col.loc["variety"]
+    if "장애" in row:
+        col.loc["zangae"]="O"
+    elif "임신" in row:
+        col.loc["preg"]="O"
+    elif "단절" in row:
+        col.loc["gzy"]="O"
+    elif "보훈" in row:
+        col.loc["bohun"]="O"
+    elif "다문화" in row:
+        col.loc["damunwha"]="O"
+    elif "초등" in row:
+        col.loc["choding"]="O"
+    elif "대학생" in row:
+        col.loc["daeding"]="O"
+    elif "투잡" in row:
+        col.loc["jobtwo"]="O"
+    elif "미취업자" in row:
+        col.loc["jobno"]="O"
+    elif "실직자" in row:
+        col.loc["jobloss"]="O"
+    elif "저소득" in row:
+        col.loc["lowincome"]="O"
+    elif "장기실업" in row:
+        col.loc["jobless"]="O"
+    elif "가장" in row:
+        col.loc["mobuzang"]="O"
+    elif "이주" in row:
+        col.loc["visamarry"]="O"
+    elif "북한" in row:
+        col.loc["bukhan"]="O"
+    elif "자영업" in row:
+        col.loc["selfempoly"]="O"
+    elif "AI" in row:
+        col.loc["aihubhx"]="O"
