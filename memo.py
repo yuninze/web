@@ -36,6 +36,18 @@ for fuck in d.index:
     elif "AI" in row:
         col.loc["aihubhx"]="O"
 
+#Set target columns
+targetcols="A,CE,CF,CT,DM"
+#Load sheetfile object
+a=pd.read_excel(
+filepath="1_82_stats_220118_fromRow282.xlsx",
+sheet_name=1,
+na_filter=False,
+nrows=4000,
+usecols=targetcols)
+#Groupbying, transforming
+#Filter dupe indexes only
+
 def queuing():
 arc=ZipFile(zipfile,"r")
 infolist=arc.infolist()
