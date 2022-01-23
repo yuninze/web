@@ -1,5 +1,5 @@
 import pandas as pd
-import re,os,math
+import re,os
 
 def removeblank(scalar):
     if scalar=='':
@@ -143,8 +143,9 @@ def concoction(path,auditDanga,zakupDanga):
     frame.loc[:,"occurance"]=frame.index.value_counts()
     #Remove index dupes
     frame.reset_index(inplace=True)
-    frame.drop_duplicates(subset=["id","mail","name","nick"],inplace=True)
-    frame.set_index(["id","mail","name","nick"],inplace=True)
+    frame.drop(["nick","id"],axis=1,inplace=True)
+    frame.drop_duplicates(subset=["mail","name"],inplace=True)
+    frame.set_index(["mail","name"],inplace=True)
     frame.sort_index(inplace=True)
     #Check basis type
     meanStat=['EPS','EPH','JPH']
@@ -155,20 +156,13 @@ def concoction(path,auditDanga,zakupDanga):
     #Should be divided by factor or 'occurance//1'
     for i in frame.index:
         factor=frame.loc[i,"occurance"]
-        #
         if factor>1:
             for h in meanStat:
-                if h in ('complyRate','auditRate'):
-                    factor*=2
-                    frame.loc[i,h]=occdiv(frame.loc[i,h],factor)
-                else:
-                    factor*=1
-                    frame.loc[i,h]=occdiv(frame.loc[i,h],factor)
+                frame.loc[i,h]=occdiv(frame.loc[i,h],factor)
     #Sanitize temp columns
     frame.drop("occurance",axis=1,inplace=True)
     #Index sanitization for pii merging
     frame.reset_index(inplace=True)
-    frame.drop(["nick","id"],axis=1,inplace=True)
     frame.set_index(["mail","name"],inplace=True)
     #Try to open pii frame
     try:
