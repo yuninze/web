@@ -165,12 +165,13 @@ def concoction(path,auditDanga,zakupDanga):
     frame.reset_index(inplace=True)
     frame.set_index(["mail","name"],inplace=True)
     #Try to open pii frame
+    piipath=path+"/"+"pii.csv"
     try:
-        pii=pd.read_csv(path+"pii.csv").drop("Unnamed: 0",axis=1,inplace=True)
+        pii=pd.read_csv(piipath).drop("Unnamed: 0",axis=1)
         #Set index by name and mail
         pii.set_index(['mail','name'],inplace=True)
         #Merge by index
         return pii.merge(frame,left_index=True,right_index=True)
     except:
-        print("PII does not exist")
+        print(f"'{piipath}' does not exist")
         return frame
