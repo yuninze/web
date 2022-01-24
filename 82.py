@@ -52,8 +52,11 @@ def getjsonfile(path):
                 print("COPIED: "+filepath+": "+str(count))
     print("DONE: "+str(count)+" files")
 
-def lachk(path="C:/ANNOTATION"):
+def lachk(path,write=False):
     car,bus,truck,bike,normal,danger,violation=0,0,0,0,0,0,0
+    single_solid,double_solid,single_dashed,left_dashed_double,right_dashed_double=0,0,0,0,0
+    lane_white,lane_blue,lane_yellow,lane_shoulder=0,0,0,0
+    didcnt=[]
     os.chdir(path)
     for channeldir in os.listdir():
         os.chdir(channeldir)
@@ -69,6 +72,7 @@ def lachk(path="C:/ANNOTATION"):
                         continue
                     j=json.load(open(jsonfile,encoding="utf-8"))
                     did=str(j["dataID"])
+                    didcnt+=[str(j["dataID"])]
                     dsi=j["data_set_info"]["data"]
                     for z in range(len(dsi)):
                         if len(dsi[z]["value"]["object_Label"])==3:
@@ -88,23 +92,35 @@ def lachk(path="C:/ANNOTATION"):
                                 violation+=1
                         elif len(dsi[z]["value"]["object_Label"])==2:
                             if dsi[z]["value"]["object_Label"]["lane_attribute"]=="single_solid":
-                                single_solid=+1
+                                single_solid+=1
                             elif dsi[z]["value"]["object_Label"]["lane_attribute"]=="double_solid":
-                                double_solid=+1
+                                double_solid+=1
                             elif dsi[z]["value"]["object_Label"]["lane_attribute"]=="single_dashed":
-                                single_dashed=+1
+                                single_dashed+=1
                             elif dsi[z]["value"]["object_Label"]["lane_attribute"]=="left_dashed_double":
-                                left_dashed_double=+1
+                                left_dashed_double+=1
                             elif dsi[z]["value"]["object_Label"]["lane_attribute"]=="right_dashed_double":
-                                right_dashed_double=+1
+                                right_dashed_double+=1
+                            if dsi[z]["value"]["object_Label"]["lane_type"]=="lane_white":
+                                lane_white+=1
+                            elif dsi[z]["value"]["object_Label"]["lane_type"]=="lane_blue":
+                                lane_blue+=1
+                            elif dsi[z]["value"]["object_Label"]["lane_type"]=="lane_yellow":
+                                lane_yellow+=1
+                            elif dsi[z]["value"]["object_Label"]["lane_type"]=="lane_shoulder":
+                                lane_shoulder+=1
                         print("OK: "+str(Path(jsonfile).absolute())+":::"+did)
-                    #json.dump(j,open(jsonfile,"w",encoding="utf-8"),ensure_ascii=False,indent=0)
+                    if write:
+                        json.dump(j,open(jsonfile,"w",encoding="utf-8"),ensure_ascii=False,indent=0)
                 os.chdir("..")
             os.chdir("..")
         os.chdir("..")
     print(
     f"car: {car}, bus: {bus}, truck: {truck}, bike: {bike}, \n"+
-    f"normal: {normal}, danger: {danger}, violation: {violation}"
+    f"normal: {normal}, danger: {danger}, violation: {violation}\n"+
+    f"SS: {single_solid}, SD: {single_dashed}, DS: {double_solid}, LDD: {left_dashed_double}, RDD: {right_dashed_double}\n"+
+    f"LW: {lane_white}, LB: {lane_blue}, LY: {lane_yellow}, LS: {lane_shoulder}\n"+
+    f"DID: {len(set(didcnt))}"
     )
     return None
 
