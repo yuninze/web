@@ -3,7 +3,7 @@ import re
 
 def removeblank(scalar):
     if scalar=='':
-        return float(1.0) 
+        return float(1.0)
     else:
         return scalar
 
