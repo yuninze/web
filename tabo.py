@@ -1,83 +1,11 @@
 import pandas as pd
-import re,os
-
-def removeblank(scalar):
-    if scalar=='':
-        return float(1.0) 
-    else:
-        return scalar
-
-def getvalue(strwithnum):
-    if type(strwithnum) is str:
-        return float(re.findall(r"\((\d+.\d+).\)",strwithnum)[0])
-    else:
-	    raise ValueError(f"Unusual content '{strwithnum}'")
-
-def getflatnum(scalar):
-    if isinstance(scalar,str):
-        try:
-            return int(scalar)
-        except:
-            print(f"{scalar} is a literal cannot be typed to a float")
-            return scalar
-    elif isinstance(scalar,(int,float)):
-        return float(scalar)
-    else:
-        raise TypeError(f"Unusual input scalar '{scalar}'")
-
-def isaudit(frame):
-    frame=pd.read_excel(frame,nrows=5)
-    if frame.shape[1]==16:
-        return "audit"
-    else:
-        return "zakup"
-
-def occdiv(object,factor):
-    object=float(object)
-    return round(object/(int(factor)//1),5)
-
-def meaning(objectsum,objectlen):
-    if objectlen==0:
-        objectlen=1
-    try:
-        return objectsum/(objectlen//1)
-    except TypeError:
-        raise ZeroDivisionError(f"Foremost argument '{objectsum}' is 0")
-
-def dashingcn(object):
-    if type(object) is not str:
-        object=str(object)
-        object.replace("-","")
-        return "-".join([object[:6],object[6:]])
-    else:
-        print(f"Substitution failed for '{object}'")
-        return "910117-1932416"
-
-def dashingpn(object):
-    if type(object) is not str:
-        object=str(object)
-    object.replace("-","")
-    if len(object)!=11:
-        if len(object)==9:
-            object="0"+object+"0"
-        elif len(object)==10:
-            object="0"+object
-        else:
-            print(f"Substitution failed for '{object}'")
-            return "010-9405-6485"
-    return "-".join([object[:3],object[3:7],object[7:]])
-
-def jobcoding(object):
-    if isinstance(object,str)!=True:
-        try:
-            return int(str(object).strip())
-        except:
-            print(f"Substitution failed for '{object}'")
-            return 61394
-    elif isinstance(object,(float,int)):
-        return int(object)
+import os
+from libtype import *
 
 def purify(target,danga=10):
+    '''
+    Sanitize BO-derived sheetfile.
+    '''
     #Purifying setting upon isaudit
     if isaudit(target)=="audit":
         basis="complyRate"
@@ -96,9 +24,8 @@ def purify(target,danga=10):
     frame=frame.applymap(removeblank)
     #Type basisRate
     frame[basis]=frame[basis].apply(float)
-    #Set id as integer
-    frame.id=frame.id.apply(int)
-    frame.set_index("id",inplace=True)
+    #Set indexes
+    frame.set_index(keys=['mail','name'],inplace=True)
     #Try to parsing TWT to float
     frame.TWT=frame.TWT.apply(getvalue)
     #Regards zero work count
@@ -116,12 +43,12 @@ def purify(target,danga=10):
                 frame.loc[i,"JPH"]=3600/(frame.loc[i,"TWT"]/frame.loc[i,"work"])
             else:
                 frame.loc[i,"JPH"]=3600/(frame.loc[i,"TWT"]/frame.loc[i,"work"])
-    #Sanitize index to concatnating
-    frame.reset_index(inplace=True)
-    frame.set_index(["id","mail","name","nick"],inplace=True)
     return [frame,basis]
 
 def concoction(path,auditDanga,zakupDanga):
+    '''
+    Result per-directory frame. Recognize zakup and audit.
+    '''
     #framefileObject collection with pathstring
     sheetfiles=[path+"/"+z for z in os.listdir(path) if ".xls" in z]
     frames={}
@@ -135,43 +62,42 @@ def concoction(path,auditDanga,zakupDanga):
         frames[framename]=purify(framename,danga)[0]
     #Unconditional concatenate
     frame=pd.concat([y for x,y in frames.items()],axis=0,ignore_index=False)
-    #Groupby
+    return frame
+
+def sansibar(frames,pii='c:/'):
+    '''
+    Result pii-merged, occdiv-divided result. Take iterable of frames.
+    '''
+    #Check whether an argument consists of frames
+    if isinstance(frames,(set,list,dict,tuple))==False:
+        raise TypeError("Argument is not an iterable")
+    if isinstance(frames,dict):
+        if len(frames)<1:
+            raise TypeError("Argument is not an iterable")
+    #Concatenate before groupbying
+    frame=pd.concat(frames)
     frame=frame.groupby(by=frame.index.names)
     #Transform by sum
     frame=frame.transform("sum")
     #Aggregate index occurance
     frame.loc[:,"occurance"]=frame.index.value_counts()
-    #Remove index dupes
-    frame.reset_index(inplace=True)
-    frame.drop(["nick","id"],axis=1,inplace=True)
-    frame.drop_duplicates(subset=["mail","name"],inplace=True)
-    frame.set_index(["mail","name"],inplace=True)
-    frame.sort_index(inplace=True)
-    #Check basis type
-    meanStat=['EPS','EPH','JPH']
-    if 'complyRate' in frame.columns:
-        meanStat+=['complyRate']
-    if 'auditRate' in frame.columns:
-        meanStat+=['auditRate']
-    #Should be divided by factor or 'occurance//1'
-    for i in frame.index:
-        factor=frame.loc[i,"occurance"]
-        if factor>1:
-            for h in meanStat:
-                frame.loc[i,h]=occdiv(frame.loc[i,h],factor)
+    #Drop index duplicates
+    frame=frame[~frame.index.duplicated()]
+    #Occdiv meanStat
+    frame=occdivstats(frame)
     #Sanitize temp columns
     frame.drop("occurance",axis=1,inplace=True)
-    #Index sanitization for pii merging
-    frame.reset_index(inplace=True)
-    frame.set_index(["mail","name"],inplace=True)
     #Try to open pii frame
-    piipath=path+"/"+"pii.csv"
     try:
-        pii=pd.read_csv(piipath).drop("Unnamed: 0",axis=1)
-        #Set index by name and mail
-        pii.set_index(['mail','name'],inplace=True)
-        #Merge by index
-        return pii.merge(frame,left_index=True,right_index=True)
+        try:
+            pii=pd.read_csv(pii).drop("Unnamed: 0",axis=1)
+        except:
+            pii=pd.read_csv(pii,encoding='utf-8-sig').drop("Unnamed: 0",axis=1)
+        finally:
+            #Set index by name and mail
+            pii.set_index(keys=['mail','name'],inplace=True)
+            #Merge by index
+            return pii.merge(frame,left_index=True,right_index=True)
     except:
-        print(f"'{piipath}' does not exist")
+        print(f"'{pii}' does not exist")
         return frame
