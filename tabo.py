@@ -47,7 +47,7 @@ def purify(target,danga=10):
 
 def concoction(path,auditDanga,zakupDanga):
     '''
-    Result per-directory frame. Recognize zakup and audit.
+    Result per-directory frame. Recognize zakup and audit. Does not take account index occurance.
     '''
     #framefileObject collection with pathstring
     sheetfiles=[path+"/"+z for z in os.listdir(path) if ".xls" in z]
@@ -66,16 +66,20 @@ def concoction(path,auditDanga,zakupDanga):
 
 def sansibar(frames,pii='c:/'):
     '''
-    Result pii-merged, occdiv-divided result. Take iterable of frames.
+    Result pii-merged, occdiv-divided result. Can take iterable of frames.
     '''
     #Check whether an argument consists of frames
-    if isinstance(frames,(set,list,dict,tuple))==False:
-        raise TypeError("Argument is not an iterable")
+    if isinstance(frames,(set,list,dict,tuple)):
+        #Concatnate if iterable
+        frame=pd.concat(frames,ignore_index=False)
+    else:
+        #Frame is frames if non-iterable
+        frame=frames
     if isinstance(frames,dict):
+        #Dict-type frame input is not implemented yet
         if len(frames)<1:
-            raise TypeError("Argument is not an iterable")
-    #Concatenate before groupbying
-    frame=pd.concat(frames)
+            raise NotImplementedError("Not Supported Type")
+    #Groupbying
     frame=frame.groupby(by=frame.index.names)
     #Transform by sum
     frame=frame.transform("sum")
