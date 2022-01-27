@@ -9,14 +9,14 @@ def purify(target,danga=10):
     #Purifying setting upon isaudit
     if isaudit(target)=="audit":
         basis="complyRate"
-        cols=["id","mail","name","nick","work",basis,"TWT"]
         usecols="A,B,C,D,F,I,K"
     elif isaudit(target)=="zakup":
         basis="auditRate"
-        cols=["id","mail","name","nick","work",basis,"TWT"]
         usecols="A,B,C,D,E,L,N"
     else:
         raise IndexError("Unusual frame columns")
+    #Column naming
+    cols=["id","mail","name","nick","work",basis,"TWT"]
     #Attempt to load within settings above
     frame=pd.read_excel(target,usecols=usecols,na_filter=True).drop([0])
     frame.columns=cols
@@ -43,7 +43,7 @@ def purify(target,danga=10):
                 frame.loc[i,"JPH"]=3600/(frame.loc[i,"TWT"]/frame.loc[i,"work"])
             else:
                 frame.loc[i,"JPH"]=3600/(frame.loc[i,"TWT"]/frame.loc[i,"work"])
-    return [frame,basis]
+    return (frame,basis)
 
 def concoction(path,auditDanga,zakupDanga):
     '''
@@ -61,7 +61,7 @@ def concoction(path,auditDanga,zakupDanga):
         #Purify upon frame type
         frames[framename]=purify(framename,danga)[0]
     #Unconditional concatenate
-    frame=pd.concat([y for x,y in frames.items()],axis=0,ignore_index=False)
+    frame=pd.concat([frames.values()],axis=0,ignore_index=False)
     return frame
 
 def sansibar(frames,pii='c:/'):
@@ -78,7 +78,7 @@ def sansibar(frames,pii='c:/'):
     if isinstance(frames,dict):
         #Dict-type frame input is not implemented yet
         if len(frames)<1:
-            raise NotImplementedError("Not Supported Type")
+            raise NotImplementedError("peculiar frames")
     #Groupbying
     frame=frame.groupby(by=frame.index.names)
     #Transform by sum
@@ -94,10 +94,11 @@ def sansibar(frames,pii='c:/'):
     #Try to open pii frame
     try:
         try:
-            pii=pd.read_csv(pii).drop("Unnamed: 0",axis=1)
+            pii=pd.read_csv(pii)
         except:
-            pii=pd.read_csv(pii,encoding='utf-8-sig').drop("Unnamed: 0",axis=1)
+            pii=pd.read_csv(pii,encoding='utf-8-sig')
         finally:
+            pii.drop("Unnamed: 0",axis=1,inplace=True)
             #Set index by name and mail
             pii.set_index(keys=['mail','name'],inplace=True)
             #Merge by index
