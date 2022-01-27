@@ -47,7 +47,7 @@ def purify(target,danga=10):
 
 def concoction(path,auditDanga,zakupDanga):
     '''
-    Result per-directory frame. Recognize zakup and audit. Does not take account index occurance.
+    Result per-directory frame. Recognize zakup and audit. Index occurance is ignored.
     '''
     #framefileObject collection with pathstring
     sheetfiles=[path+"/"+z for z in os.listdir(path) if ".xls" in z]

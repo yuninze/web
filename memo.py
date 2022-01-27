@@ -1,3 +1,129 @@
+zyeon
+zyeon=pd.pivot_table(a,values='money',index=['idx','name','cn','wm'],aggfunc=np.sum)
+zyeon.unstack().to_csv('zyeon.csv',encoding='utf-8-sig')
+
+ca=concoction('C:/82/stat/concat/ca',10,10)
+cz=concoction('C:/82/stat/concat/cz',10,10)
+la=concoction('C:/82/stat/concat/la',70,550)
+lz=concoction('C:/82/stat/concat/lz',70,550)
+
+위반 이미지파일 개수, 위험 이미지파일 개수, 정상 이미지파일 개수
+정상 이미지파일 개수=전체 개수-(위반 이미지파일 개수+위험 이미지파일 개수)
+
+ArcNameList=ZipFile('PRJ3668.zip').namelist()
+
+ArcNameListJsonfile=[x for x in ArcNameList if '.json' in x]
+ArcNameListing=[x for x in ArcNameList if '.jpg' in x]
+ArcNameListingSon={}
+ArcNameListingSon['aw']=[h for h in ArcNameListing if 'IMAGE/A/WHITE/' in h]
+ArcNameListingSon['ay']=[h for h in ArcNameListing if 'IMAGE/A/YELLOW/' in h]
+ArcNameListingSon['ab']=[h for h in ArcNameListing if 'IMAGE/A/BLUE/' in h]
+ArcNameListingSon['as']=[h for h in ArcNameListing if 'IMAGE/A/SHOULDER/' in h]
+ArcNameListingSon['bw']=[h for h in ArcNameListing if 'IMAGE/B/WHITE/' in h]
+ArcNameListingSon['by']=[h for h in ArcNameListing if 'IMAGE/B/YELLOW/' in h]
+ArcNameListingSon['bb']=[h for h in ArcNameListing if 'IMAGE/B/BLUE/' in h]
+ArcNameListingSon['bs']=[h for h in ArcNameListing if 'IMAGE/B/SHOULDER/' in h]
+ArcNameListingSon['cw']=[h for h in ArcNameListing if 'IMAGE/C/WHITE/' in h]
+ArcNameListingSon['cy']=[h for h in ArcNameListing if 'IMAGE/C/YELLOW/' in h]
+ArcNameListingSon['cb']=[h for h in ArcNameListing if 'IMAGE/C/BLUE/' in h]
+ArcNameListingSon['cs']=[h for h in ArcNameListing if 'IMAGE/C/SHOULDER/' in h]
+for x,y in ArcNameListingSon.items():
+	print(f'{x}: {len(y)}')
+
+frame1=pd.read_csv('c:/82_stats_fuck.csv',nrows=5000,encoding='utf-8-sig',low_memory=False)
+
+from libtype import *
+cw=pd.read_csv('cw.csv')
+cw.cn=cw.cn.apply(dashingcn)
+cw.pn=cw.pn.apply(dashingpn)
+cw.money=cw.money.apply(accountingtostr)
+cw.set_index(['name','cn','pn'],inplace=True)
+
+#cn slicing for new indexing
+def cnslicing(scalar):
+	return str(scalar)[:8]
+def concatstr(scalar0,scalar1):
+	return str(scalar0)+str(scalar1)
+	
+for i in stat.index:
+	x=stat.loc[i,'성명']
+	y=stat.loc[i,'주민번호\n(13자리)']
+	stat.loc[i,'idx']=concatstr(x,cnslicing(y))
+
+for i in frame1.index:
+	x=frame1.loc[i,'name']
+	y=frame1.loc[i,'cn']
+	frame1.loc[i,'name']=concatstr(x,cnslicing(y))
+	
+for i in a.index:
+	x=a.loc[i,'name']
+	y=a.loc[i,'cn']
+	a.loc[i,'idx']=concatstr(x,cnslicing(y))
+	
+for i in cw.index:
+	x=cw.loc[i,'name']
+	y=cw.loc[i,'cn']
+	cw.loc[i,'idx']=concatstr(x,cnslicing(y))
+	
+	
+frame3=frame2[pd.isna(frame2.성명)]
+for i in frame3.index:
+	frame3.loc[i,'name']=str(i)[:3]
+	frame3.loc[i,'cn']=str(i)[3:]
+
+frame0.set_index(inplace=True)
+fuck=pd.pivot_table(frame0,values='money',index=['name','wm'])
+fuck.unstack()
+
+half
+float16
+single
+float32
+double
+float64
+
+a.iloc[:,56:]=a.iloc[:,56:].applymap(fuk)
+
+#Load sheetfile
+b=pd.read_excel(
+"82.xlsx",
+sheet_name=1,
+na_filter=False,
+nrows=5000,
+
+
+
+
+
+
+#Set target columns
+targetcols='H,CE,DM'
+
+#Load sheetfile
+a=pd.read_excel(
+"82.xlsx",
+sheet_name=1,
+na_filter=False,
+nrows=5000,
+usercols=targetcols)
+
+#Sanitize column names and row
+a.columns=['idx','decPay','work']
+a=a.iloc[4:,:]
+
+#Set concatenated strings as index
+a.set_index('idx',inplace=True)
+#Remove stranges
+a=a[a.index!='']
+#Remove December nonparticipatants, typing
+a=a.applymap(removeblank)
+#Groupbying and transforming
+a=a.groupby(by=a.index.names).transform('sum')
+
+a.sort_index(inplace=True)
+
+
+
 for fuck in d.index:
     col=d.loc[fuck]
     row=col.loc["variety"]
