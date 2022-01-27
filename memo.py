@@ -48,7 +48,40 @@ import pandas as pd
 
 
 
+a.iloc[:,56:]=a.iloc[:,56:].applymap(fuk)
 
+#Load sheetfile
+b=pd.read_excel(
+"82.xlsx",
+sheet_name=1,
+na_filter=False,
+nrows=5000,
+
+#Set target columns
+targetcols='H,CE,DM'
+
+#Load sheetfile
+a=pd.read_excel(
+"82.xlsx",
+sheet_name=1,
+na_filter=False,
+nrows=5000,
+usercols=targetcols)
+
+#Sanitize column names and row
+a.columns=['idx','decPay','work']
+a=a.iloc[4:,:]
+
+#Set concatenated strings as index
+a.set_index('idx',inplace=True)
+#Remove stranges
+a=a[a.index!='']
+#Remove December nonparticipatants, typing
+a=a.applymap(removeblank)
+#Groupbying and transforming
+a=a.groupby(by=a.index.names).transform('sum')
+
+a.sort_index(inplace=True)
 
 
 
