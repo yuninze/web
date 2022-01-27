@@ -56,8 +56,8 @@ def lachk(path,write=False):
     car,bus,truck,bike,normal,danger,violation=0,0,0,0,0,0,0
     single_solid,double_solid,single_dashed,left_dashed_double,right_dashed_double=0,0,0,0,0
     lane_white,lane_blue,lane_yellow,lane_shoulder=0,0,0,0
-    didcnt=[]
-    filename=[]
+    dataidxlist=[]
+    filenamelist=[]
     os.chdir(path)
     for channeldir in os.listdir():
         os.chdir(channeldir)
@@ -71,49 +71,49 @@ def lachk(path,write=False):
                         os.remove(jsonfile)
                         print("...DELETED: "+jsonfile)
                         continue
-                    j=json.load(open(jsonfile,encoding="utf-8"))
-                    did=str(j["dataID"])
-                    didcnt+=[str(j["dataID"])]
-                    filename+=j["data_set_info"]["sourceValue"]
-                    dsi=j["data_set_info"]["data"]
-                    for z in range(len(dsi)):
-                        if len(dsi[z]["value"]["object_Label"])==3:
-                            if dsi[z]["value"]["object_Label"]["vehicle_type"]=="vehicle_car":
-                                car+=1
-                            elif dsi[z]["value"]["object_Label"]["vehicle_type"]=="vehicle_bus":
-                                bus+=1
-                            elif dsi[z]["value"]["object_Label"]["vehicle_type"]=="vehicle_truck":
-                                truck+=1
-                            elif dsi[z]["value"]["object_Label"]["vehicle_type"]=="vehicle_bike":
-                                bike+=1
-                            if dsi[z]["value"]["object_Label"]["vehicle_attribute"]=="normal":
-                                normal+=1
-                            elif dsi[z]["value"]["object_Label"]["vehicle_attribute"]=="danger":
-                                danger+=1
-                            elif dsi[z]["value"]["object_Label"]["vehicle_attribute"]=="violation":
-                                violation+=1
-                        elif len(dsi[z]["value"]["object_Label"])==2:
-                            if dsi[z]["value"]["object_Label"]["lane_attribute"]=="single_solid":
-                                single_solid+=1
-                            elif dsi[z]["value"]["object_Label"]["lane_attribute"]=="double_solid":
-                                double_solid+=1
-                            elif dsi[z]["value"]["object_Label"]["lane_attribute"]=="single_dashed":
-                                single_dashed+=1
-                            elif dsi[z]["value"]["object_Label"]["lane_attribute"]=="left_dashed_double":
-                                left_dashed_double+=1
-                            elif dsi[z]["value"]["object_Label"]["lane_attribute"]=="right_dashed_double":
-                                right_dashed_double+=1
-                            if dsi[z]["value"]["object_Label"]["lane_type"]=="lane_white":
-                                lane_white+=1
-                            elif dsi[z]["value"]["object_Label"]["lane_type"]=="lane_blue":
-                                lane_blue+=1
-                            elif dsi[z]["value"]["object_Label"]["lane_type"]=="lane_yellow":
-                                lane_yellow+=1
-                            elif dsi[z]["value"]["object_Label"]["lane_type"]=="lane_shoulder":
-                                lane_shoulder+=1
-                        print("OK: "+str(Path(jsonfile).absolute())+":::"+did)
-                    if write:
-                        json.dump(j,open(jsonfile,"w",encoding="utf-8"),ensure_ascii=False,indent=0)
+                    with open(jsonfile,encoding="utf-8",mode='r') as jsonfileData:
+                        j=json.load(jsonfileData)
+                        dataidxlist+=[int(j["dataID"])]
+                        filenamelist+=[str(j["data_set_info"]["sourceValue"])]
+                        dsi=j["data_set_info"]["data"]
+                        for z in range(len(dsi)):
+                            if len(dsi[z]["value"]["object_Label"])==3:
+                                if dsi[z]["value"]["object_Label"]["vehicle_type"]=="vehicle_car":
+                                    car+=1
+                                elif dsi[z]["value"]["object_Label"]["vehicle_type"]=="vehicle_bus":
+                                    bus+=1
+                                elif dsi[z]["value"]["object_Label"]["vehicle_type"]=="vehicle_truck":
+                                    truck+=1
+                                elif dsi[z]["value"]["object_Label"]["vehicle_type"]=="vehicle_bike":
+                                    bike+=1
+                                if dsi[z]["value"]["object_Label"]["vehicle_attribute"]=="normal":
+                                    normal+=1
+                                elif dsi[z]["value"]["object_Label"]["vehicle_attribute"]=="danger":
+                                    danger+=1
+                                elif dsi[z]["value"]["object_Label"]["vehicle_attribute"]=="violation":
+                                    violation+=1
+                            elif len(dsi[z]["value"]["object_Label"])==2:
+                                if dsi[z]["value"]["object_Label"]["lane_attribute"]=="single_solid":
+                                    single_solid+=1
+                                elif dsi[z]["value"]["object_Label"]["lane_attribute"]=="double_solid":
+                                    double_solid+=1
+                                elif dsi[z]["value"]["object_Label"]["lane_attribute"]=="single_dashed":
+                                    single_dashed+=1
+                                elif dsi[z]["value"]["object_Label"]["lane_attribute"]=="left_dashed_double":
+                                    left_dashed_double+=1
+                                elif dsi[z]["value"]["object_Label"]["lane_attribute"]=="right_dashed_double":
+                                    right_dashed_double+=1
+                                if dsi[z]["value"]["object_Label"]["lane_type"]=="lane_white":
+                                    lane_white+=1
+                                elif dsi[z]["value"]["object_Label"]["lane_type"]=="lane_blue":
+                                    lane_blue+=1
+                                elif dsi[z]["value"]["object_Label"]["lane_type"]=="lane_yellow":
+                                    lane_yellow+=1
+                                elif dsi[z]["value"]["object_Label"]["lane_type"]=="lane_shoulder":
+                                    lane_shoulder+=1
+                            print("OK: "+str(Path(jsonfile).absolute()))
+                        if write:
+                            json.dump(j,open(jsonfile,"w",encoding="utf-8"),ensure_ascii=False,indent=0)
                 os.chdir("..")
             os.chdir("..")
         os.chdir("..")
@@ -122,10 +122,10 @@ def lachk(path,write=False):
     f"normal: {normal}, danger: {danger}, violation: {violation}\n"+
     f"SS: {single_solid}, SD: {single_dashed}, DS: {double_solid}, LDD: {left_dashed_double}, RDD: {right_dashed_double}\n"+
     f"LW: {lane_white}, LB: {lane_blue}, LY: {lane_yellow}, LS: {lane_shoulder}\n"+
-    f"DID: {len(didcnt)}"+
-    f"filename: {len(filename)}//{len(set(filename))}"
+    f"DID: {len(dataidxlist)}"+
+    f"filename: {len(filenamelist)}//{len(set(filenamelist))}"
     )
-    return filename
+    return filenamelist,dataidxlist
 
 def arcList(fo):
     arcList=ZipFile(fo,"r").infolist()

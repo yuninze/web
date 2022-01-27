@@ -7,6 +7,18 @@ cz=concoction('C:/82/stat/concat/cz',10,10)
 la=concoction('C:/82/stat/concat/la',70,550)
 lz=concoction('C:/82/stat/concat/lz',70,550)
 
+filenamelist,dadtaidxlist=lachk('O:/82/result/PRJ3668_809900/ANNOTATION')
+
+import csv
+
+with open('c:/filenamelist.csv',encoding='utf-8',newline='',mode='w+') as filenamelistcsvfile:
+	csvwriter=csv.writer(filenamelistcsvfile)
+	[csvwriter.writerow([t]) for t in filenamelist]
+
+with open('c:/dataidxlist.csv',encoding='utf-8',newline='',mode='w+') as dataidxlistcsvfile:
+	csvwriter=csv.writer(dataidxlistcsvfile)
+	[csvwriter.writerow([t]) for t in dataidxlist]
+
 위반 이미지파일 개수, 위험 이미지파일 개수, 정상 이미지파일 개수
 정상 이미지파일 개수=전체 개수-(위반 이미지파일 개수+위험 이미지파일 개수)
 
