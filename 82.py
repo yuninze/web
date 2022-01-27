@@ -74,7 +74,7 @@ def lachk(path,write=False):
                     j=json.load(open(jsonfile,encoding="utf-8"))
                     did=str(j["dataID"])
                     didcnt+=[str(j["dataID"])]
-                    filename+=["data_set_info"]["sourceValue"]
+                    filename+=j["data_set_info"]["sourceValue"]
                     dsi=j["data_set_info"]["data"]
                     for z in range(len(dsi)):
                         if len(dsi[z]["value"]["object_Label"])==3:
@@ -125,7 +125,7 @@ def lachk(path,write=False):
     f"DID: {len(didcnt)}"+
     f"filename: {len(filename)}//{len(set(filename))}"
     )
-    return None
+    return filename
 
 def arcList(fo):
     arcList=ZipFile(fo,"r").infolist()
