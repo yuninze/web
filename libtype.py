@@ -25,6 +25,19 @@ def getflatnum(scalar):
     else:
         raise TypeError(f"Unusual input scalar '{scalar}'")
 
+def fuk(scalar):
+    if isinstance(scalar,str):
+        try:
+            return round(float(scalar),4)
+        except:
+            return scalar
+    elif isinstance(scalar,int):
+        return round(float(scalar),4)
+    elif isinstance(scalar,float):
+        return round(scalar,4)
+    else:
+        return scalar
+
 def isaudit(frame):
     frame=pd.read_excel(frame,nrows=5)
     if frame.shape[1]==16:
@@ -87,6 +100,9 @@ def dashingpn(object):
             print(f"Substitution failed for '{object}'")
             return "010-9405-6485"
     return "-".join([object[:3],object[3:7],object[7:]])
+
+def accountingtostr(scalar):
+    return str(scalar).replace(',','')
 
 def jobcoding(object):
     if isinstance(object,str)!=True:

@@ -120,7 +120,7 @@ def lachk(path,write=False):
     f"normal: {normal}, danger: {danger}, violation: {violation}\n"+
     f"SS: {single_solid}, SD: {single_dashed}, DS: {double_solid}, LDD: {left_dashed_double}, RDD: {right_dashed_double}\n"+
     f"LW: {lane_white}, LB: {lane_blue}, LY: {lane_yellow}, LS: {lane_shoulder}\n"+
-    f"DID: {len(set(didcnt))}"
+    f"DID: {len(didcnt)}"
     )
     return None
 
