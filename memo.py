@@ -11,7 +11,6 @@ lz=concoction('C:/82/stat/concat/lz',70,550)
 정상 이미지파일 개수=전체 개수-(위반 이미지파일 개수+위험 이미지파일 개수)
 
 ArcNameList=ZipFile('PRJ3668.zip').namelist()
-
 ArcNameListJsonfile=[x for x in ArcNameList if '.json' in x]
 ArcNameListing=[x for x in ArcNameList if '.jpg' in x]
 ArcNameListingSon={}
@@ -27,8 +26,7 @@ ArcNameListingSon['cw']=[h for h in ArcNameListing if 'IMAGE/C/WHITE/' in h]
 ArcNameListingSon['cy']=[h for h in ArcNameListing if 'IMAGE/C/YELLOW/' in h]
 ArcNameListingSon['cb']=[h for h in ArcNameListing if 'IMAGE/C/BLUE/' in h]
 ArcNameListingSon['cs']=[h for h in ArcNameListing if 'IMAGE/C/SHOULDER/' in h]
-for x,y in ArcNameListingSon.items():
-	print(f'{x}: {len(y)}')
+for x,y in ArcNameListingSon.items():print(f'{x}: {len(y)}')
 
 frame1=pd.read_csv('c:/82_stats_fuck.csv',nrows=5000,encoding='utf-8-sig',low_memory=False)
 

@@ -57,6 +57,7 @@ def lachk(path,write=False):
     single_solid,double_solid,single_dashed,left_dashed_double,right_dashed_double=0,0,0,0,0
     lane_white,lane_blue,lane_yellow,lane_shoulder=0,0,0,0
     didcnt=[]
+    filename=[]
     os.chdir(path)
     for channeldir in os.listdir():
         os.chdir(channeldir)
@@ -73,6 +74,7 @@ def lachk(path,write=False):
                     j=json.load(open(jsonfile,encoding="utf-8"))
                     did=str(j["dataID"])
                     didcnt+=[str(j["dataID"])]
+                    filename+=["data_set_info"]["sourceValue"]
                     dsi=j["data_set_info"]["data"]
                     for z in range(len(dsi)):
                         if len(dsi[z]["value"]["object_Label"])==3:
@@ -120,7 +122,8 @@ def lachk(path,write=False):
     f"normal: {normal}, danger: {danger}, violation: {violation}\n"+
     f"SS: {single_solid}, SD: {single_dashed}, DS: {double_solid}, LDD: {left_dashed_double}, RDD: {right_dashed_double}\n"+
     f"LW: {lane_white}, LB: {lane_blue}, LY: {lane_yellow}, LS: {lane_shoulder}\n"+
-    f"DID: {len(didcnt)}"
+    f"DID: {len(didcnt)}"+
+    f"filename: {len(filename)}//{len(set(filename))}"
     )
     return None
 
