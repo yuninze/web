@@ -41,9 +41,9 @@ def fuk(scalar):
 def isaudit(frame):
     frame=pd.read_excel(frame,nrows=5)
     if frame.shape[1]==16:
-        return "audit"
+        return 1
     else:
-        return "zakup"
+        return 0
 
 def occdiv(object,factor):
     '''

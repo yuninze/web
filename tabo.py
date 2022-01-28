@@ -7,14 +7,12 @@ def purify(target,danga=10):
     Sanitize BO-derived sheetfile.
     '''
     #Purifying setting upon isaudit
-    if isaudit(target)=="audit":
+    if isaudit(target):
         basis="complyRate"
         usecols="A,B,C,D,F,I,K"
-    elif isaudit(target)=="zakup":
+    else:
         basis="auditRate"
         usecols="A,B,C,D,E,L,N"
-    else:
-        raise IndexError("Unusual frame columns")
     #Column naming
     cols=["id","mail","name","nick","work",basis,"TWT"]
     #Attempt to load within settings above
@@ -54,10 +52,10 @@ def concoction(path,auditDanga,zakupDanga):
     frames={}
     #Confirm whether frame type
     for framename in sheetfiles:
-        if isaudit(framename)=="zakup":
-            danga=zakupDanga
-        elif isaudit(framename)=="audit":
+        if isaudit(framename):
             danga=auditDanga
+        else:
+            danga=zakupDanga
         #Purify upon frame type
         frames[framename]=purify(framename,danga)[0]
     #Unconditional concatenate
