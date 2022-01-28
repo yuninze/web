@@ -1,4 +1,5 @@
-import os,glob,cv2,shutil;import pandas as pd;import numpy as np;
+import os,glob,shutil;import numpy as np;
+import cv2
 from PIL import Image
 os.chdir("Z:\\FRIEND\\yun_work\\code\\cv2")
 
@@ -160,7 +161,7 @@ def face(path):
                 cv2.waitKey(0),cv2.destroyAllWindows()
     return None
 
-def data(a):pass
+def data(a):
     a=str(a+".json")
     b=json.load(open(a,"r",encoding="utf-8-sig"))
     c=[]
@@ -174,4 +175,40 @@ def data(a):pass
         c["y1"]=b["result"][x]["gp_trash_bb"]["data"][0]["value"]["coords"]["bl"]["y"]
     return None
 
-def totalRiposte(a):pass
+def stamp(fgifile,bgipath):
+    os.chdir(bgipath)
+    #load foreground imagefile as a foreground image
+    with Image.open(fgifile) as fgi:
+        #resize if bgi is large
+        if sum(fgi.size)>800:
+            #pngfile is not supported as 
+            if fgi.filename.endswith('.png'):
+                pass
+            else:
+                fgi=fgi.resize(([np.uint16(x*0.7) for x in fgi.size]),Image.LANCZOS)
+                print(f'resized: {fgi.size[0]} x {fgi.size[1]}')
+        else:
+            print(f'not resized: {fgi.size[0]} x {fgi.size[1]}')
+        #get bgifilenamelist form the bgipath
+        bgifile=glob.glob('*.jp*')
+        for bgi in bgifile:
+            factor=np.random.random_sample(2)*2
+            #load background imagefile as a background image
+            with Image.open(bgi,'r') as bgi:
+                #preserve bgi filename
+                bgifilename=bgi.filename
+                #channelConvert RGBA
+                bgi=bgi.convert('RGBA')
+                #have initial coordinates
+                bgix0,bgiy0=bgi.size
+                #have coordinates of upper-left region
+                bgix1,bgiy1=np.uint16(bgix0*0.1),np.uint16(bgiy0*0.05)
+                #have moderately moved coordinates of upper-left region
+                bgix2,bgiy2=tuple(np.uint16(w) for w in (bgix1*factor[0],bgiy1*factor[1]))
+                print(str(bgix2),str(bgiy2))
+                #paste fgi to bgi
+                bgi.paste(fgi,box=(bgix1+bgix2,bgiy1+bgiy2),mask=fgi.convert('RGBA'))
+                #channelConvert RGB
+                bgi=bgi.convert('RGB')
+                #save bgi to bgiimagefile
+                bgi.save('z'+bgifilename,'JPEG',quality=40,progressive=True,optimize=True)
