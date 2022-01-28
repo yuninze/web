@@ -1,11 +1,10 @@
 import os,json,csv,glob,shutil
 import sys
-from typing import Counter
 import pandas as pd;import datetime as dt;from zipfile import ZipFile
 from pathlib import Path
 #####################################################################
 ima,enc,idea=str((dt.datetime.now()).strftime("%m%d")),"utf-8-sig","=="
-sys.setrecursionlimit(1000000)
+sys.setrecursionlimit(900_000)
 
 def strCheck(prop):
     if type(prop) is int or float:
@@ -113,19 +112,20 @@ def lachk(path,write=False):
                                     lane_shoulder+=1
                             print("OK: "+str(Path(jsonfile).absolute()))
                         if write:
-                            json.dump(j,open(jsonfile,"w",encoding="utf-8"),ensure_ascii=False,indent=0)
+                            json.dump(j,ensure_ascii=False,indent=0)
                 os.chdir("..")
             os.chdir("..")
         os.chdir("..")
     print(
     f"car: {car}, bus: {bus}, truck: {truck}, bike: {bike}, \n"+
     f"normal: {normal}, danger: {danger}, violation: {violation}\n"+
-    f"SS: {single_solid}, SD: {single_dashed}, DS: {double_solid}, LDD: {left_dashed_double}, RDD: {right_dashed_double}\n"+
+    f"SS: {single_solid}, SD: {single_dashed}, DS: {double_solid},\
+    LDD: {left_dashed_double}, RDD: {right_dashed_double}\n"+
     f"LW: {lane_white}, LB: {lane_blue}, LY: {lane_yellow}, LS: {lane_shoulder}\n"+
     f"DID: {len(dataidxlist)}"+
     f"filename: {len(filenamelist)}//{len(set(filenamelist))}"
     )
-    return filenamelist,dataidxlist
+    return (filenamelist,dataidxlist)
 
 def arcList(fo):
     arcList=ZipFile(fo,"r").infolist()
