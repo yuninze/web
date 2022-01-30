@@ -1,65 +1,48 @@
 import os,json,csv,glob,shutil
-import pandas as pd;import datetime as dt;from zipfile import BadZipFile, ZipFile
-import math;from pathlib import Path
-ima,enc,idea=str((dt.datetime.now()).strftime("%m%d")),"utf-8-sig","====="
+import pandas as pd
+import datetime as dt
+from zipfile import ZipFile
+ima,enc,idea=str((dt.datetime.now()).strftime("%m%d")),"utf-8-sig","=="
 
-def strCheck(prop):
-    if type(prop) is int or float:
-        raise TypeError("a prop should be a str")
-    elif type(prop) is str:
-        return prop
-    else:
-        raise TypeError("no such prop")
-
-def pathStrip(s):
-    return str(s).upper().replace("D:\\82\\","")
-
-def EndSwitch(switch):
-    while switch:
-        for x in ["--","//","\\\\"]:
-            print("\b\b"+x,end="")
-
-def arcList(fo):
-    try:
-        arcList=ZipFile(fo,"r").infolist()
-        print("..proceeding: "+fo)
-        file,fileBad=[],[]
-        for z in range(len(arcList)):
-            if ".jp" in arcList[z].filename:
-                if arcList[z].file_size!=0:
-                    file[len(file):]=[arcList[z].filename]
-                elif arcList[z].file_size==0:
-                    fileBad[len(fileBad):]=[arcList[z].filename]
+def listing(zipfile):
+    '''
+    Provide namelist dict of jpegfile in zipfile.
+    '''
+    with open(zipfile) as zipfile:
+        zipfile=ZipFile(zipfile)
+        filename=zipfile.filename
+        infolist=zipfile.infolist()
+        print(f'visiting {filename}')
+        namelist={}
+        for z in range(len(infolist)):
+            jpgfilename=infolist[z].filename
+            if '.jp' in filename.lower():
+                if infolist[z].file_size!=0:
+                    namelist['ok']|=[jpgfilename]
                 else:
-                    continue
-        if len(fileBad)!=0:
-            print("...badfile exists: "+fo)
-        return file,fileBad
-    except:
-        return None,print("bad zipfile: "+fo)
+                    namelist['ng']|=[jpgfilename]
+        return filename,namelist
 
-def listfile(arcfile,p="d:/"):
-    os.chdir(p)
-    print("Providing listfile")
-    filenames=[]
-    filebad=[]
-    arcList=ZipFile(arcfile).infolist()
-    for z in range(len(arcList)):
-        if ".jp" in arcList[z].filename:
-            if arcList[z].file_size!=0:
-                filenames[len(filenames):]=[arcList[z].filename]
-            elif arcList[z].file_size==0:
-                filebad[len(filebad):]=[arcList[z].filename]
-            else:
-                continue
-    namestring=str(arcfile).replace(".zip",".csv")
-    csv.writer(open(namestring,"w",newline="",encoding="utf-8-sig")).writerow(["filename"])
-    for x in filenames:
-        csv.writer(open(namestring,"a",newline="",encoding="utf-8-sig")).writerow([x])
-    pd.read_csv(namestring,encoding="utf-8-sig").to_csv(namestring,encoding="utf-8-sig",index=False)
-    return None
+def makemt(zipfile):
+    '''
+    Write csvfile from namelist dict.
+    '''
+    filename,namelist=listing(zipfile)
+    namestring=filename.replace('.zip','.csv')
+    with open(namestring,'w',encoding='utf-8-sig',newline='') as listfile:
+        c=csv.writer(listfile)
+        c.writerow(['filename'])
+        [c.writerow([x]) for x in namelist['ok']]
+    if len(namelist['ng'])!=0:
+        ngcount=len(namelist['ng'])
+    else:
+        ngcount=0
+    print(f'done {namestring}, omitted {ngcount} file')
 
 def greatPuzzle_ZeungZuck():
+    '''
+    fuck
+    '''
     p="D:\\greatPuzzle\\1126_greatpuzzle\\"
     os.chdir(p)
     a=os.listdir()

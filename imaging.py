@@ -1,27 +1,68 @@
-import os,glob,shutil;import numpy as np;
+import os,glob
+import numpy as np
 import cv2
 from PIL import Image
-os.chdir("Z:\\FRIEND\\yun_work\\code\\cv2")
 
-def sani(a):
-    if isinstance(a,str):
-        return a.lower().strip()
-    if isinstance(a,(int,float)):
-        return np.uint8(a)
-    else:
-        return a
-
-def file(p):
-    os.chdir(sani(p))
-    a=glob.glob("*.jp*")
-    if len(a)<=0:
-        print("none")
-    il=[]
-    for x in range(len(a)):
-        i=dict()
-        i[str(a[x])]=cv2.imread(a[x])
-        il[len(il):]=[i]
-    return il
+def stamp(fgifile,bgipath,ts=150,ss=150,rnd=3):
+    '''
+    Stamping the specific to the images regarding randomized
+    size and location.
+    '''
+    #set object size
+    if ts<120:
+        raise ValueError('peculiar object size')
+    bgifile=[bgipath+'/'+x for x in os.listdir(bgipath) if '.jp' in x]
+    for bgi in bgifile:
+        #load bgi
+        with Image.open(bgi,'r') as bgi:
+            #load fgi
+            fgi=Image.open(fgifile,'r')
+            #if pngfile check imagemode
+            if fgi.filename.endswith('.png'):
+                if fgi.mode!='RGBA':
+                    raise ValueError(f'peculiar pngfile {fgi.mode=}')
+                ispng=1
+            #initiate f, locf, sizef
+            f=np.random.random_sample(4)
+            lf=f*rnd
+            sf=f[0]*ss
+            #have ar
+            ar=fgi.size[0]/fgi.size[1]
+            #have mod
+            mod=(fgi.size[0]/ts,fgi.size[1]/ts)
+            adi=(sf*ar,sf)
+            size=tuple(np.uint16(x) for x in [(
+            fgi.size[0]/mod[0])*ar+adi[0],
+            fgi.size[1]/mod[1]+adi[1]])
+            #resize if bgi is large
+            if sum(fgi.size)>500:
+                print(f'resizing: {fgi.filename}: {size[0]} x {size[1]}')
+                fgi=fgi.resize(size,Image.LANCZOS)
+            else:
+                print(f'not resized: {fgi.filename}: {fgi.size[0]} x {fgi.size[1]}')
+            #preserve bgi filename
+            bgifilename=bgi.filename
+            #channelConvert RGBA
+            bgi=bgi.convert('RGBA')
+            #have initial coordinates
+            bgix0,bgiy0=bgi.size
+            #have coordinates of upper-left region
+            bgix1,bgiy1=np.uint16(bgix0*0.05),np.uint16(bgiy0*0.05)
+            #have moderately moved coordinates of upper-left region
+            bgix2,bgiy2=tuple(np.uint16(w) for w in (
+            bgix1*lf[0]+(lf[2]*100),bgiy1*lf[1]+(lf[3]*100)))
+            #paste fgi to bgi
+            bgi.paste(fgi,
+            box=(bgix1+bgix2,bgiy1+bgiy2),
+            mask=fgi.convert('RGBA'))
+            #empty fgi
+            fgi.close()
+            #channelConvert RGB
+            bgi=bgi.convert('RGB')
+            #save bgi to bgiimagefile
+            bgifilename=bgifilename[(bgifilename.rfind('/')+1):]
+            bgi.save('x'+bgifilename,
+            'JPEG',quality=10,progressive=True,optimize=True)
 
 def rs(path,d,ratio,quant):
     if "\\" not in path:
@@ -174,41 +215,3 @@ def data(a):
         c["x1"]=b["result"][x]["gp_trash_bb"]["data"][0]["value"]["coords"]["bl"]["x"]
         c["y1"]=b["result"][x]["gp_trash_bb"]["data"][0]["value"]["coords"]["bl"]["y"]
     return None
-
-def stamp(fgifile,bgipath):
-    os.chdir(bgipath)
-    #load foreground imagefile as a foreground image
-    with Image.open(fgifile) as fgi:
-        #resize if bgi is large
-        if sum(fgi.size)>800:
-            #pngfile is not supported as 
-            if fgi.filename.endswith('.png'):
-                pass
-            else:
-                fgi=fgi.resize(([np.uint16(x*0.7) for x in fgi.size]),Image.LANCZOS)
-                print(f'resized: {fgi.size[0]} x {fgi.size[1]}')
-        else:
-            print(f'not resized: {fgi.size[0]} x {fgi.size[1]}')
-        #get bgifilenamelist form the bgipath
-        bgifile=glob.glob('*.jp*')
-        for bgi in bgifile:
-            factor=np.random.random_sample(2)*2
-            #load background imagefile as a background image
-            with Image.open(bgi,'r') as bgi:
-                #preserve bgi filename
-                bgifilename=bgi.filename
-                #channelConvert RGBA
-                bgi=bgi.convert('RGBA')
-                #have initial coordinates
-                bgix0,bgiy0=bgi.size
-                #have coordinates of upper-left region
-                bgix1,bgiy1=np.uint16(bgix0*0.1),np.uint16(bgiy0*0.05)
-                #have moderately moved coordinates of upper-left region
-                bgix2,bgiy2=tuple(np.uint16(w) for w in (bgix1*factor[0],bgiy1*factor[1]))
-                print(str(bgix2),str(bgiy2))
-                #paste fgi to bgi
-                bgi.paste(fgi,box=(bgix1+bgix2,bgiy1+bgiy2),mask=fgi.convert('RGBA'))
-                #channelConvert RGB
-                bgi=bgi.convert('RGB')
-                #save bgi to bgiimagefile
-                bgi.save('z'+bgifilename,'JPEG',quality=40,progressive=True,optimize=True)
