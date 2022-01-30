@@ -1,33 +1,33 @@
-import os,json,csv,glob,shutil
+import os,json,glob,shutil
 import pandas as pd
 import datetime as dt
-from zipfile import ZipFile
 ima,enc,idea=str((dt.datetime.now()).strftime("%m%d")),"utf-8-sig","=="
 
-def listing(zipfile):
+from zipfile import ZipFile
+import csv
+def listing(zipfilename):
     '''
     Provide namelist dict of jpegfile in zipfile.
     '''
-    with open(zipfile) as zipfile:
-        zipfile=ZipFile(zipfile)
+    with ZipFile(zipfilename) as zipfile:
         filename=zipfile.filename
         infolist=zipfile.infolist()
-        print(f'visiting {filename}')
-        namelist={}
+        namelist={'ok':[],'ng':[]}
+        print(f'found {filename}')
         for z in range(len(infolist)):
-            jpgfilename=infolist[z].filename
-            if '.jp' in filename.lower():
-                if infolist[z].file_size!=0:
-                    namelist['ok']|=[jpgfilename]
+            idx=infolist[z]
+            if '.jp' in idx.filename.lower():
+                if idx.file_size!=0:
+                    namelist['ok']+=[idx.filename]
                 else:
-                    namelist['ng']|=[jpgfilename]
+                    namelist['ng']+=[idx.filename]
         return filename,namelist
 
-def makemt(zipfile):
+def mkmt(zipfilename):
     '''
     Write csvfile from namelist dict.
     '''
-    filename,namelist=listing(zipfile)
+    filename,namelist=listing(zipfilename)
     namestring=filename.replace('.zip','.csv')
     with open(namestring,'w',encoding='utf-8-sig',newline='') as listfile:
         c=csv.writer(listfile)
@@ -37,7 +37,7 @@ def makemt(zipfile):
         ngcount=len(namelist['ng'])
     else:
         ngcount=0
-    print(f'done {namestring}, omitted {ngcount} file')
+    print(f'made {namestring}, omitted {ngcount} file')
 
 def greatPuzzle_ZeungZuck():
     '''

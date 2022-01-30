@@ -3,7 +3,7 @@ import numpy as np
 import cv2
 from PIL import Image
 
-def stamp(fgifile,bgipath,ts=150,ss=150,rnd=3):
+def stamp(fgifile,bgipath,ts=130,ss=200,rnd=2):
     '''
     Stamping the specific to the images regarding randomized
     size and location.
@@ -23,7 +23,7 @@ def stamp(fgifile,bgipath,ts=150,ss=150,rnd=3):
                     raise ValueError(f'peculiar pngfile {fgi.mode=}')
                 ispng=1
             #initiate f, locf, sizef
-            f=np.random.random_sample(4)
+            f=np.random.random_sample(2)
             lf=f*rnd
             sf=f[0]*ss
             #have ar
@@ -50,7 +50,7 @@ def stamp(fgifile,bgipath,ts=150,ss=150,rnd=3):
             bgix1,bgiy1=np.uint16(bgix0*0.05),np.uint16(bgiy0*0.05)
             #have moderately moved coordinates of upper-left region
             bgix2,bgiy2=tuple(np.uint16(w) for w in (
-            bgix1*lf[0]+(lf[2]*100),bgiy1*lf[1]+(lf[3]*100)))
+            bgix1*lf[0]+(lf[0]*100),bgiy1*lf[1]+(lf[1]*100)))
             #paste fgi to bgi
             bgi.paste(fgi,
             box=(bgix1+bgix2,bgiy1+bgiy2),
