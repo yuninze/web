@@ -1,42 +1,28 @@
 import pandas as pd
+import numpy as np
 import re
 
 def removeblank(scalar):
     if scalar=='':
-        return float(1.0)
+        return 1
     else:
         return scalar
+
+def flat(scalar):
+    try:
+        return np.float32(scalar)
+    except:
+        if type(scalar) is str:
+            print(f"'{scalar}' is a literal cannot be typed to float")
+            return scalar
+        else:
+            raise TypeError(f"'{scalar}' is neither of str or number")
 
 def getvalue(strwithnum):
     if type(strwithnum) is str:
-        return float(re.findall(r"\((\d+.\d+).\)",strwithnum)[0])
+        return re.findall(r"\((\d+.\d+).\)",strwithnum)[0]
     else:
-	    raise ValueError(f"Unusual content '{strwithnum}'")
-
-def getflatnum(scalar):
-    if isinstance(scalar,str):
-        try:
-            return int(scalar)
-        except:
-            print(f"{scalar} is a literal cannot be typed to float")
-            return scalar
-    elif isinstance(scalar,(int,float)):
-        return float(scalar)
-    else:
-        raise TypeError(f"Unusual input scalar '{scalar}'")
-
-def fuk(scalar):
-    if isinstance(scalar,str):
-        try:
-            return round(float(scalar),4)
-        except:
-            return scalar
-    elif isinstance(scalar,int):
-        return round(float(scalar),4)
-    elif isinstance(scalar,float):
-        return round(scalar,4)
-    else:
-        return scalar
+	    raise ValueError(f"Unusual scalar '{strwithnum}'")
 
 def isaudit(frame):
     frame=pd.read_excel(frame,nrows=5)
@@ -45,38 +31,26 @@ def isaudit(frame):
     else:
         return 0
 
-def occdiv(object,factor):
-    '''
-    Divide by occurance.
-    '''
-    object=float(object)
-    return round(object/(int(factor)//1),5)
-
-def occdivstats(frame):
-    '''
-    Divide mean-based stats in a frame
-    '''
-    #Check basis type
+def occdiv(frame):
+    #check basis type
     meanStat=['EPS','EPH','JPH']
     if 'complyRate' in frame.columns:
         meanStat+=['complyRate']
     if 'auditRate' in frame.columns:
         meanStat+=['auditRate']
-    #Should be divided by factor or 'occurance//1'
-    for i in frame.index:
-        factor=frame.loc[i,"occurance"]
-        if factor>1:
-            for h in meanStat:
-                frame.loc[i,h]=occdiv(frame.loc[i,h],factor)
+    #divide by occurance
+    frame.loc[:,meanStat][frame.loc[:,'occurance']>1]=(
+    frame.loc[:,meanStat][frame.loc[:,'occurance']>1])/(
+    frame.loc[:,meanStat][frame.loc[:,'occurance']>1])
     return frame
 
-def meaning(objectsum,objectlen):
-    if objectlen==0:
-        objectlen=1
+def meaning(scalarsum,scalarlen):
+    if scalarsum==0:
+        scalarsum=1
     try:
-        return objectsum/(objectlen//1)
+        return scalarsum/(scalarlen//1)
     except TypeError:
-        raise ZeroDivisionError(f"Foremost argument '{objectsum}' is 0")
+        raise ZeroDivisionError(f"Foremost argument '{scalarsum}' is 0")
 
 def dashingcn(object):
     if type(object) is not str:
@@ -109,7 +83,10 @@ def jobcoding(object):
         try:
             return int(str(object).strip())
         except:
-            print(f"Substitution failed for '{object}'")
+            print(f"Substitution failed '{object}'")
             return 61394
     elif isinstance(object,(float,int)):
         return int(object)
+
+def occdivx(object,factor):
+    return object/(factor//1)

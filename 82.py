@@ -2,7 +2,6 @@ import os,json,csv,glob,shutil
 import sys
 import pandas as pd;import datetime as dt;from zipfile import ZipFile
 from pathlib import Path
-#####################################################################
 ima,enc,idea=str((dt.datetime.now()).strftime("%m%d")),"utf-8-sig","=="
 sys.setrecursionlimit(900_000)
 
@@ -25,7 +24,7 @@ def pathStrip(s):
 
 def garaAO():
     arc=ZipFile("82.zip","r")
-    with open("82.zip.csv","w") as csvfile:
+    with open("82.zip.csv","w",encoding='utf-8-sig',newline='') as csvfile:
         csv.writer(csvfile).writerow(["filename"])
         a=0
         while a<100001:
@@ -36,7 +35,7 @@ def garaAO():
                 ]:
                 csv.writer(csvfile).writerow([filename])
                 a+=1
-    pd.read_csv("82.zip.csv",encoding=enc).to_csv("82.zip.csv",index=False,encoding=enc)
+    return None
 
 def getjsonfile(path):
     count=0

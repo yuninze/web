@@ -5,13 +5,13 @@ ima,enc,idea=str((dt.datetime.now()).strftime("%m%d")),"utf-8-sig","=="
 
 from zipfile import ZipFile
 import csv
-def listing(zipfilename):
+def listing(zipfile):
     '''
     Provide namelist dict of jpegfile in zipfile.
     '''
-    with ZipFile(zipfilename) as zipfile:
-        filename=zipfile.filename
-        infolist=zipfile.infolist()
+    with ZipFile(zipfile) as file:
+        filename=file.filename
+        infolist=file.infolist()
         namelist={'ok':[],'ng':[]}
         print(f'found {filename}')
         for z in range(len(infolist)):
@@ -23,11 +23,11 @@ def listing(zipfilename):
                     namelist['ng']+=[idx.filename]
         return filename,namelist
 
-def mkmt(zipfilename):
+def mkmt(zipfile):
     '''
     Write csvfile from namelist dict.
     '''
-    filename,namelist=listing(zipfilename)
+    filename,namelist=listing(zipfile)
     namestring=filename.replace('.zip','.csv')
     with open(namestring,'w',encoding='utf-8-sig',newline='') as listfile:
         c=csv.writer(listfile)
@@ -38,6 +38,7 @@ def mkmt(zipfilename):
     else:
         ngcount=0
     print(f'made {namestring}, omitted {ngcount} file')
+    return None
 
 def greatPuzzle_ZeungZuck():
     '''

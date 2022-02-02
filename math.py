@@ -8,8 +8,8 @@ ran=np.linalg.matrix_rank(mat)
 np.dot(np.linalg.inv(np.dot(mat.transpose(),mat)),np.dot(mat.transpose(),vec))
 
 #norm,dist
-a=np.array((1,2,3,4,100))
-b=np.array((1,5,3,6,200))
+a=np.array((76,2,50,31,91))
+b=np.array((5,10,42,15,60))
 x=np.float16(math.sqrt(sum((a-b)**2 for a,b in zip(a,b))))
 
 def dp_strange(a,b):
@@ -23,7 +23,7 @@ def dp_strange(a,b):
                 return c
 
 mat.dot()
-dp(mat,mat)
+
 
 #GDA
 

@@ -1,4 +1,4 @@
-import os,glob
+import os
 import numpy as np
 import cv2
 from PIL import Image
@@ -19,9 +19,9 @@ def stamp(fgifile,bgipath,ts=130,ss=200,rnd=2):
             fgi=Image.open(fgifile,'r')
             #if pngfile check imagemode
             if fgi.filename.endswith('.png'):
+                ispng=1
                 if fgi.mode!='RGBA':
                     raise ValueError(f'peculiar pngfile {fgi.mode=}')
-                ispng=1
             #initiate f, locf, sizef
             f=np.random.random_sample(2)
             lf=f*rnd
@@ -53,8 +53,7 @@ def stamp(fgifile,bgipath,ts=130,ss=200,rnd=2):
             bgix1*lf[0]+(lf[0]*100),bgiy1*lf[1]+(lf[1]*100)))
             #paste fgi to bgi
             bgi.paste(fgi,
-            box=(bgix1+bgix2,bgiy1+bgiy2),
-            mask=fgi.convert('RGBA'))
+            box=(bgix1+bgix2,bgiy1+bgiy2),mask=fgi.convert('RGBA'))
             #empty fgi
             fgi.close()
             #channelConvert RGB
