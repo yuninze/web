@@ -12,14 +12,14 @@ def flat(scalar):
     try:
         return np.float32(scalar)
     except:
-        if type(scalar) is str:
+        if isinstance(scalar,str):
             print(f"'{scalar}' is a literal cannot be typed to float")
             return scalar
         else:
             raise TypeError(f"'{scalar}' is neither of str or number")
 
 def getvalue(strwithnum):
-    if type(strwithnum) is str:
+    if isinstance(strwithnum,str):
         return re.findall(r"\((\d+.\d+).\)",strwithnum)[0]
     else:
 	    raise ValueError(f"Unusual scalar '{strwithnum}'")
@@ -54,7 +54,7 @@ def meaning(scalarsum,scalarlen):
         raise ZeroDivisionError(f"Foremost argument '{scalarsum}' is 0")
 
 def dashingcn(object):
-    if type(object) is not str:
+    if isinstance(object,str)==False:
         object=str(object)
         object.replace("-","")
         return "-".join([object[:6],object[6:]])
@@ -63,7 +63,7 @@ def dashingcn(object):
         return "910117-1932416"
 
 def dashingpn(object):
-    if type(object) is not str:
+    if isinstance(object,str)==False:
         object=str(object)
     object.replace("-","")
     if len(object)!=11:
@@ -80,7 +80,7 @@ def accountingtostr(scalar):
     return str(scalar).replace(',','')
 
 def jobcoding(object):
-    if isinstance(object,str)!=True:
+    if isinstance(object,str)==False:
         try:
             return int(str(object).strip())
         except:
