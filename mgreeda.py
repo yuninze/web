@@ -7,7 +7,7 @@ def calljson(fileObject):
         with open(fileObject,encoding=enc) as fileObject:
             return json.load(fileObject)
     except:
-        raise OSError('')
+        raise FileNotFoundError(f"{fileObject} has not found")
 
 def dicttocsv(object,namestring):
     pd.DataFrame(object).to_csv(namestring,encoding=enc,index=False)

@@ -33,15 +33,16 @@ def isaudit(frame):
 
 def occdiv(frame):
     #check basis type
-    meanStat=['EPS','EPH','JPH']
+    meanstat=['EPS','EPH','JPH']
     if 'complyRate' in frame.columns:
-        meanStat+=['complyRate']
+        meanstat+=['complyRate']
     if 'auditRate' in frame.columns:
-        meanStat+=['auditRate']
+        meanstat+=['auditRate']
     #divide by occurance
-    frame.loc[:,meanStat][frame.loc[:,'occurance']>1]=(
-    frame.loc[:,meanStat][frame.loc[:,'occurance']>1])/(
-    frame.loc[:,meanStat][frame.loc[:,'occurance']>1])
+    for i in frame.index:
+        factor=frame.loc[i,'occurance']//1
+        stat=frame.loc[i,meanstat]
+        frame.loc[i,meanstat]=frame.loc[i,meanstat]/factor
     return frame
 
 def meaning(scalarsum,scalarlen):

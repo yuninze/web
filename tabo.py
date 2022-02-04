@@ -53,19 +53,22 @@ def concoction(path,zakupDanga,auditDanga):
     '''
     Result per-directory frame. Recognize zakup and audit. Index occurance is ignored.
     '''
-    #framefileObject collection with pathstring
+    #check auditDanga
+    if auditDanga>200:
+        print(f"'{auditDanga=}' is extraordinary")
+    #framefileObject collecting with pathstring
     sheetfiles=[path+"/"+z for z in os.listdir(path) if ".xls" in z]
     frames={}
-    #Confirm whether frame type
+    #confirm whether frame type
     for framename in sheetfiles:
         if isaudit(framename):
             danga=auditDanga
         else:
             danga=zakupDanga
-        #Purify upon frame type
+        #purify upon frame type
         frames[framename]=purify(framename,danga)[0]
     #unconditional concatenate
-    frame=pd.concat([x for x in frames.values()],axis=0,ignore_index=False)
+    frame=pd.concat([x for x in frames.values()])
     return frame
 
 def sansibar(frames,pii='c:/'):
@@ -108,10 +111,8 @@ def sansibar(frames,pii='c:/'):
     frame.loc[:,'occurance']=frame.index.value_counts()
     #drop index duplicates
     frame=frame[~frame.index.duplicated()]
-    #occdiv meanStat
-    frame=occdiv(frame)
-    #sanitize temp columns
-    frame.drop('occurance',axis=1,inplace=True)
+    #occdiv meanStat, drop temp column
+    frame=occdiv(frame).drop('occurance',axis=1)
     #flattening
     frame=frame.applymap(flat)
     frame['id']=np.uint32(frame['id'])
