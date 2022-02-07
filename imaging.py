@@ -5,7 +5,7 @@ from PIL import Image
 
 def stamp(fgifile,bgipath,ts=130,ss=200,rnd=2):
     '''
-    Stamping the specific to the images regarding randomized
+    Stamps the specific to the images regarding randomized
     size and location.
     '''
     #set object size

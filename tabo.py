@@ -118,16 +118,12 @@ def sansibar(frames,pii='c:/'):
     frame['id']=np.uint32(frame['id'])
     #try to open pii frame
     try:
-        try:
-            pii=pd.read_csv(pii)
-        except:
-            pii=pd.read_csv(pii,encoding='utf-8-sig')
-        finally:
-            pii.drop("Unnamed: 0",axis=1,inplace=True)
-            #Set index by name and mail
-            pii.set_index(keys=['mail','name'],inplace=True)
-            #Merge by index
-            return pii.merge(frame,left_index=True,right_index=True)
+        pii=pd.read_csv(pii)
+        pii.drop("Unnamed: 0",axis=1,inplace=True)
+        #Set index by name and mail
+        pii.set_index(keys=['mail','name'],inplace=True)
+        #Merge by index
+        return pii.merge(frame,left_index=True,right_index=True)
     except:
         print(f"pii file '{pii}' does not exist")
         return frame
