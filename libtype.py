@@ -42,7 +42,7 @@ def occdiv(frame):
     for i in frame.index:
         factor=frame.loc[i,'occurance']//1
         stat=frame.loc[i,meanstat]
-        frame.loc[i,meanstat]=frame.loc[i,meanstat]/factor
+        frame.loc[i,meanstat]=stat/factor
     return frame
 
 def meaning(scalarsum,scalarlen):
