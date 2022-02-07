@@ -2,6 +2,11 @@ zyeon
 zyeon=pd.pivot_table(a,values='money',index=['idx','name','cn','wm'],aggfunc=np.sum)
 zyeon.unstack().to_csv('zyeon.csv',encoding='utf-8-sig')
 
+items = [
+    tuple(func(y) if i == level else y for i, y in enumerate(x)) for x in self
+]
+
+
 ca=concoction('C:/82/stat/concat/ca',10,10)
 cz=concoction('C:/82/stat/concat/cz',10,10)
 la=concoction('C:/82/stat/concat/la',70,550)

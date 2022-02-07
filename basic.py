@@ -2,10 +2,10 @@ import os,json,glob,shutil
 import pandas as pd
 import datetime as dt
 ima,enc,idea=str((dt.datetime.now()).strftime("%m%d")),"utf-8-sig","=="
-
 from zipfile import ZipFile
 import csv
-def listing(zipfile):
+
+def listing(zipfile: str):
     '''
     Provide namelist dict of jpegfile in zipfile.
     '''
@@ -18,21 +18,57 @@ def listing(zipfile):
             idx=infolist[z]
             if '.jp' in idx.filename.lower():
                 if idx.file_size!=0:
-                    namelist['ok']+=[idx.filename]
+                    namelist['ok'].append(idx.filename)
                 else:
-                    namelist['ng']+=[idx.filename]
+                    namelist['ng'].append(idx.filename)
         return filename,namelist
 
-def mkmt(zipfile):
+def mkcsv(namestring: str,iterable,header='filename',mode='w'):
+    if len(iterable)<2:
+        raise TypeError(f"'{iterable}' is peculiar iterable")
+    with open(namestring,mode=mode,encoding='utf-8',newline='') as csvfile:
+        c=csv.writer(csvfile)
+        c.writerow([header])
+        [c.writerow([x]) for x in iterable]
+    return None
+
+def mkmt(zipfile: str):
     '''
     Write csvfile from namelist dict.
     '''
     filename,namelist=listing(zipfile)
     namestring=filename.replace('.zip','.csv')
-    with open(namestring,'w',encoding='utf-8-sig',newline='') as listfile:
-        c=csv.writer(listfile)
-        c.writerow(['filename'])
-        [c.writerow([x]) for x in namelist['ok']]
+    mkcsv(namestring,namelist['ok'])
+    if len(namelist['ng'])!=0:
+        ngcount=len(namelist['ng'])
+    else:
+        ngcount=0
+    print(f'made {namestring}, omitted {ngcount} file')
+    return None
+
+def mkmtcnse(zipfile: str,by=10):
+    if isinstance(by,int)==False:
+        raise TypeError(f"parameter 'by' should be an intp")
+    filename,namelist=listing(zipfile)
+    namestring=filename.replace('.zip','_con.csv')
+    namestring0=filename.replace('.zip','_org.csv')
+    mkcsv(namestring0,namelist['ok'])
+    idx=[]
+    idx0=[]
+    for name in namelist['ok']:
+        idxstring=name[:by]
+        for name0 in namelist['ok']:
+            if name0[:by]==idxstring:
+                idx0.append("'"+name0+"'")
+        for name1 in idx0:
+            print(f'{name1=}')
+            name1=str(name1).replace("'","")
+            namelist['ok'].remove(name1)
+        idx.append(idx0)
+        idx0=[]
+    mkcsv(namestring,idx)
+    with open(namestring,newline='') as csvfile:
+        pass
     if len(namelist['ng'])!=0:
         ngcount=len(namelist['ng'])
     else:
