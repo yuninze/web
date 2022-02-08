@@ -15,13 +15,13 @@ def purify(target,danga=10):
         usecols="A,B,C,D,E,L,N"
     #Column naming
     cols=[
-        "id",
-        "mail",
-        "name",
-        "nick",
-        "work",
-        basis,
-        "TWT"
+    "id",
+    "mail",
+    "name",
+    "nick",
+    "work",
+    basis,
+    "TWT"
     ]
     #Attempt to load within settings above
     frame=pd.read_excel(target,usecols=usecols,na_filter=True).drop([0])
@@ -94,13 +94,13 @@ def sansibar(frames,pii='c:/'):
     #groupbying and index confirmation
     oldidx=frame.index.nunique(dropna=False)
     frame=frame.groupby(by=frame.index.names)[[
-        'work',
-        'TWT',
-        'TE',
-        'TE1000',
-        'EPS',
-        'EPH',
-        'JPH'
+    'work',
+    'TWT',
+    'TE',
+    'TE1000',
+    'EPS',
+    'EPH',
+    'JPH'
     ]].transform('sum')
     newidx=frame.index.nunique(dropna=False)
     if not oldidx==newidx:
