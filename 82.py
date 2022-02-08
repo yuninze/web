@@ -54,9 +54,14 @@ def lachk(path,write=False):
     car,bus,truck,bike,normal,danger,violation=0,0,0,0,0,0,0
     single_solid,double_solid,single_dashed,left_dashed_double,right_dashed_double=0,0,0,0,0
     lane_white,lane_blue,lane_yellow,lane_shoulder=0,0,0,0
-    dataidxlist=[]
-    filenamelist=[]
-    peculiars=[]
+    memo={
+        'dataidxs':[],
+        'filenames':[],
+        'peculiars':[],
+        'normal':[],
+        'danger':[],
+        'violation':[]
+    }
     os.chdir(path)
     for channeldir in os.listdir():
         os.chdir(channeldir)
@@ -64,26 +69,26 @@ def lachk(path,write=False):
             os.chdir(colordir)
             for seriesdir in os.listdir():
                 os.chdir(seriesdir)
-                a=glob.glob("*.json")
+                a=glob.glob(r'*.json')
                 for jsonfile in a:
                     if os.stat(jsonfile).st_size==0:
                         os.remove(jsonfile)
                         continue
-                    with open(jsonfile,encoding="utf-8",mode='r') as jsondata:
+                    with open(jsonfile,encoding='utf-8',mode='r') as jsondata:
                         filename=pathlib.PurePath(jsonfile)
                         print(f"attempting: {filename.parts[-1]}")
                         j=json.load(jsondata)
                         dataIdx=str(j['dataID'])
-                        dataidxlist.append(int(dataIdx))
+                        memo['dataidxs'].append(int(dataIdx))
                         srcVal=j['data_set_info']['sourceValue']
-                        filenamelist.append(srcVal)
+                        memo['filenames'].append(srcVal)
                         dsi=j["data_set_info"]["data"]
                         if isinstance(j['dataID'],int):
                             j['dataID']=str(j['dataID'])
                         for z in range(len(dsi)):
                             #check
                             if len(dsi[z]['value']['points'])<3:
-                                peculiars.append('_'.join([dataIdx,str(filename),'pbPoint']))
+                                memo['peculiars'].append('_'.join([dataIdx,str(filename),'pbPoint']))
                             if len(dsi[z]["value"]["object_Label"])==3:
                                 #check
                                 if dsi[z]["value"]["object_Label"]["vehicle_type"] not in [
@@ -92,7 +97,7 @@ def lachk(path,write=False):
                                     'vehicle_truck',
                                     'vehicle_bike'
                                 ]:
-                                    peculiars.append('_'.join([dataIdx,str(filename),'vehicleType']))
+                                    memo['peculiars'].append('_'.join([dataIdx,str(filename),'vehicleType']))
                                 if dsi[z]["value"]["object_Label"]["vehicle_type"]=="vehicle_car":
                                     car+=1
                                 elif dsi[z]["value"]["object_Label"]["vehicle_type"]=="vehicle_bus":
@@ -107,13 +112,16 @@ def lachk(path,write=False):
                                     'danger',
                                     'violation'
                                 ]:
-                                    peculiars.append('_'.join([dataIdx,str(filename),'vehicleAtrb']))
+                                    memo['peculiars'].append('_'.join([dataIdx,str(filename),'vehicleAtrb']))
                                 if dsi[z]["value"]["object_Label"]["vehicle_attribute"]=="normal":
                                     normal+=1
+                                    memo['normal'].append(int(dataIdx))
                                 elif dsi[z]["value"]["object_Label"]["vehicle_attribute"]=="danger":
                                     danger+=1
+                                    memo['danger'].append(int(dataIdx))
                                 elif dsi[z]["value"]["object_Label"]["vehicle_attribute"]=="violation":
                                     violation+=1
+                                    memo['violation'].append(int(dataIdx))
                             elif len(dsi[z]["value"]["object_Label"])==2:
                                 #check
                                 if dsi[z]["value"]["object_Label"]["lane_attribute"] not in [
@@ -123,7 +131,7 @@ def lachk(path,write=False):
                                     'left_dashed_double',
                                     'right_dashed_double'
                                 ]:
-                                    peculiars.append('_'.join([dataIdx,str(filename),'laneAtrb']))
+                                    memo['peculiars'].append('_'.join([dataIdx,str(filename),'laneAtrb']))
                                 if dsi[z]["value"]["object_Label"]["lane_attribute"]=="single_solid":
                                     single_solid+=1
                                 elif dsi[z]["value"]["object_Label"]["lane_attribute"]=="double_solid":
@@ -141,7 +149,7 @@ def lachk(path,write=False):
                                     'lane_yellow',
                                     'lane_shoulder'
                                 ]:
-                                    peculiars.append('_'.join([dataIdx,str(filename),'laneType']))
+                                    memo['peculiars'].append('_'.join([dataIdx,str(filename),'laneType']))
                                 if dsi[z]["value"]["object_Label"]["lane_type"]=="lane_white":
                                     lane_white+=1
                                 elif dsi[z]["value"]["object_Label"]["lane_type"]=="lane_blue":
@@ -156,14 +164,13 @@ def lachk(path,write=False):
             os.chdir("..")
         os.chdir("..")
     print(
-    f"car: {car}, bus: {bus}, truck: {truck}, bike: {bike}, \n"+
-    f"normal: {normal}, danger: {danger}, violation: {violation}\n"+
-    f"SS: {single_solid}, SD: {single_dashed}, DS: {double_solid},\n"+
-    f"LDD: {left_dashed_double}, RDD: {right_dashed_double}\n"+
-    f"LW: {lane_white}, LB: {lane_blue}, LY: {lane_yellow}, LS: {lane_shoulder}\n"+
-    f"DID: {len(dataidxlist)} filename: {len(filenamelist)}/{len(set(filenamelist))}"
+    f'car: {car}, bus: {bus}, truck: {truck}, bike: {bike}, \n'+
+    f'normal: {normal}, danger: {danger}, violation: {violation},\n'+
+    f'SS: {single_solid}, SD: {single_dashed}, DS: {double_solid},\n'+
+    f'LDD: {left_dashed_double}, RDD: {right_dashed_double},\n'+
+    f'LW: {lane_white}, LB: {lane_blue}, LY: {lane_yellow}, LS: {lane_shoulder},\n'
     )
-    return filenamelist,dataidxlist,peculiars
+    return memo
 
 def arcList(fo):
     arcList=ZipFile(fo,"r").infolist()
