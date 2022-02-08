@@ -73,8 +73,10 @@ def lachk(path,write=False):
                         filename=pathlib.PurePath(jsonfile)
                         print(f"attempting: {filename.parts[-1]}")
                         j=json.load(jsondata)
-                        dataIdx=str(j['dataID']),dataidxlist.append(int(dataIdx))
-                        srcVal=j['data_set_info']['sourceValue'],filenamelist.append(srcVal)
+                        dataIdx=str(j['dataID'])
+                        dataidxlist.append(int(dataIdx))
+                        srcVal=j['data_set_info']['sourceValue']
+                        filenamelist.append(srcVal)
                         dsi=j["data_set_info"]["data"]
                         if isinstance(j['dataID'],int):
                             j['dataID']=str(j['dataID'])
@@ -85,9 +87,9 @@ def lachk(path,write=False):
                             if len(dsi[z]["value"]["object_Label"])==3:
                                 #check
                                 if dsi[z]["value"]["object_Label"]["vehicle_type"] not in [
-                                    'vehicle_car'
-                                    'vehicle_bus'
-                                    'vehicle_truck'
+                                    'vehicle_car',
+                                    'vehicle_bus',
+                                    'vehicle_truck',
                                     'vehicle_bike'
                                 ]:
                                     peculiars.append('_'.join([dataIdx,str(filename),'vehicleType']))
@@ -101,8 +103,8 @@ def lachk(path,write=False):
                                     bike+=1
                                 #check
                                 if dsi[z]["value"]["object_Label"]["vehicle_attribute"] not in [
-                                    'normal'
-                                    'danger'
+                                    'normal',
+                                    'danger',
                                     'violation'
                                 ]:
                                     peculiars.append('_'.join([dataIdx,str(filename),'vehicleAtrb']))
@@ -115,9 +117,10 @@ def lachk(path,write=False):
                             elif len(dsi[z]["value"]["object_Label"])==2:
                                 #check
                                 if dsi[z]["value"]["object_Label"]["lane_attribute"] not in [
-                                    'double_solid'
-                                    'single_dashed'
-                                    'left_dashed_double'
+                                    'single_solid',
+                                    'double_solid',
+                                    'single_dashed',
+                                    'left_dashed_double',
                                     'right_dashed_double'
                                 ]:
                                     peculiars.append('_'.join([dataIdx,str(filename),'laneAtrb']))
@@ -132,10 +135,10 @@ def lachk(path,write=False):
                                 elif dsi[z]["value"]["object_Label"]["lane_attribute"]=="right_dashed_double":
                                     right_dashed_double+=1
                                 #check
-                                if dsi[z]["value"]["object_Label"]["lane_attribute"] not in [
-                                    'lane_white'
-                                    'lane_blue'
-                                    'lane_yellow'
+                                if dsi[z]["value"]["object_Label"]["lane_type"] not in [
+                                    'lane_white',
+                                    'lane_blue',
+                                    'lane_yellow',
                                     'lane_shoulder'
                                 ]:
                                     peculiars.append('_'.join([dataIdx,str(filename),'laneType']))
