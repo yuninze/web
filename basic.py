@@ -1,11 +1,11 @@
 import os,json,glob,shutil
 import pandas as pd
 import datetime as dt
-ima,enc,idea=str((dt.datetime.now()).strftime("%m%d")),"utf-8-sig","=="
+ima,enc,idea=str((dt.datetime.now()).strftime("%m%d")),"utf-8","="
 from zipfile import ZipFile
 import csv
 
-def listing(zipfile: str):
+def listing(zipfile:str):
     '''
     Provide namelist dict of jpegfile in zipfile.
     '''
@@ -23,16 +23,17 @@ def listing(zipfile: str):
                     namelist['ng'].append(idx.filename)
         return filename,namelist
 
-def mkcsv(namestring: str,iterable,header='filename',mode='w'):
-    if len(iterable)<2:
-        raise TypeError(f"'{iterable}' is peculiar iterable")
-    with open(namestring,mode=mode,encoding='utf-8',newline='') as csvfile:
-        c=csv.writer(csvfile)
+def mkcsv(namestring:str,iterable,header='filename',mode='w'):
+    if len(iterable)==0:
+        raise TypeError(f"'{iterable}' has 0 length")
+    with open(namestring,mode=mode,encoding='utf-8',newline=''
+    ) as csvfile:
+        c=csv.writer(csvfile,)
         c.writerow([header])
-        [c.writerow([x]) for x in iterable]
+        [c.writerow([str(x)]) for x in iterable]
     return None
 
-def mkmt(zipfile: str):
+def mkmt(zipfile:str):
     '''
     Write csvfile from namelist dict.
     '''
@@ -46,7 +47,7 @@ def mkmt(zipfile: str):
     print(f'made {namestring}, omitted {ngcount} file')
     return None
 
-def mkmtcnse(zipfile: str,by=10):
+def mkmtcnse(zipfile:str,by=10):
     if isinstance(by,int)==False:
         raise TypeError(f"parameter 'by' should be an intp")
     filename,namelist=listing(zipfile)
@@ -59,22 +60,18 @@ def mkmtcnse(zipfile: str,by=10):
         idxstring=name[:by]
         for name0 in namelist['ok']:
             if name0[:by]==idxstring:
-                idx0.append("'"+name0+"'")
-        for name1 in idx0:
-            print(f'{name1=}')
-            name1=str(name1).replace("'","")
-            namelist['ok'].remove(name1)
+                idx0.append("\'"+name0+"\'")
+                namelist['ok'].remove(name0.strip("\'"))
         idx.append(idx0)
+        print(f"{idx=}")
         idx0=[]
     mkcsv(namestring,idx)
-    with open(namestring,newline='') as csvfile:
-        pass
     if len(namelist['ng'])!=0:
         ngcount=len(namelist['ng'])
     else:
         ngcount=0
     print(f'made {namestring}, omitted {ngcount} file')
-    return None
+    return idx
 
 def greatPuzzle_ZeungZuck():
     '''

@@ -1,3 +1,4 @@
+from imghdr import tests
 import os,json;import pandas as pd;import datetime as dt
 ima=str((dt.datetime.now()).strftime("%Y"+"-"+"%m"+"-"+"%d"))
 enc="utf-8-sig"
@@ -81,5 +82,26 @@ def noan(path,fileObject):
         paper["id"]=str(jsonpath[z]["dataID"])
         canvas[len(canvas):]=[paper]
     filenamestring="jurye_"+ima+"_"+str(len(jsonpath))+".csv"
+    dicttocsv(canvas,filenamestring)
+    return None
+
+def english(fileObject,path='c:/'):
+    os.chdir(path)
+    jsondata=calljson(fileObject)
+    jsonpath=jsondata["result"]
+    canvas=[]
+    for z in range(len(jsonpath)):
+        paper=dict()
+        paper["추출일"]=ima
+        paper["data_idx"]=jsonpath[z]["dataID"]
+        paper["전번"]=jsonpath[z]["name_RFEMO0"]["data"][0]["value"]
+        tests=jsonpath[z]["name_BEU78U"]["data"][0]["value"]
+        tests=[tests[z]["value"] for z in range(len(tests))]
+        paper['영어시험이름']="\n".join(tests[z] for z in range(len(tests)))
+        paper["영어시험성적"]=jsonpath[z]["name_HV6CYI"]["data"][0]["value"]
+        paper['증빙제출동의']='녜'
+        paper['전번연락동의']='녜'
+        canvas[len(canvas):]=[paper]
+    filenamestring="english_"+ima+"_"+str(len(jsonpath))+".csv"
     dicttocsv(canvas,filenamestring)
     return None
