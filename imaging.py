@@ -61,7 +61,7 @@ def stamp(fgifile,bgipath,ts=130,ss=200,rnd=2):
             #save bgi to bgiimagefile
             bgifilename=bgifilename[(bgifilename.rfind('/')+1):]
             bgi.save('x'+bgifilename,
-            'JPEG',quality=10,progressive=True,optimize=True)
+            'JPEG',quality=5,progressive=True,optimize=True)
 
 def rs(path,d,ratio,quant):
     if "\\" not in path:

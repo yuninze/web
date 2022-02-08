@@ -2,6 +2,8 @@ import os,json,csv,glob,shutil
 import sys
 import pandas as pd;import datetime as dt;from zipfile import ZipFile
 from pathlib import Path
+import pathlib
+import numpy as np
 ima,enc,idea=str((dt.datetime.now()).strftime("%m%d")),"utf-8-sig","=="
 sys.setrecursionlimit(900_000)
 
@@ -56,6 +58,8 @@ def lachk(path,write=False):
     lane_white,lane_blue,lane_yellow,lane_shoulder=0,0,0,0
     dataidxlist=[]
     filenamelist=[]
+    peculiars=[]
+    peculiars_filename=[]
     os.chdir(path)
     for channeldir in os.listdir():
         os.chdir(channeldir)
@@ -67,14 +71,24 @@ def lachk(path,write=False):
                 for jsonfile in a:
                     if os.stat(jsonfile).st_size==0:
                         os.remove(jsonfile)
-                        print("...DELETED: "+jsonfile)
                         continue
-                    with open(jsonfile,encoding="utf-8",mode='r') as jsonfileData:
-                        j=json.load(jsonfileData)
+                    with open(jsonfile,encoding="utf-8",mode='r') as jsondata:
+                        filename=pathlib.PurePath(jsonfile)
+                        print(f"attempting: {filename.parts[-1]}")
+                        j=json.load(jsondata)
                         dataidxlist+=[int(j["dataID"])]
                         filenamelist+=[str(j["data_set_info"]["sourceValue"])]
                         dsi=j["data_set_info"]["data"]
+                        if isinstance(j['dataID'],int):
+                            j['dataID']=str(j['dataID'])
                         for z in range(len(dsi)):
+                            if len(dsi[z]['value']['points'])<3:
+                                peculiars.append(j['dataID'])
+                                try:
+                                peculiars_filename.append(
+                                    filename.parts[-2]+
+                                    filename.parts[-1]
+                                )
                             if len(dsi[z]["value"]["object_Label"])==3:
                                 if dsi[z]["value"]["object_Label"]["vehicle_type"]=="vehicle_car":
                                     car+=1
@@ -109,9 +123,8 @@ def lachk(path,write=False):
                                     lane_yellow+=1
                                 elif dsi[z]["value"]["object_Label"]["lane_type"]=="lane_shoulder":
                                     lane_shoulder+=1
-                            print("OK: "+str(Path(jsonfile).absolute()))
                         if write:
-                            json.dump(j,ensure_ascii=False,indent=0)
+                            json.dump(j,open(jsonfile,mode='w',encoding='utf-8'),ensure_ascii=False,indent=1)
                 os.chdir("..")
             os.chdir("..")
         os.chdir("..")
@@ -124,7 +137,7 @@ def lachk(path,write=False):
     f"DID: {len(dataidxlist)}"+
     f"filename: {len(filenamelist)}//{len(set(filenamelist))}"
     )
-    return (filenamelist,dataidxlist)
+    return filenamelist,dataidxlist,peculiars,peculiars_filename
 
 def arcList(fo):
     arcList=ZipFile(fo,"r").infolist()
