@@ -54,9 +54,11 @@ def lachk(path,write=False):
     car,bus,truck,bike,normal,danger,violation=0,0,0,0,0,0,0
     single_solid,double_solid,single_dashed,left_dashed_double,right_dashed_double=0,0,0,0,0
     lane_white,lane_blue,lane_yellow,lane_shoulder=0,0,0,0
-    dataidxlist=[]
-    filenamelist=[]
-    peculiars=[]
+    memo={
+        'dataidxs':[],
+        'filenames':[],
+        'peculiars':[]
+    }
     os.chdir(path)
     for channeldir in os.listdir():
         os.chdir(channeldir)
@@ -64,12 +66,12 @@ def lachk(path,write=False):
             os.chdir(colordir)
             for seriesdir in os.listdir():
                 os.chdir(seriesdir)
-                a=glob.glob("*.json")
+                a=glob.glob(r'*.json')
                 for jsonfile in a:
                     if os.stat(jsonfile).st_size==0:
                         os.remove(jsonfile)
                         continue
-                    with open(jsonfile,encoding="utf-8",mode='r') as jsondata:
+                    with open(jsonfile,encoding='utf-8',mode='r') as jsondata:
                         filename=pathlib.PurePath(jsonfile)
                         print(f"attempting: {filename.parts[-1]}")
                         j=json.load(jsondata)
@@ -153,12 +155,12 @@ def lachk(path,write=False):
             os.chdir("..")
         os.chdir("..")
     print(
-    f"car: {car}, bus: {bus}, truck: {truck}, bike: {bike}, \n"+
-    f"normal: {normal}, danger: {danger}, violation: {violation}\n"+
-    f"SS: {single_solid}, SD: {single_dashed}, DS: {double_solid},\n"+
-    f"LDD: {left_dashed_double}, RDD: {right_dashed_double}\n"+
-    f"LW: {lane_white}, LB: {lane_blue}, LY: {lane_yellow}, LS: {lane_shoulder}\n"+
-    f"DID: {len(dataidxlist)} filename: {len(filenamelist)}/{len(set(filenamelist))}"
+    f'car: {car}, bus: {bus}, truck: {truck}, bike: {bike}, \n'+
+    f'normal: {normal}, danger: {danger}, violation: {violation},\n'+
+    f'SS: {single_solid}, SD: {single_dashed}, DS: {double_solid},\n'+
+    f'LDD: {left_dashed_double}, RDD: {right_dashed_double},\n'+
+    f'LW: {lane_white}, LB: {lane_blue}, LY: {lane_yellow}, LS: {lane_shoulder},\n'+
+    f'DID: {len(dataidxlist)} filename: {len(filenamelist)}/{len(set(filenamelist))}'
     )
     return filenamelist,dataidxlist,peculiars
 
