@@ -15,13 +15,13 @@ def purify(target,danga=10):
         usecols="A,B,C,D,E,L,N"
     #Column naming
     cols=[
-    "id",
-    "mail",
-    "name",
-    "nick",
-    "work",
-    basis,
-    "TWT"
+        "id",
+        "mail",
+        "name",
+        "nick",
+        "work",
+        basis,
+        "TWT"
     ]
     #Attempt to load within settings above
     frame=pd.read_excel(target,usecols=usecols,na_filter=True).drop([0])
@@ -87,20 +87,20 @@ def sansibar(frames,pii='c:/'):
         if len(frames)<1:
             raise NotImplementedError(f"'{type(frames)}' is peculiar")
     if 'auditRate' and 'complyRate' in frame.columns:
-        print('There are both basis in columns. It will be incorrect.')
+        print('Both basis in columns')
     #id, nick protection for disregarding sum
     idx=frame.loc[:,['id','nick']]
     frame.drop(columns=['id','nick'],inplace=True)
     #groupbying and index confirmation
     oldidx=frame.index.nunique(dropna=False)
     frame=frame.groupby(by=frame.index.names)[[
-    'work',
-    'TWT',
-    'TE',
-    'TE1000',
-    'EPS',
-    'EPH',
-    'JPH'
+        'work',
+        'TWT',
+        'TE',
+        'TE1000',
+        'EPS',
+        'EPH',
+        'JPH'
     ]].transform('sum')
     newidx=frame.index.nunique(dropna=False)
     if not oldidx==newidx:
@@ -117,13 +117,15 @@ def sansibar(frames,pii='c:/'):
     frame=frame.applymap(flat)
     frame['id']=np.uint32(frame['id'])
     #try to open pii frame
+    piiname=pii
     try:
         pii=pd.read_csv(pii)
+        print(f"got '{piiname}'")
         pii.drop("Unnamed: 0",axis=1,inplace=True)
         #Set index by name and mail
         pii.set_index(keys=['mail','name'],inplace=True)
         #Merge by index
         return pii.merge(frame,left_index=True,right_index=True)
     except:
-        print(f"pii file '{pii}' does not exist")
+        print(f"pii file '{piiname}' does not exist")
         return frame

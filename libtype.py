@@ -45,7 +45,10 @@ def occdiv(frame):
         frame.loc[i,meanstat]=stat/factor
     return frame
 
-def meaning(scalarsum,scalarlen):
+def meaning(scalarsum:np.float32,scalarlen)->np.float32:
+    '''
+    Parameter: Sum of objects,Length of objects
+    '''
     if scalarsum==0:
         scalarsum=1
     try:
@@ -75,6 +78,38 @@ def dashingpn(object):
             print(f"Substitution failed for '{object}'")
             return "010-9405-6485"
     return "-".join([object[:3],object[3:7],object[7:]])
+
+def getmd(scalar):
+    if not isinstance(scalar,str):
+        try:
+            scalar=str(scalar)
+        except:
+            raise TypeError(f"'{scalar}' is peculiar")
+    mdix=scalar.find('@')+1
+    return scalar[mdix:]
+
+def getsexage(scalar,year=2022):
+    try:
+        if len(scalar)==14:
+            scalar=scalar.replace('-','')[:7]
+            scalar=''.join([scalar[:6],'1'])
+            sexix=divmod(np.uint32(scalar[6]),2)[1]
+        if not sexix==0:
+            sex='male'
+        else:
+            sex='female'
+        age=year-np.uint32('19'+scalar[:2])
+        agechk=abs(age)
+        if age<0:
+            age=agechk+100
+            if not 10<age<95:
+                print(f"'{scalar} is peculiar")
+                #meaning
+                age=30
+        return sex,age
+    except:
+        print(f"'{scalar}' is peculiar")
+        return 'female',30
 
 def accountingtostr(scalar):
     return str(scalar).replace(',','')
