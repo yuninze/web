@@ -91,10 +91,17 @@ def lachk(path,write=False):
                                 memo['peculiars'].append('_'.join([dataIdx,str(filename),'pbPoint']))
                             if len(dsi[z]["value"]["object_Label"])==3:
                                 #check
+<<<<<<< HEAD
                                 if dsi[z]["value"]["object_Label"]["vehicle_type"] not in (
                                     'vehicle_car'
                                     'vehicle_bus'
                                     'vehicle_truck'
+=======
+                                if dsi[z]["value"]["object_Label"]["vehicle_type"] not in [
+                                    'vehicle_car',
+                                    'vehicle_bus',
+                                    'vehicle_truck',
+>>>>>>> edda4a72ea0136236d5c0d26c6517f34afbbb8a0
                                     'vehicle_bike'
                                 ):
                                     memo['peculiars'].append('_'.join([dataIdx,str(filename),'vehicleType']))
@@ -107,9 +114,15 @@ def lachk(path,write=False):
                                 elif dsi[z]["value"]["object_Label"]["vehicle_type"]=="vehicle_bike":
                                     bike+=1
                                 #check
+<<<<<<< HEAD
                                 if dsi[z]["value"]["object_Label"]["vehicle_attribute"] not in (
                                     'normal'
                                     'danger'
+=======
+                                if dsi[z]["value"]["object_Label"]["vehicle_attribute"] not in [
+                                    'normal',
+                                    'danger',
+>>>>>>> edda4a72ea0136236d5c0d26c6517f34afbbb8a0
                                     'violation'
                                 ):
                                     memo['peculiars'].append('_'.join([dataIdx,str(filename),'vehicleAtrb']))
@@ -124,10 +137,18 @@ def lachk(path,write=False):
                                     memo['violation'].append(int(dataIdx))
                             elif len(dsi[z]["value"]["object_Label"])==2:
                                 #check
+<<<<<<< HEAD
                                 if dsi[z]["value"]["object_Label"]["lane_attribute"] not in (
                                     'double_solid'
                                     'single_dashed'
                                     'left_dashed_double'
+=======
+                                if dsi[z]["value"]["object_Label"]["lane_attribute"] not in [
+                                    'single_solid',
+                                    'double_solid',
+                                    'single_dashed',
+                                    'left_dashed_double',
+>>>>>>> edda4a72ea0136236d5c0d26c6517f34afbbb8a0
                                     'right_dashed_double'
                                 ):
                                     memo['peculiars'].append('_'.join([dataIdx,str(filename),'laneAtrb']))
@@ -142,10 +163,17 @@ def lachk(path,write=False):
                                 elif dsi[z]["value"]["object_Label"]["lane_attribute"]=="right_dashed_double":
                                     right_dashed_double+=1
                                 #check
+<<<<<<< HEAD
                                 if dsi[z]["value"]["object_Label"]["lane_attribute"] not in (
                                     'lane_white'
                                     'lane_blue'
                                     'lane_yellow'
+=======
+                                if dsi[z]["value"]["object_Label"]["lane_type"] not in [
+                                    'lane_white',
+                                    'lane_blue',
+                                    'lane_yellow',
+>>>>>>> edda4a72ea0136236d5c0d26c6517f34afbbb8a0
                                     'lane_shoulder'
                                 ):
                                     memo['peculiars'].append('_'.join([dataIdx,str(filename),'laneType']))

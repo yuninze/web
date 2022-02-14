@@ -27,6 +27,7 @@ items = [
     tuple(func(y) if i == level else y for i, y in enumerate(x)) for x in self
 ]
 
+<<<<<<< HEAD
 Working binning
 데.누.방.
 Bin Width 검증하기, 어떻게 supervised binning
@@ -89,6 +90,13 @@ frame.column.quantile(q=x)->np.float64
 
 Entropy binning
 frame['wrkrng']=pd.cut(x=frame.age,bins=pd.interval_range(start=0,end=110,periods=10)).to_numpy()
+=======
+
+ca=concoction('C:/82/stat/concat/ca',10,10)
+cz=concoction('C:/82/stat/concat/cz',10,10)
+la=concoction('C:/82/stat/concat/la',70,550)
+lz=concoction('C:/82/stat/concat/lz',70,550)
+>>>>>>> edda4a72ea0136236d5c0d26c6517f34afbbb8a0
 
 import csv
 
