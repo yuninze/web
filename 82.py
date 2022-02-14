@@ -91,12 +91,12 @@ def lachk(path,write=False):
                                 memo['peculiars'].append('_'.join([dataIdx,str(filename),'pbPoint']))
                             if len(dsi[z]["value"]["object_Label"])==3:
                                 #check
-                                if dsi[z]["value"]["object_Label"]["vehicle_type"] not in [
+                                if dsi[z]["value"]["object_Label"]["vehicle_type"] not in (
                                     'vehicle_car'
                                     'vehicle_bus'
                                     'vehicle_truck'
                                     'vehicle_bike'
-                                ]:
+                                ):
                                     memo['peculiars'].append('_'.join([dataIdx,str(filename),'vehicleType']))
                                 if dsi[z]["value"]["object_Label"]["vehicle_type"]=="vehicle_car":
                                     car+=1
@@ -107,11 +107,11 @@ def lachk(path,write=False):
                                 elif dsi[z]["value"]["object_Label"]["vehicle_type"]=="vehicle_bike":
                                     bike+=1
                                 #check
-                                if dsi[z]["value"]["object_Label"]["vehicle_attribute"] not in [
+                                if dsi[z]["value"]["object_Label"]["vehicle_attribute"] not in (
                                     'normal'
                                     'danger'
                                     'violation'
-                                ]:
+                                ):
                                     memo['peculiars'].append('_'.join([dataIdx,str(filename),'vehicleAtrb']))
                                 if dsi[z]["value"]["object_Label"]["vehicle_attribute"]=="normal":
                                     normal+=1
@@ -124,12 +124,12 @@ def lachk(path,write=False):
                                     memo['violation'].append(int(dataIdx))
                             elif len(dsi[z]["value"]["object_Label"])==2:
                                 #check
-                                if dsi[z]["value"]["object_Label"]["lane_attribute"] not in [
+                                if dsi[z]["value"]["object_Label"]["lane_attribute"] not in (
                                     'double_solid'
                                     'single_dashed'
                                     'left_dashed_double'
                                     'right_dashed_double'
-                                ]:
+                                ):
                                     memo['peculiars'].append('_'.join([dataIdx,str(filename),'laneAtrb']))
                                 if dsi[z]["value"]["object_Label"]["lane_attribute"]=="single_solid":
                                     single_solid+=1
@@ -142,12 +142,12 @@ def lachk(path,write=False):
                                 elif dsi[z]["value"]["object_Label"]["lane_attribute"]=="right_dashed_double":
                                     right_dashed_double+=1
                                 #check
-                                if dsi[z]["value"]["object_Label"]["lane_attribute"] not in [
+                                if dsi[z]["value"]["object_Label"]["lane_attribute"] not in (
                                     'lane_white'
                                     'lane_blue'
                                     'lane_yellow'
                                     'lane_shoulder'
-                                ]:
+                                ):
                                     memo['peculiars'].append('_'.join([dataIdx,str(filename),'laneType']))
                                 if dsi[z]["value"]["object_Label"]["lane_type"]=="lane_white":
                                     lane_white+=1
@@ -211,10 +211,7 @@ def srcKeyname(jsonfile,word):
         jsonfile=json.load(open(jsonfile,"r",encoding="utf-8-sig"))
     except:
         pass
-    try:
-        word=str(word)
-    except:
-        word=int(word)
+    word=str(word)
     pid=jsonfile["projectID"]
     for x in range(len(jsonfile["result"])):
         if jsonfile["result"][x]["unableToWork"]==0:
