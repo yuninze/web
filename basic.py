@@ -74,6 +74,38 @@ def mkmtcnse(zipfile:str,ext,by=10):
     print(f'made {namestring}, omitted {ngcount} file')
     return idx
 
+#working
+def listfileImgSeq(p,fo="seqimglistfile.csv"):
+    os.chdir(p)
+    a=open(p+fo,"w",encoding=enc)
+    imagefileLst,imagefileBad=[],[]
+    print("..visiting")
+    for dir_image in os.listdir():
+        os.chdir(dir_image)
+        for dir_abcds in os.listdir():
+            os.chdir(dir_abcds)
+            for dir_bwsys in os.listdir():
+                os.chdir(dir_bwsys)
+                for dir_dirss in os.listdir():
+                    os.chdir(dir_dirss)
+                    for imagefile in os.listdir():
+                        if os.path.getsize(imagefile)<100:
+                            imagefileBad[len(imagefileBad):]=[pathStrip(Path(imagefile).absolute())]
+                        else:
+                            imagefileLst[len(imagefileLst):]=[pathStrip(Path(imagefile).absolute())]
+                    json.dumps(a,)
+                    imagefileLst=[]
+                    os.chdir("../")
+                os.chdir("../")
+            os.chdir("../")
+        os.chdir("../")
+    if len(os.listdir())>2:
+        print("..exception: dir_image")
+    else:
+        pass
+    pd.read_csv("d:\\"+fo,encoding=enc).to_csv("d:\\"+fo,encoding=enc,index=False)
+    return print("..imagefileBad: "+str(len(imagefileBad)))
+
 def greatPuzzle_ZeungZuck():
     '''
     fuck

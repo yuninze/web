@@ -2,15 +2,101 @@ zyeon
 zyeon=pd.pivot_table(a,values='money',index=['idx','name','cn','wm'],aggfunc=np.sum)
 zyeon.unstack().to_csv('zyeon.csv',encoding='utf-8-sig')
 
+fileobject
+a=concoction('C:/code/concat/ca',10,10)
+b=concoction('C:/code/concat/cz',10,10)
+c=concoction('C:/code/concat/la',560,70)
+d=concoction('C:/code/concat/lz',560,70)
+e=concoction('C:/code/concat/nla',560,70)
+fs=[a,b,c,d,e]
+f=sansibar(fs,pii='C:/code/concat/pii.csv')
+
+np.iinfo(obj)
+np.finfo(obj)
+pd.interval_range()
+pd.cut(x=series,bin=rangearray)
+
+100Ка(100УЪ)
+r"\((\d+.\d+).\)"
+@*
+^\S+@\S+$
+
+labels = ["{0} - {1}".format(i, i + 9) for i in range(0, 100, 10)]
+
 items = [
     tuple(func(y) if i == level else y for i, y in enumerate(x)) for x in self
 ]
 
+<<<<<<< HEAD
+Working binning
+데.누.방.
+Bin Width 검증하기, 어떻게 supervised binning
+
+f_sexage=pd.DataFrame(list(map(getsexage,f.cn.values)))
+f['sex']=f_sexage.iloc[:,0].to_numpy()
+f['age']=f_sexage.iloc[:,1].to_numpy()
+*map(getmd,f.index.get_level_values(0)),
+
+Fixation binning
+frame['agerng']=pd.cut(x=frame.age,bins=pd.interval_range(start=0,end=110,periods=10)).to_numpy()
+frame.column.quantile(q=x)->np.float64
+
+pd.qcut(x=f.work,q=(0,.5,.6,.7,.75,.8,.85,.9,.95,1.))
+
+f['TErng']=pd.cut(x=f.TE,bins=pd.interval_range(start=0,end=f.TE
+
+Entropy binning for workrng, TErng
+frame['wrkrng']=pd.cut(x=frame.age,bins=pd.interval_range(start=0,end=110,periods=10)).to_numpy()
+
+
+
+
+
+items = [
+    tuple(func(y) if i == level else y for i, y in enumerate(x)) for x in self
+]
+
+a=concoction('C:/code/concat/ca',10,10)
+b=concoction('C:/code/concat/cz',10,10)
+c=concoction('C:/code/concat/la',70,550)
+d=concoction('C:/code/concat/lz',70,550)
+e=concoction('C:/code/concat/nla',70,550)
+frames=[a,b,c,d,e]
+frame=sansibar(frames)
+
+np.iinfo(obj)
+np.finfo(obj)
+pd.interval_range()
+pd.cut(x=series,bin=rangearray)
+
+100Ка(100УЪ)
+r"\((\d+.\d+).\)"
+
+@*
+^\S+@\S+$
+
+labels = ["{0} - {1}".format(i, i + 9) for i in range(0, 100, 10)]
+
+items = [
+    tuple(func(y) if i == level else y for i, y in enumerate(x)) for x in self
+]
+
+Working binning
+
+Fixation binning
+frame['agerng']=pd.cut(x=frame.age,bins=pd.interval_range(start=0,end=110,periods=10)).to_numpy()
+
+frame.column.quantile(q=x)->np.float64
+
+Entropy binning
+frame['wrkrng']=pd.cut(x=frame.age,bins=pd.interval_range(start=0,end=110,periods=10)).to_numpy()
+=======
 
 ca=concoction('C:/82/stat/concat/ca',10,10)
 cz=concoction('C:/82/stat/concat/cz',10,10)
 la=concoction('C:/82/stat/concat/la',70,550)
 lz=concoction('C:/82/stat/concat/lz',70,550)
+>>>>>>> edda4a72ea0136236d5c0d26c6517f34afbbb8a0
 
 import csv
 
