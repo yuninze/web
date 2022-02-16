@@ -51,6 +51,9 @@ def getjsonfile(path):
     print("DONE: "+str(count)+" files")
 
 def lachk(path,write=False):
+    '''
+    VER. 20220216
+    '''
     car,bus,truck,bike,normal,danger,violation=0,0,0,0,0,0,0
     single_solid,double_solid,single_dashed,left_dashed_double,right_dashed_double=0,0,0,0,0
     lane_white,lane_blue,lane_yellow,lane_shoulder=0,0,0,0
@@ -83,10 +86,28 @@ def lachk(path,write=False):
                         srcVal=j['data_set_info']['sourceValue']
                         memo['filenames'].append(srcVal)
                         dsi=j["data_set_info"]["data"]
+                        #data_id typing
                         if isinstance(j['dataID'],int):
                             j['dataID']=str(j['dataID'])
                         for z in range(len(dsi)):
-                            #check
+                            #miVt unconditional substitution
+                            miVt=dsi[z]['value']['metainfo']['violation_type']
+                            dsi[z]['value']['metainfo']['violation_type']=str(miVt).upper()
+                            #miTi [0-9]{6}, datetime compatibility
+                            miTi=dsi[z]['value']['metainfo']['time_info']
+                            if len(miTi)==5:
+                                dsi[z]['value']['metainfo']['time_info']=miTi+'0'
+                            elif len(miTi)==4:
+                                dsi[z]['value']['metainfo']['time_info']=miTi+'00'
+                            elif len(miTi)==3:
+                                dsi[z]['value']['metainfo']['time_info']=miTi+'000'
+                            #miCn [0-9]{3}
+                            miCn=dsi[z]['value']['metainfo']['camera_number']
+                            if len(miCn)==1:
+                                dsi[z]['value']['metainfo']['time_info']=miCn+'00'
+                            elif len(miCn)==2:
+                                dsi[z]['value']['metainfo']['time_info']=miCn+'0'
+                            #pbPoint count
                             if len(dsi[z]['value']['points'])<3:
                                 memo['peculiars'].append('_'.join([dataIdx,str(filename),'pbPoint']))
                             if len(dsi[z]["value"]["object_Label"])==3:

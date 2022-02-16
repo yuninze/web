@@ -119,7 +119,7 @@ def jobcoding(object):
         try:
             return int(str(object).strip())
         except:
-            print(f"Substitution failed '{object}'")
+            print(f"Substitution failed for '{object}'")
             return 61394
     elif isinstance(object,(float,int)):
         return int(object)

@@ -1,14 +1,19 @@
 import os,json,glob,shutil
 import pandas as pd
 import datetime as dt
-ima,enc,idea=str((dt.datetime.now()).strftime("%m%d")),"utf-8","="
 from zipfile import ZipFile
 import csv
+enc,idea="utf-8","=="
 
-def listing(zipfile:str):
-    '''
-    Provide namelist dict of jpegfile in zipfile.
-    '''
+def ima():
+    return dt.datetime.now().strftime("%y%m%d")
+
+def listing(zipfile:str,ext):
+    '''Provide namelist dict of zipfile'''
+    if not isinstance(ext,(tuple,list)):
+        raise TypeError(f"'{ext}' is not a tuple or list")
+    if not bool(ext):
+        raise TypeError(f"'{ext}' is None")
     with ZipFile(zipfile) as file:
         filename=file.filename
         infolist=file.infolist()
@@ -16,7 +21,7 @@ def listing(zipfile:str):
         print(f'found {filename}')
         for z in range(len(infolist)):
             idx=infolist[z]
-            if '.jp' in idx.filename.lower():
+            if any(map(idx.filename.lower().__contains__,ext)):
                 if idx.file_size!=0:
                     namelist['ok'].append(idx.filename)
                 else:
@@ -33,11 +38,9 @@ def mkcsv(namestring:str,iterable,header='filename',mode='w'):
         [c.writerow([str(x)]) for x in iterable]
     return None
 
-def mkmt(zipfile:str):
-    '''
-    Write csvfile from namelist dict.
-    '''
-    filename,namelist=listing(zipfile)
+def mkmt(zipfile:str,ext):
+    '''Write csvfile from namelist dict.'''
+    filename,namelist=listing(zipfile,ext)
     namestring=filename.replace('.zip','.csv')
     mkcsv(namestring,namelist['ok'])
     if len(namelist['ng'])!=0:
@@ -47,10 +50,10 @@ def mkmt(zipfile:str):
     print(f'made {namestring}, omitted {ngcount} file')
     return None
 
-def mkmtcnse(zipfile:str,by=10):
+def mkmtcnse(zipfile:str,ext,by=10):
     if isinstance(by,int)==False:
         raise TypeError(f"parameter 'by' should be an intp")
-    filename,namelist=listing(zipfile)
+    filename,namelist=listing(zipfile,ext)
     namestring=filename.replace('.zip','_con.csv')
     namestring0=filename.replace('.zip','_org.csv')
     mkcsv(namestring0,namelist['ok'])
