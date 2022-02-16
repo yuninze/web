@@ -12,6 +12,8 @@ def listing(zipfile:str,ext):
     '''Provide namelist dict of zipfile'''
     if not isinstance(ext,(tuple,list)):
         raise TypeError(f"'{ext}' is not a tuple or list")
+    if not bool(ext):
+        raise TypeError(f"'{ext}' is None")
     with ZipFile(zipfile) as file:
         filename=file.filename
         infolist=file.infolist()
