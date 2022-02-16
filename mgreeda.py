@@ -1,4 +1,3 @@
-from imghdr import tests
 import os,json;import pandas as pd;import datetime as dt
 ima=str((dt.datetime.now()).strftime("%Y"+"-"+"%m"+"-"+"%d"))
 enc="utf-8-sig"
@@ -44,7 +43,7 @@ def oppai(path,fileObject):
         avp=[aftervisitprocess[z]["value"] for z in range(len(aftervisitprocess))]
         paper["내원후희망프로세스"]="\n".join(avp[z] for z in range(len(avp)))
         paper["id"]=str(jsonpath[z]["dataID"])
-        canvas[len(canvas):]=[paper]
+        canvas.append(paper)
     filenamestring="wonzin_"+ima+"_"+str(len(jsonpath))+".csv"
     dicttocsv(canvas,filenamestring)
     return None
@@ -80,7 +79,7 @@ def noan(path,fileObject):
         sx1=[sx1[z]["value"] for z in range(len(sx1))]
         paper["증상체크리스트2"]="\n".join(sx1[z] for z in range(len(sx1)))
         paper["id"]=str(jsonpath[z]["dataID"])
-        canvas[len(canvas):]=[paper]
+        canvas.append(paper)
     filenamestring="jurye_"+ima+"_"+str(len(jsonpath))+".csv"
     dicttocsv(canvas,filenamestring)
     return None
@@ -101,7 +100,7 @@ def english(fileObject,path='c:/'):
         paper["영어시험성적"]=jsonpath[z]["name_HV6CYI"]["data"][0]["value"]
         paper['증빙제출동의']='녜'
         paper['전번연락동의']='녜'
-        canvas[len(canvas):]=[paper]
+        canvas.append(paper)
     filenamestring="english_"+ima+"_"+str(len(jsonpath))+".csv"
     dicttocsv(canvas,filenamestring)
     return None

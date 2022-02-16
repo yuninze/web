@@ -197,6 +197,6 @@ def gp(jn):
         d["C008_L033"]=j["result"][i]["C008_L033"]["data"][0]["value"][0]["value"]
         d["C008_L034"]=j["result"][i]["C008_L034"]["data"][0]["value"][0]["value"]
         d["C008_L035"]=j["result"][i]["C008_L035"]["data"][0]["value"][0]["value"]
-        dl[len(dl):]=[d]
+        dl.append(d)
     pd.DataFrame(dl).to_csv(str(jn).replace(".json",".csv"),index=None,encoding="utf-8-sig")
     return None
