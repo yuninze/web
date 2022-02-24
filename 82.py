@@ -129,7 +129,7 @@ def lachk(path,write=False):
                                 memo['peculiarspath'].append(filepath0)
                             if len(dsi[z]["value"]["object_Label"])==3:
                                 #check
-                                if dsi[z]["value"]["object_Label"]["vehicle_type"] not in (
+                                if not dsi[z]["value"]["object_Label"]["vehicle_type"] in (
                                     'vehicle_car',
                                     'vehicle_bus',
                                     'vehicle_truck',
@@ -146,7 +146,7 @@ def lachk(path,write=False):
                                 elif dsi[z]["value"]["object_Label"]["vehicle_type"]=="vehicle_bike":
                                     bike+=1
                                 #check
-                                if dsi[z]["value"]["object_Label"]["vehicle_attribute"] not in (
+                                if not dsi[z]["value"]["object_Label"]["vehicle_attribute"] in (
                                     'normal',
                                     'danger',
                                     'violation'
@@ -164,7 +164,7 @@ def lachk(path,write=False):
                                     memo['violation'].append(int(dataIdx))
                             elif len(dsi[z]["value"]["object_Label"])==2:
                                 #check
-                                if dsi[z]["value"]["object_Label"]["lane_attribute"] not in (
+                                if not dsi[z]["value"]["object_Label"]["lane_attribute"] in (
                                     'single_solid',
                                     'double_solid',
                                     'single_dashed',
@@ -184,7 +184,7 @@ def lachk(path,write=False):
                                 elif dsi[z]["value"]["object_Label"]["lane_attribute"]=="right_dashed_double":
                                     right_dashed_double+=1
                                 #check
-                                if dsi[z]["value"]["object_Label"]["lane_type"] not in (
+                                if not dsi[z]["value"]["object_Label"]["lane_type"] in (
                                     'lane_white',
                                     'lane_blue',
                                     'lane_yellow',
