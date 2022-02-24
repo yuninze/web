@@ -52,8 +52,10 @@ def getjsonfile(path):
 
 def lachk(path,write=False):
     '''
-    VER. 20220216
+    VER. 20220217
     '''
+    if not path.endswith('ANNOTATION'):
+        raise NameError(f"{path} must end with 'ANNOTATION'")
     car,bus,truck,bike,normal,danger,violation=0,0,0,0,0,0,0
     single_solid,double_solid,single_dashed,left_dashed_double,right_dashed_double=0,0,0,0,0
     lane_white,lane_blue,lane_yellow,lane_shoulder=0,0,0,0
@@ -61,6 +63,7 @@ def lachk(path,write=False):
         'dataidxs':[],
         'filenames':[],
         'peculiars':[],
+        'peculiarspath':[],
         'normal':[],
         'danger':[],
         'violation':[]
@@ -79,6 +82,7 @@ def lachk(path,write=False):
                         continue
                     with open(jsonfile,encoding='utf-8',mode='r') as jsondata:
                         filename=pathlib.PurePath(jsonfile)
+                        filepath0=os.path.abspath(jsonfile)
                         print(f"attempting: {filename.parts[-1]}")
                         j=json.load(jsondata)
                         dataIdx=str(j['dataID'])
@@ -92,24 +96,37 @@ def lachk(path,write=False):
                         for z in range(len(dsi)):
                             #miVt unconditional substitution
                             miVt=dsi[z]['value']['metainfo']['violation_type']
-                            dsi[z]['value']['metainfo']['violation_type']=str(miVt).upper()
+                            if miVt in (
+                                'white',
+                                'blue',
+                                'shoulder',
+                                'yellow'
+                            ):
+                                dsi[z]['value']['metainfo']['violation_type']=str(miVt).upper()
+                                memo['peculiarspath'].append(filepath0)
                             #miTi [0-9]{6}, datetime compatibility
                             miTi=dsi[z]['value']['metainfo']['time_info']
                             if len(miTi)==5:
                                 dsi[z]['value']['metainfo']['time_info']=miTi+'0'
+                                memo['peculiarspath'].append(filepath0)
                             elif len(miTi)==4:
                                 dsi[z]['value']['metainfo']['time_info']=miTi+'00'
+                                memo['peculiarspath'].append(filepath0)
                             elif len(miTi)==3:
                                 dsi[z]['value']['metainfo']['time_info']=miTi+'000'
+                                memo['peculiarspath'].append(filepath0)
                             #miCn [0-9]{3}
                             miCn=dsi[z]['value']['metainfo']['camera_number']
                             if len(miCn)==1:
                                 dsi[z]['value']['metainfo']['time_info']=miCn+'00'
+                                memo['peculiarspath'].append(filepath0)
                             elif len(miCn)==2:
                                 dsi[z]['value']['metainfo']['time_info']=miCn+'0'
+                                memo['peculiarspath'].append(filepath0)
                             #pbPoint count
                             if len(dsi[z]['value']['points'])<3:
                                 memo['peculiars'].append('_'.join([dataIdx,str(filename),'pbPoint']))
+                                memo['peculiarspath'].append(filepath0)
                             if len(dsi[z]["value"]["object_Label"])==3:
                                 #check
                                 if dsi[z]["value"]["object_Label"]["vehicle_type"] not in (
@@ -119,6 +136,7 @@ def lachk(path,write=False):
                                     'vehicle_bike'
                                 ):
                                     memo['peculiars'].append('_'.join([dataIdx,str(filename),'vehicleType']))
+                                    memo['peculiarspath'].append(filepath0)
                                 if dsi[z]["value"]["object_Label"]["vehicle_type"]=="vehicle_car":
                                     car+=1
                                 elif dsi[z]["value"]["object_Label"]["vehicle_type"]=="vehicle_bus":
@@ -134,6 +152,7 @@ def lachk(path,write=False):
                                     'violation'
                                 ):
                                     memo['peculiars'].append('_'.join([dataIdx,str(filename),'vehicleAtrb']))
+                                    memo['peculiarspath'].append(filepath0)
                                 if dsi[z]["value"]["object_Label"]["vehicle_attribute"]=="normal":
                                     normal+=1
                                     memo['normal'].append(int(dataIdx))
@@ -153,6 +172,7 @@ def lachk(path,write=False):
                                     'right_dashed_double'
                                 ):
                                     memo['peculiars'].append('_'.join([dataIdx,str(filename),'laneAtrb']))
+                                    memo['peculiarspath'].append(filepath0)
                                 if dsi[z]["value"]["object_Label"]["lane_attribute"]=="single_solid":
                                     single_solid+=1
                                 elif dsi[z]["value"]["object_Label"]["lane_attribute"]=="double_solid":
@@ -171,6 +191,7 @@ def lachk(path,write=False):
                                     'lane_shoulder'
                                 ):
                                     memo['peculiars'].append('_'.join([dataIdx,str(filename),'laneType']))
+                                    memo['peculiarspath'].append(filepath0)
                                 if dsi[z]["value"]["object_Label"]["lane_type"]=="lane_white":
                                     lane_white+=1
                                 elif dsi[z]["value"]["object_Label"]["lane_type"]=="lane_blue":
@@ -184,6 +205,11 @@ def lachk(path,write=False):
                 os.chdir("..")
             os.chdir("..")
         os.chdir("..")
+    for q in memo['peculiarspath']:
+        filepath1=q.replace('ANNOTATION','ANNOTATIONr')
+        filedirpath=os.path.dirname(q).replace('ANNOTATION','ANNOTATIONr')
+        os.makedirs(filedirpath,exist_ok=True)
+        shutil.copy(src=q,dst=filepath1)
     print(
     f'car: {car}, bus: {bus}, truck: {truck}, bike: {bike}, \n'+
     f'normal: {normal}, danger: {danger}, violation: {violation},\n'+
