@@ -8,9 +8,9 @@ enc,idea="utf-8","=="
 def ima():
     return dt.datetime.now().strftime("%y%m%d")
 
-def listing(zipfile:str,ext):
+def listing(zipfile:str,ext:tuple=('jpg','jpeg','png')):
     '''Provide namelist dict of zipfile'''
-    if not isinstance(ext,(tuple,list)):
+    if not isinstance(ext,(tuple)):
         raise TypeError(f"'{ext}' is not a tuple or list")
     if not bool(ext):
         raise TypeError(f"'{ext}' is None")
@@ -38,7 +38,7 @@ def mkcsv(namestring:str,iterable,header='filename',mode='w'):
         [c.writerow([str(x)]) for x in iterable]
     return None
 
-def mkmt(zipfile:str,ext):
+def mkmt(zipfile:str,ext:tuple=('jpg','jpeg','png')):
     '''Write csvfile from namelist dict.'''
     filename,namelist=listing(zipfile,ext)
     namestring=filename.replace('.zip','.csv')
@@ -50,7 +50,7 @@ def mkmt(zipfile:str,ext):
     print(f'made {namestring}, omitted {ngcount} file')
     return None
 
-def mkmtcnse(zipfile:str,ext,by=10):
+def mkmtcnse(zipfile:str,ext:tuple=('jpg','jpeg','png'),by=10):
     if isinstance(by,int)==False:
         raise TypeError(f"parameter 'by' should be an intp")
     filename,namelist=listing(zipfile,ext)

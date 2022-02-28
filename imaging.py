@@ -1,9 +1,9 @@
 import os
-import numpy as np
 import cv2
+import numpy as np
 from PIL import Image
 
-def stamp(fgifile,bgipath,ts=130,ss=200,rnd=2):
+def stamp(fgifile,bgipath,ts=130,ss=200,rnd=2,qual=5):
     '''
     Stamps the specific to the images regarding randomized
     size and location.
@@ -19,21 +19,27 @@ def stamp(fgifile,bgipath,ts=130,ss=200,rnd=2):
             fgi=Image.open(fgifile,'r')
             #if pngfile check imagemode
             if fgi.filename.endswith('.png'):
-                ispng=1
+                ispng=True
                 if fgi.mode!='RGBA':
                     raise ValueError(f'peculiar pngfile {fgi.mode=}')
             #initiate f, locf, sizef
-            f=np.random.random_sample(2)
+            seed=np.random.random_sample(50)
+            f=np.random.choice(seed,size=2)
             lf=f*rnd
             sf=f[0]*ss
             #have ar
             ar=fgi.size[0]/fgi.size[1]
             #have mod
-            mod=(fgi.size[0]/ts,fgi.size[1]/ts)
+            mod=(
+                fgi.size[0]/ts,
+                fgi.size[1]/ts
+            )
             adi=(sf*ar,sf)
-            size=tuple(np.uint16(x) for x in [(
-            fgi.size[0]/mod[0])*ar+adi[0],
-            fgi.size[1]/mod[1]+adi[1]])
+            size=tuple(
+                np.uint16(x) for x in [
+                (fgi.size[0]/mod[0])*ar+adi[0],
+                fgi.size[1]/mod[1]+adi[1]
+            ])
             #resize if bgi is large
             if sum(fgi.size)>500:
                 print(f'resizing: {fgi.filename}: {size[0]} x {size[1]}')
@@ -49,19 +55,31 @@ def stamp(fgifile,bgipath,ts=130,ss=200,rnd=2):
             #have coordinates of upper-left region
             bgix1,bgiy1=np.uint16(bgix0*0.05),np.uint16(bgiy0*0.05)
             #have moderately moved coordinates of upper-left region
-            bgix2,bgiy2=tuple(np.uint16(w) for w in (
-            bgix1*lf[0]+(lf[0]*100),bgiy1*lf[1]+(lf[1]*100)))
+            bgix2,bgiy2=tuple(
+                np.uint16(w) for w in (
+                bgix1*lf[0]+(lf[0]*100),
+                bgiy1*lf[1]+(lf[1]*100)
+            ))
             #paste fgi to bgi
-            bgi.paste(fgi,
-            box=(bgix1+bgix2,bgiy1+bgiy2),mask=fgi.convert('RGBA'))
+            bgi.paste(
+                fgi,
+                box=(bgix1+bgix2,bgiy1+bgiy2),
+                mask=fgi.convert('RGBA')
+            )
             #empty fgi
             fgi.close()
             #channelConvert RGB
             bgi=bgi.convert('RGB')
             #save bgi to bgiimagefile
             bgifilename=bgifilename[(bgifilename.rfind('/')+1):]
-            bgi.save('x'+bgifilename,
-            'JPEG',quality=5,progressive=True,optimize=True)
+            bgi.save(
+                'x'+bgifilename,
+                'JPEG',
+                quality=qual,
+                progressive=True,
+                optimize=True
+            )
+    return None
 
 def rs(path,d,ratio,quant):
     if "\\" not in path:
