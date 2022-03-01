@@ -1,3 +1,6 @@
+from typing import (
+    Iterable
+)
 import os,json,glob,shutil
 import pandas as pd
 import datetime as dt
@@ -8,9 +11,9 @@ enc,idea="utf-8","=="
 def ima():
     return dt.datetime.now().strftime("%y%m%d")
 
-def listing(zipfile:str,ext:tuple=('jpg','jpeg','png')):
+def listing(zipfile:str,ext:Iterable=('jpg','jpeg','png'))->tuple:
     '''Provide namelist dict of zipfile'''
-    if not isinstance(ext,(tuple)):
+    if not isinstance(ext,Iterable):
         raise TypeError(f"'{ext}' is not a tuple or list")
     if not bool(ext):
         raise TypeError(f"'{ext}' is None")
@@ -28,9 +31,10 @@ def listing(zipfile:str,ext:tuple=('jpg','jpeg','png')):
                     namelist['ng'].append(idx.filename)
         return filename,namelist
 
-def mkcsv(namestring:str,iterable,header='filename',mode='w'):
+def mkcsv(namestring:str,iterable,header='filename',mode='w')->None:
     if len(iterable)==0:
         raise TypeError(f"'{iterable}' has 0 length")
+    #dict
     with open(namestring,mode=mode,encoding='utf-8',newline=''
     ) as csvfile:
         c=csv.writer(csvfile,)
@@ -38,7 +42,7 @@ def mkcsv(namestring:str,iterable,header='filename',mode='w'):
         [c.writerow([str(x)]) for x in iterable]
     return None
 
-def mkmt(zipfile:str,ext:tuple=('jpg','jpeg','png')):
+def mkmt(zipfile:str,ext:Iterable=('jpg','jpeg','png'))->None:
     '''Write csvfile from namelist dict.'''
     filename,namelist=listing(zipfile,ext)
     namestring=filename.replace('.zip','.csv')
@@ -50,7 +54,7 @@ def mkmt(zipfile:str,ext:tuple=('jpg','jpeg','png')):
     print(f'made {namestring}, omitted {ngcount} file')
     return None
 
-def mkmtcnse(zipfile:str,ext:tuple=('jpg','jpeg','png'),by=10):
+def mkmtcnse(zipfile:str,ext:Iterable=('jpg','jpeg','png'),by:int=10)->list:
     if isinstance(by,int)==False:
         raise TypeError(f"parameter 'by' should be an intp")
     filename,namelist=listing(zipfile,ext)
