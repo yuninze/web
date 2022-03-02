@@ -1,7 +1,103 @@
-zyeon
-zyeon=pd.pivot_table(a,values='money',index=['idx','name','cn','wm'],aggfunc=np.sum)
-zyeon.unstack().to_csv('zyeon.csv',encoding='utf-8-sig')
+Working set is a concept in computer science which defines the amount of 
+memory that a process requires in a given time interval.
 
+
+iinfo(obj)
+finfo(obj)
+pd.interval_range()
+pd.cut(x=series,bin=rangearray)
+quantile(
+    q=arrayAlike,
+    axis=matrixWise,
+    interpolation=
+)
+
+#returns containing-subset
+where(cond,other=,axis=)
+#inverse boolean of where
+mask(cond,other=,axis=)
+
+100Ка(100УЪ)
+r"\((\d+.\d+).\)"
+@*
+^\S+@\S+$
+
+["testRange {0}-{1}".format(q,q+10) for q in range(0,10000,10)]
+
+noMoreRegex
+int(''.join([q for q in STRING if q.isdigit()]))
+
+items = [tuple(func(y) if i == level else y for i, y in enumerate(x)) for x in self]
+select_dtypes(in=,ex=)
+
+Working binning
+데.누.방.
+Bin Width 검증하기, 어떻게 supervised binning
+
+f_sexage=pd.DataFrame(list(map(getsexage,f.cn.values)))
+f['sex']=f_sexage.iloc[:,0].to_numpy()
+f['age']=f_sexage.iloc[:,1].to_numpy()
+*map(getmd,f.index.get_level_values(0)),
+
+Fixation binning
+frame['agerng']=pd.cut(x=frame.age,bins=pd.interval_range(start=0,end=110,periods=10)).to_numpy()
+frame.column.quantile(q=x)->np.float64
+
+pd.qcut(x=f.work,q=(0,.5,.6,.7,.75,.8,.85,.9,.95,1.))
+
+f['TErng']=pd.cut(x=f.TE,bins=pd.interval_range(start=0,end=f.TE
+
+Entropy binning for workrng, TErng
+frame['wrkrng']=pd.cut(x=frame.age,bins=pd.interval_range(start=0,end=110,periods=10)).to_numpy()
+
+annot=True,fmt='d',linewidths=.1,cmap='plasma'
+
+ax=sns.heatmap(atc1,annot=True,fmt='d',linewidths=.5,cmap='viridis',vmax=500)
+atc.groupby('usersex')['paytimerng'].value_counts()
+
+ax4=ax4[ax4>0].dropna(axis=0,how='all')
+a0[np.isnan(a0[~np.isnan(a0)])]=0
+
+xticklabels
+yticklabels
+
+NaN, NaT, null, 0, ''
+pd.isna
+>>> pd.isnull
+<function isna at 0x7fb4c5cefc80>
+pd.notna->i.b.
+>>> pd.isnull
+<function isna at 0x7fb4c5cefc80>
+np.isnan->ufunc
+
+np.triu(mat,k:int)
+np.tril(mat,k:int)
+k-th diagonal, starting from the main diagonal of a matrix A is the list of entries 
+A_{i, j} where i=j.
+All off-diagonal elements are zero in a diagonal matrix.
+
+broadcasting
+at least one axes should have same length
+l transformat
+
+
+e.g.
+for q in target0.columns:
+	scalarsum=sum(target0[q])
+	target0[q]=target0[q]/scalarsum
+
+for q in range(len(target.index)):
+	scalarsum=sum(target.iloc[q,:])
+	target.iloc[q,:]=target.iloc[q,:]/scalarsum
+
+cache=[]
+with open('namu.json',encoding='utf-8') as jsonfile:
+	for q in range(100):
+		cache.append(json.loads(jsonfile.readline()))
+
+	
+	
+	
 fileobject
 a=concoction('C:/code/concat/ca',10,10)
 b=concoction('C:/code/concat/cz',10,10)
@@ -10,6 +106,12 @@ d=concoction('C:/code/concat/lz',560,70)
 e=concoction('C:/code/concat/nla',560,70)
 fs=[a,b,c,d,e]
 f=sansibar(fs,pii='C:/code/concat/pii.csv')
+	
+
+
+zyeon
+zyeon=pd.pivot_table(a,values='money',index=['idx','name','cn','wm'],aggfunc=np.sum)
+zyeon.unstack().to_csv('zyeon.csv',encoding='utf-8-sig')
 
 np.iinfo(obj)
 np.finfo(obj)
@@ -27,6 +129,7 @@ items = [
     tuple(func(y) if i == level else y for i, y in enumerate(x)) for x in self
 ]
 
+<<<<<<< HEAD
 
 ca=concoction('C:/82/stat/concat/ca',10,10)
 cz=concoction('C:/82/stat/concat/cz',10,10)
@@ -34,6 +137,29 @@ la=concoction('C:/82/stat/concat/la',70,550)
 lz=concoction('C:/82/stat/concat/lz',70,550)
 
 import csv
+=======
+Working binning
+데.누.방.
+Bin Width 검증하기, 어떻게 supervised binning
+
+f_sexage=pd.DataFrame(list(map(getsexage,f.cn.values)))
+f['sex']=f_sexage.iloc[:,0].to_numpy()
+f['age']=f_sexage.iloc[:,1].to_numpy()
+*map(getmd,f.index.get_level_values(0)),
+
+Fixation binning
+frame['agerng']=pd.cut(x=frame.age,bins=pd.interval_range(start=0,end=110,periods=10)).to_numpy()
+frame.column.quantile(q=x)->np.float64
+
+pd.qcut(x=f.work,q=(0,.5,.6,.7,.75,.8,.85,.9,.95,1.))
+
+f['TErng']=pd.cut(x=f.TE,bins=pd.interval_range(start=0,end=f.TE
+
+Entropy binning for workrng, TErng
+frame['wrkrng']=pd.cut(x=frame.age,bins=pd.interval_range(start=0,end=110,periods=10)).to_numpy()
+
+
+>>>>>>> a0b7904c93fba87de4dc287e299b12684c2cd6a0
 
 with open('c:/filenamelist.csv',encoding='utf-8',newline='',mode='w+') as filenamelistcsvfile:
 	csvwriter=csv.writer(filenamelistcsvfile);[csvwriter.writerow([t]) for t in filenamelist]

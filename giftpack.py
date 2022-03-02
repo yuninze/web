@@ -1,6 +1,7 @@
 import os,json;import numpy as np;import pandas as pd;import uuid;
 p,enc="c:\\","utf-8-sig"
 os.chdir(p)
+#select_dtypes, 
 gp=pd.read_excel("giftpack_true.xlsx").drop("dataID",axis=1,inplace=False)
 gp.birthdate[np.isnan(gp.birthdate)==True]=gp.birthdate.mean() #math.isnan()
 for z in gp.index:
@@ -27,7 +28,7 @@ for y in gp.index:
 gp.sex[gp.sex=="남"],gp.sex[gp.sex=="여"]="male","female"
 gp.rename(columns={"birthdate":"age"},inplace=True)
 gpBin=round(gp.iloc[:,4:].apply(pd.value_counts,normalize=True),2)
-#feature extraction
+#feature dobCategorize
 
 os.chdir("D:\\giftpack\\raw\\")
 def gpToCw():
