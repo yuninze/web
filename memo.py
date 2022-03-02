@@ -1,7 +1,10 @@
+
+
+
 Working set is a concept in computer science which defines the amount of 
 memory that a process requires in a given time interval.
 
-
+import pandas as pd
 iinfo(obj)
 finfo(obj)
 pd.interval_range()
@@ -11,6 +14,16 @@ quantile(
     axis=matrixWise,
     interpolation=
 )
+
+pd.to_datetime(
+(arg:1-d array,series,dataframe,dict-like),
+yearfirst=,
+format="%Y/%d/%m/"
+infer_datetime_format=False,
+origin=parseableDatetime
+unit=parseBasisUnit
+
+pd.Timestamp()
 
 #returns containing-subset
 where(cond,other=,axis=)

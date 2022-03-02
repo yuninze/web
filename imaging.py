@@ -1,5 +1,3 @@
-import os
-import cv2
 import numpy as np
 from PIL import Image
 
@@ -21,9 +19,9 @@ def stamp(fgifile,bgipath,ts=130,ss=200,rnd=2,qual=5):
             if fgi.filename.endswith('.png'):
                 ispng=True
                 if fgi.mode!='RGBA':
-                    raise ValueError(f'peculiar pngfile {fgi.mode=}')
+                    raise ValueError(f'peculiar pngfile ({fgi.mode=})')
             #initiate f, locf, sizef
-            seed=np.random.random_sample(50)
+            seed=np.random.random_sample(10)
             f=np.random.choice(seed,size=2)
             lf=f*rnd
             sf=f[0]*ss
@@ -80,6 +78,9 @@ def stamp(fgifile,bgipath,ts=130,ss=200,rnd=2,qual=5):
                 optimize=True
             )
     return None
+
+import os
+import cv2
 
 def rs(path,d,ratio,quant):
     if "\\" not in path:
