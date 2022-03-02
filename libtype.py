@@ -38,6 +38,9 @@ def occdiv(frame):
         meanstat+=['complyRate']
     if 'auditRate' in frame.columns:
         meanstat+=['auditRate']
+    #warn for potentially wrong basis
+    if 'auditRate' and 'complyRate' in meanstat:
+        print('Both basis in columns')
     #divide by occurance
     for i in frame.index:
         factor=frame.loc[i,'occurance']//1

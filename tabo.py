@@ -86,8 +86,6 @@ def sansibar(frames,pii='c:/'):
         #for dicted frames, it's not have been implemented yet
         if len(frames)<1:
             raise NotImplementedError(f"'{type(frames)}' is peculiar")
-    if 'auditRate' and 'complyRate' in frame.columns:
-        print('Both basis in columns')
     #id, nick protection for disregarding sum
     idx=frame.loc[:,['id','nick']]
     frame.drop(columns=['id','nick'],inplace=True)
