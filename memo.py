@@ -129,15 +129,6 @@ items = [
     tuple(func(y) if i == level else y for i, y in enumerate(x)) for x in self
 ]
 
-<<<<<<< HEAD
-
-ca=concoction('C:/82/stat/concat/ca',10,10)
-cz=concoction('C:/82/stat/concat/cz',10,10)
-la=concoction('C:/82/stat/concat/la',70,550)
-lz=concoction('C:/82/stat/concat/lz',70,550)
-
-import csv
-=======
 Working binning
 데.누.방.
 Bin Width 검증하기, 어떻게 supervised binning
@@ -159,7 +150,6 @@ Entropy binning for workrng, TErng
 frame['wrkrng']=pd.cut(x=frame.age,bins=pd.interval_range(start=0,end=110,periods=10)).to_numpy()
 
 
->>>>>>> a0b7904c93fba87de4dc287e299b12684c2cd6a0
 
 with open('c:/filenamelist.csv',encoding='utf-8',newline='',mode='w+') as filenamelistcsvfile:
 	csvwriter=csv.writer(filenamelistcsvfile);[csvwriter.writerow([t]) for t in filenamelist]
