@@ -3,6 +3,7 @@ import csv
 import numpy as np
 #https://www.sqlite.org/about.html
 #https://docs.python.org/3/library/sqlite3.html
+
 #pd.DataFrame.to_sql(
 #    name=tableName
 #    con=sqlite3.Connection,sqlalchemy.engine
@@ -10,12 +11,12 @@ import numpy as np
 #    index_label=[df.index.names]
 #)
 
-#connent to databaseName, get a Connetion object
+#connect to the databaseName, get a Connetion object
 database=sqlite3.connect('databaseName')
 #from the Connection object get a Cursor object
 currentPosition=database.cursor()
 #https://www.sqlite.org/datatype3.html
-#create table, column designation
+#create a table, designate columns
 currentPosition.executescript('''
 drop table if exist tableName;
 create table "tableName"(

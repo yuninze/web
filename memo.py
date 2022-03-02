@@ -1,6 +1,5 @@
 
 
-
 Working set is a concept in computer science which defines the amount of 
 memory that a process requires in a given time interval.
 
