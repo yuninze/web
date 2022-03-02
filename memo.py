@@ -123,7 +123,6 @@ r"\((\d+.\d+).\)"
 @*
 ^\S+@\S+$
 
-labels = ["{0} - {1}".format(i, i + 9) for i in range(0, 100, 10)]
 
 items = [
     tuple(func(y) if i == level else y for i, y in enumerate(x)) for x in self
@@ -178,7 +177,7 @@ ArcNameListingSon['cb']=[h for h in ArcNameListing if 'IMAGE/C/BLUE/' in h]
 ArcNameListingSon['cs']=[h for h in ArcNameListing if 'IMAGE/C/SHOULDER/' in h]
 for x,y in ArcNameListingSon.items():print(f'{x}: {len(y)}')
 
-frame1=pd.read_csv('c:/82_stats_fuck.csv',nrows=5000,encoding='utf-8-sig',low_memory=False)
+frame1=pd.read_csv('c:/82_stats.csv',nrows=5000,encoding='utf-8-sig',low_memory=False)
 
 from libtype import *
 cw=pd.read_csv('cw.csv')
@@ -194,8 +193,8 @@ for i in frame3.index:
 	frame3.loc[i,'cn']=str(i)[3:]
 
 frame0.set_index(inplace=True)
-fuck=pd.pivot_table(frame0,values='money',index=['name','wm'])
-fuck.unstack()
+pd.pivot_table(frame0,values='money',index=['name','wm'])
+unstack()
 
 half
 float16
@@ -204,8 +203,8 @@ float32
 double
 float64
 
-for fuck in d.index:
-    col=d.loc[fuck]
+for f in d.index:
+    col=d.loc[f]
     row=col.loc["variety"]
     if "장애" in row:
         col.loc["zangae"]="O"

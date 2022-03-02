@@ -126,3 +126,5 @@ def jobcoding(object):
 
 def occdivx(object,factor):
     return object/(factor//1)
+
+#select_dtype

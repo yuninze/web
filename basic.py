@@ -39,7 +39,7 @@ def mkcsv(namestring:str,iterable,header='filename',mode='w')->None:
     ) as csvfile:
         c=csv.writer(csvfile,)
         c.writerow([header])
-        [c.writerow([str(x)]) for x in iterable]
+        [c.writerow([x]) for x in iterable]
     return None
 
 def mkmt(zipfile:str,ext:Iterable=('jpg','jpeg','png'))->None:
