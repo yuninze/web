@@ -1,16 +1,24 @@
 import sqlite3
 import csv
 import numpy as np
-#https://www.sqlite.org/about.html, https://docs.python.org/3/library/sqlite3.html
+#https://www.sqlite.org/about.html
+#https://docs.python.org/3/library/sqlite3.html
+#pd.DataFrame.to_sql(
+#    name=tableName
+#    con=sqlite3.Connection,sqlalchemy.engine
+#    index=True
+#    index_label=[df.index.names]
+#)
 
 #connent to databaseName, get a Connetion object
 database=sqlite3.connect('databaseName')
 #from the Connection object get a Cursor object
 currentPosition=database.cursor()
 #https://www.sqlite.org/datatype3.html
-currentPosition.execute('drop table if exist {frameName}')
-currentPosition.execute('''
-create table "frameName"(
+#create table, column designation
+currentPosition.executescript('''
+drop table if exist tableName;
+create table "tableName"(
     "id" text,
     "name0" text,
     "name1" text,
@@ -24,12 +32,17 @@ create table "frameName"(
     "price1" INTEGER
     )
 ''')
+#get csvfile name
 csvfilename=input('csvfile name: ')
+#get default csvfile name
 if len(csvfilename)==0:
     csvfilename='csvfile.csv'
+#get csvfile
 with open(csvfilename,newline='') as csvfile:
     r=csv.reader(csvfile,delimiter=',')
+    #have per-line iterables
     for line in r:
+        #set per-column scalars in the row
         print(r)
         id=line[0]
         name0=line[1]
@@ -42,8 +55,9 @@ with open(csvfilename,newline='') as csvfile:
         cat3=line[8]
         price0=np.uint64(line[9])
         price1=np.uint64(line[10])
+        #qmark style insertion
         currentPosition.execute('''
-        INSERT INTO databaseName(
+        INSERT INTO tableName(
             id,
             name0,
             name1,
@@ -56,8 +70,8 @@ with open(csvfilename,newline='') as csvfile:
             price0,
             price1
             )
-        VALUES (?,?,?,?,?,?,?,?,?,?,?)''',
-            (
+        VALUES (?,?,?,?,?,?,?,?,?,?,?)
+        ''',(
             id,
             name0,
             name1,
@@ -71,4 +85,4 @@ with open(csvfilename,newline='') as csvfile:
             price1
             ))
         database.commit()
-currentPosition.close()
+database.close()
