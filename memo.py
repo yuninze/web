@@ -14,6 +14,8 @@ quantile(
     interpolation=
 )
 
+
+
 pd.to_datetime(
 (arg:1-d array,series,dataframe,dict-like),
 yearfirst=,
@@ -29,12 +31,17 @@ where(cond,other=,axis=)
 #inverse boolean of where
 mask(cond,other=,axis=)
 
+pd.DataFrame.from_dict(data=dict,orient='index')
+orient index, keys to rows (index)
+oirent columns, keys to columns (columns)
+orient: location of keys
+
 100Ка(100УЪ)
 r"\((\d+.\d+).\)"
 @*
 ^\S+@\S+$
 
-["testRange {0}-{1}".format(q,q+10) for q in range(0,10000,10)]
+["rangeLabelGen {0}-{1}".format(q,q+10) for q in range(0,10000,10)]
 
 noMoreRegex
 int(''.join([q for q in STRING if q.isdigit()]))
