@@ -1,3 +1,34 @@
+SELECT P.project_id, P.project_name, P.project_progress_cd, P.project_end_cd, P.total_src_cnt_pointer, P.open_src_cnt_pointer, P.ready_to_open_src_cnt_pointer, T.data_cnt FROM 
+CW_PROJECT P, TB_PRJ_MST T
+WHERE P.project_id IN (11881, 11880, 11876, 11872) AND P.project_id = T.project_id;
+
+project_id	project_name	project_progress_cd	project_end_cd	total_src_cnt_pointer	open_src_cnt_pointer	ready_to_open_src_cnt_pointer	data_cnt
+11872	일반 면도기 이미지 수집 - 생활용품 10종 촬영하기	ENDED	COMPLETE	30	30	30	30
+11876	손톱깎이 이미지 수집 - 생활용품 10종 촬영하기	ENDED	COMPLETE	60	60	60	60
+11880	렌치 이미지 수집 - 생활용품 10종 촬영하기	ENDED	COMPLETE	40	40	40	40
+11881	아령 이미지 수집 - 생활용품 10종 촬영하기	ENDED	COMPLETE	40	40	40	40
+
+SELECT project_id, project_progress, total_source_count, opened_source_count, ready_to_open_source_count FROM co_project_setup
+WHERE project_id IN (11881, 11880, 11876, 11872);
+
+project_id	project_progress	total_source_count	opened_source_count	ready_to_open_source_count
+11872	ENDED	30	30	30
+11876	ENDED	60	60	60
+11880	ENDED	40	40	40
+11881	ENDED	40	40	40
+
+
+UPDATE CW_PROJECT P, TB_PRJ_MST T
+SET P.project_progress_cd = 'HOLDING', P.project_end_cd = NULL
+WHERE P.project_id IN (11881, 11880, 11876, 11872) AND P.project_id = T.project_id;
+
+UPDATE co_project_setup
+SET project_progress = 'HOLDING'
+WHERE project_id IN (11881, 11880, 11876, 11872);
+
+
+
+
 SELECT T.project_id AS '프로젝트ID', M.member_nm AS '성명', CONCAT(SUBSTR(M.birthday, 1, 4),'-',SUBSTR(M.birthday, 5, 2),'-',SUBSTR(M.birthday, 7, 2)) AS '생년월일', IF(M.gender_cd = 'M', '남', '여') AS '성별', SUM(H.point) AS '급여' FROM TB_POINT_HISTORY H, TB_MEMBER M, TB_PRJ_MST T WHERE 
 T.project_id IN (8505,8509,9042,9043,9258,9260,9261,9271)
 AND H.prj_idx = T.prj_idx AND H.member_id = M.member_id
