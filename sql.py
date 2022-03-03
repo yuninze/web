@@ -44,7 +44,7 @@ with open(csvfilename,newline='') as csvfile:
     #have per-line iterables
     for line in r:
         #set per-column scalars in the row
-        print(r)
+        print(line)
         id=line[0]
         name0=line[1]
         name1=line[2]
