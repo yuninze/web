@@ -56,7 +56,7 @@ with open(csvfilename,newline='') as csvfile:
         cat3=line[8]
         price0=np.uint64(line[9])
         price1=np.uint64(line[10])
-        #qmark style insertion
+        #qmark style insertion https://dev.mysql.com/doc/refman/8.0/en/insert.html
         currentPosition.execute('''
         INSERT INTO tableName(
             id,
