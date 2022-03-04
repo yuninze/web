@@ -2,8 +2,10 @@ import os,json,csv,glob,shutil
 import sys
 import pandas as pd;import datetime as dt;from zipfile import ZipFile
 import pathlib
-ima,enc,idea=str((dt.datetime.now()).strftime("%m%d")),"utf-8-sig","=="
-sys.setrecursionlimit(900_000)
+enc='utf-8-sig'
+idea='=='
+
+sys.setrecursionlimit(200_000_000)
 
 def strCheck(prop):
     if type(prop) is int or float:
@@ -220,7 +222,7 @@ def lachk(path,write=False):
     return memo
 
 def arcList(fo):
-    arcList=ZipFile(fo,"r").infolist()
+    arcList=ZipFile(fo).infolist()
     print("..proceeding: "+fo)
     file,fileBad=[],[]
     for z in range(len(arcList)):
@@ -256,7 +258,7 @@ def arcListInDir(p=os.getcwd()):
 
 def srcKeyname(jsonfile,word):
     try:
-        jsonfile=json.load(open(jsonfile,"r",encoding="utf-8-sig"))
+        jsonfile=json.load(open(jsonfile,encoding=enc))
     except:
         pass
     word=str(word)

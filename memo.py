@@ -36,6 +36,12 @@ orient index, keys to rows (index)
 oirent columns, keys to columns (columns)
 orient: location of keys
 
+more than 10_000 rows
+eval()->boolVec
+
+query()->satisfying rows
+parser가 거의 가틍ㅁ
+
 100Ка(100УЪ)
 r"\((\d+.\d+).\)"
 @*

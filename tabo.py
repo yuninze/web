@@ -1,8 +1,11 @@
+from typing import (
+    Iterable
+)
 import pandas as pd
 import os
 from libtype import *
 
-def purify(target,danga=10):
+def purify(target:str,danga:int=10)->tuple:
     '''
     Sanitize BO-derived sheetfile.
     '''
@@ -49,7 +52,7 @@ def purify(target,danga=10):
                 frame.loc[i,"JPH"]=3600/(frame.loc[i,"TWT"]/frame.loc[i,"work"])
     return (frame,basis)
 
-def concoction(path,zakupDanga,auditDanga):
+def concoction(path:str,zakupDanga:int,auditDanga:int)->pd.DataFrame:
     '''
     Result per-directory frame. Recognize zakup and audit. Index occurance is ignored.
     '''
@@ -71,7 +74,7 @@ def concoction(path,zakupDanga,auditDanga):
     frame=pd.concat([x for x in frames.values()])
     return frame
 
-def sansibar(frames,pii='c:/'):
+def sansibar(frames:Iterable,pii:str='c:/'):
     '''
     Result pii-merged, occdiv-divided result. Can take iterable of frames.
     '''

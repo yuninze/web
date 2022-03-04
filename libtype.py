@@ -13,7 +13,7 @@ def flat(scalar):
         return np.float32(scalar)
     except:
         if isinstance(scalar,str):
-            print(f"'{scalar}' is a literal cannot be typed to float")
+            print(f"'{scalar}' is cannot be typed to float")
             return scalar
         else:
             raise TypeError(f"'{scalar}' is neither of str or number")
@@ -50,7 +50,7 @@ def occdiv(frame):
 
 def meaning(scalarsum:np.float32,scalarlen)->np.float32:
     '''
-    Parameter: Sum of objects,Length of objects
+    Parameter: Sum of objects,length of objects
     '''
     if scalarsum==0:
         scalarsum=1
@@ -66,7 +66,7 @@ def dashingcn(object):
         return "-".join([object[:6],object[6:]])
     else:
         print(f"Substitution failed for '{object}'")
-        return "910117-1932416"
+        return "910117-1000099"
 
 def dashingpn(object):
     if isinstance(object,str)==False:
