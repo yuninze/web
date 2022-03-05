@@ -14,8 +14,6 @@ quantile(
     interpolation=
 )
 
-
-
 pd.to_datetime(
 (arg:1-d array,series,dataframe,dict-like),
 yearfirst=,
@@ -31,16 +29,24 @@ where(cond,other=,axis=)
 #inverse boolean of where
 mask(cond,other=,axis=)
 
-pd.DataFrame.from_dict(data=dict,orient='index')
+pd.DataFrame.from_dict(
+    data=dict,
+    orient='index')
 orient index, keys to rows (index)
 oirent columns, keys to columns (columns)
 orient: location of keys
 
+
+select_dtypes(in=,ex=)
+
+
 more than 10_000 rows
 eval()->boolVec
-
 query()->satisfying rows
 parser가 거의 가틍ㅁ
+
+noMoreRegex
+int(''.join([q for q in STRING if q.isdigit()]))
 
 100Ка(100УЪ)
 r"\((\d+.\d+).\)"
@@ -49,11 +55,7 @@ r"\((\d+.\d+).\)"
 
 ["rangeLabelGen {0}-{1}".format(q,q+10) for q in range(0,10000,10)]
 
-noMoreRegex
-int(''.join([q for q in STRING if q.isdigit()]))
-
 items = [tuple(func(y) if i == level else y for i, y in enumerate(x)) for x in self]
-select_dtypes(in=,ex=)
 
 Working binning
 데.누.방.

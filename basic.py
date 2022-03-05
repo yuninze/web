@@ -12,8 +12,11 @@ import shutil
 
 enc,idea="utf-8","=="
 
-def ima():
+def ima()->str:
     return dt.datetime.now().strftime("%y%m%d")
+
+def otherwise():
+    pass
 
 def listing(zipfile:str,ext:Iterable=('jpg','jpeg','png'))->tuple:
     '''Provide namelist dict of zipfile'''
