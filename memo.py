@@ -54,7 +54,9 @@ r"\((\d+.\d+).\)"
 ^\S+@\S+$
 
 ["rangeLabelGen {0}-{1}".format(q,q+10) for q in range(0,10000,10)]
-
+ijk
+start stop step
+[i:j:k]
 items = [tuple(func(y) if i == level else y for i, y in enumerate(x)) for x in self]
 
 Working binning

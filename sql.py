@@ -1,23 +1,32 @@
 import csv
 import sqlite3
 import pandas as pd
+def typing(filename:str)->int:
+    if filename.endswith(".csv"):
+        return 0
+    elif filename.endswith((".xlsx",".xls")):
+        return 1
 class db:
-    #db.csv_to
-    def csv_to(
-        db:str="c:/code/db.db",
-        chk:bool=False,
-        use:bool=False
-        ):
+    #db.to_db
+    def to_db(db:str="c:/code/db.db",
+            chk:bool=False,
+            use:bool=False):
         #get a connect object, cursor object
         con=sqlite3.connect(f"{db}")
         cur=con.cursor()
-        #have csv
+        #get a df
         while True:
-            csvfilename=input("csvfile path: ")
-            if not csvfilename:
+            filename=input("dbpath: ")
+            if not filename:
                 break
-            df=pd.read_csv(csvfilename)
-            print(f"loaded: {csvfilename} {df.shape}")
+            else:
+                filetype=typing(filename)
+            if filetype==0:
+                df=pd.read_csv(filename)
+            elif filetype==1:
+                df=pd.read_excel(filename)
+            print(f"loaded: {filename} {df.shape}")
+            #get a tablename, insert into db
             tablename=input("tablename: ")
             df.to_sql(
                 tablename,
@@ -28,7 +37,7 @@ class db:
             if chk:
                 list(map(print,{q[1][1] for q in enumerate(
                 cur.execute(f'select * from {tablename}'))}))
-            print(f"success: {csvfilename} -> {db} -> {tablename}")
+            print(f"success: {filename} -> {db} -> {tablename}")
         if use:
             return cur
         else:
@@ -49,15 +58,20 @@ class db:
                 if not userquery:
                     cur.close()
                     break
-                if userquery.startswith("select"):
-                    cache=exe(f"{userquery}").fetchall()
-                    rowslen=len(cache)
-                    if rowslen>99:
-                        print(f"{cache[:99]}\nremaining: {rowslen-99}")
+                try:
+                    if userquery.startswith("select"):
+                        cache=exe(f"{userquery}").fetchall()
+                        rowslen=len(cache)
+                        if rowslen>99:
+                            print(f"{cache[:99]}\nremaining: {rowslen-99}")
+                        else:
+                            print(f"{cache}\nrows: {rowslen}")
                     else:
-                        print(f"{cache}\nrows: {rowslen}")
-                else:
-                    exe(f"{userquery}")
+                        exe(f"{userquery}")
+                except (sqlite3.ProgrammingError,
+                        sqlite3.OperationalError,
+                        sqlite3.NotSupportedError):
+                    print(f"peculiar: {userquery}")
         con.close()
         return None
 
