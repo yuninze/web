@@ -58,6 +58,7 @@ ijk
 start stop step
 [i:j:k]
 items = [tuple(func(y) if i == level else y for i, y in enumerate(x)) for x in self]
+{"k:"+a+b:"v:"+a+b for a,b in {a+b:a+b for a in "abcd" for b in "0123" if "a"!="b"}.items()}
 
 Working binning
 데.누.방.

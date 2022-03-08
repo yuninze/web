@@ -28,12 +28,10 @@ class db:
             print(f"loaded: {filename} {df.shape}")
             #get a tablename, insert into db
             tablename=input("tablename: ")
-            df.to_sql(
-                tablename,
-                con=con,
-                if_exists="replace",
-                index_label=f"idx_{tablename}"
-            )
+            df.to_sql(tablename,
+                    con=con,
+                    if_exists="replace",
+                    index_label=f"idx_{tablename}")
             if chk:
                 list(map(print,{q[1][1] for q in enumerate(
                 cur.execute(f'select * from {tablename}'))}))
@@ -63,9 +61,11 @@ class db:
                         cache=exe(f"{userquery}").fetchall()
                         rowslen=len(cache)
                         if rowslen>99:
-                            print(f"{cache[:99]}\nremaining: {rowslen-99}")
+                            list(map(print,cache[:99]))
+                            print(f"remaining rows: {rowslen-99}")
                         else:
-                            print(f"{cache}\nrows: {rowslen}")
+                            list(map(print,cache))
+                            print(f"rows: {rowslen}")
                     else:
                         exe(f"{userquery}")
                 except (sqlite3.ProgrammingError,
