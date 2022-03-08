@@ -1,12 +1,13 @@
 import csv
 import sqlite3
 import pandas as pd
-def typing(filename:str)->int:
-    if filename.endswith(".csv"):
-        return 0
-    elif filename.endswith((".xlsx",".xls")):
-        return 1
 class db:
+    #db.type
+    def type(filename:str)->int:
+        if filename.endswith(".csv"):
+            return 0
+        elif filename.endswith((".xlsx",".xls")):
+            return 1
     #db.to_db
     def to_db(db:str="c:/code/db.db",
             chk:bool=False,
@@ -20,7 +21,7 @@ class db:
             if not filename:
                 break
             else:
-                filetype=typing(filename)
+                filetype=type(filename)
             if filetype==0:
                 df=pd.read_csv(filename)
             elif filetype==1:
@@ -29,9 +30,9 @@ class db:
             #get a tablename, insert into db
             tablename=input("tablename: ")
             df.to_sql(tablename,
-                    con=con,
-                    if_exists="replace",
-                    index_label=f"idx_{tablename}")
+                con=con,
+                if_exists="replace",
+                index_label=f"idx_{tablename}")
             if chk:
                 list(map(print,{q[1][1] for q in enumerate(
                 cur.execute(f'select * from {tablename}'))}))
@@ -39,9 +40,18 @@ class db:
         if use:
             return cur
         else:
-            #pd.to_sql automatically commits
-            con.close()
+            con.close() #pd.to_sql automatically commits
             return None
+    #db.queryexec
+    def queryexec(cur,
+            userquery:str):
+        try:
+            result=cur.execute(userquery)
+            return result
+        except (sqlite3.ProgrammingError,
+                sqlite3.OperationalError,
+                sqlite3.NotSupportedError) as e:
+            return print(f"->{e} '{userquery}'")
     #db.query
     def query()->None:
         dbname=input("db: ")
@@ -49,7 +59,6 @@ class db:
             dbname="c:/code/db.db"
         with sqlite3.connect(f"{dbname}") as con:
             cur=con.cursor()
-            exe=cur.execute
             print(f"connected: {dbname}")
             while dbname:
                 userquery=input(f"{dbname}->")
@@ -57,21 +66,31 @@ class db:
                     cur.close()
                     break
                 try:
+                    danger=("update","delete")
+                    agree=("y","yes","ok")
                     if userquery.startswith("select"):
-                        cache=exe(f"{userquery}").fetchall()
+                        cache=db.queryexec(cur,userquery).fetchall()
                         rowslen=len(cache)
                         if rowslen>99:
                             list(map(print,cache[:99]))
-                            print(f"remaining rows: {rowslen-99}")
+                            print(f"->remaining rows: {rowslen-99}")
                         else:
                             list(map(print,cache))
-                            print(f"rows: {rowslen}")
+                            print(f"->rows: {rowslen}")
+                    elif any(map(userquery.__contains__,danger)):
+                            if not "where" in userquery:
+                                warn=input("->no where clause ")
+                                if any(map(warn.__contains__,agree)):
+                                    db.queryexec(cur,userquery)
+                                else:
+                                    print("->not done")
+                                    continue
+                            else:
+                                db.queryexec(cur,userquery)
                     else:
-                        exe(f"{userquery}")
-                except (sqlite3.ProgrammingError,
-                        sqlite3.OperationalError,
-                        sqlite3.NotSupportedError):
-                    print(f"peculiar: {userquery}")
+                        db.queryexec(cur,userquery)
+                except:
+                    continue
         con.close()
         return None
 
