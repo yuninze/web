@@ -1,8 +1,8 @@
+import os
 from typing import (
     Iterable
 )
 import pandas as pd
-import os
 from libtype import *
 
 def purify(target:str,danga:int=10)->tuple:

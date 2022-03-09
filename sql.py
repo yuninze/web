@@ -44,16 +44,16 @@ class db:
             return None
     #db.queryexec
     def queryexec(cur,
-            userquery:str):
+            query:str)->tuple:
         try:
-            result=cur.execute(userquery)
-            return result
+            return cur.execute(query),1
         except (sqlite3.ProgrammingError,
                 sqlite3.OperationalError,
                 sqlite3.NotSupportedError) as e:
-            return print(f"->{e} '{userquery}'")
+            return print(f"->{e} '{query}'"),2
     #db.query
     def query()->None:
+        note={"true":[],"false":[]}
         dbname=input("db: ")
         if not dbname:
             dbname="c:/code/db.db"
@@ -61,36 +61,41 @@ class db:
             cur=con.cursor()
             print(f"connected: {dbname}")
             while dbname:
-                userquery=input(f"{dbname}->")
-                if not userquery:
+                query=input(f"{dbname}->")
+                if not query:
                     cur.close()
                     break
-                try:
-                    danger=("update","delete")
-                    agree=("y","yes","ok")
-                    if userquery.startswith("select"):
-                        cache=db.queryexec(cur,userquery).fetchall()
-                        rowslen=len(cache)
-                        if rowslen>99:
-                            list(map(print,cache[:99]))
-                            print(f"->remaining rows: {rowslen-99}")
-                        else:
-                            list(map(print,cache))
-                            print(f"->rows: {rowslen}")
-                    elif any(map(userquery.__contains__,danger)):
-                            if not "where" in userquery:
-                                warn=input("->no where clause ")
-                                if any(map(warn.__contains__,agree)):
-                                    db.queryexec(cur,userquery)
-                                else:
-                                    print("->not done")
-                                    continue
-                            else:
-                                db.queryexec(cur,userquery)
+                danger=("update","delete")
+                agree=("y","yes","ok")
+                if query.startswith("select"):
+                    queryresult=db.queryexec(cur,query)
+                    if not queryresult[1]==1:
+                        note["false"].append(query)
+                        continue
+                    note["true"].append(query)
+                    selectresult=queryresult[0].fetchall()
+                    selectrows=len(selectresult)
+                    if selectrows>99:
+                        list(map(print,selectresult[:99]))
+                        print(f"->remaining rows: {selectrows-99}")
                     else:
-                        db.queryexec(cur,userquery)
-                except:
+                        list(map(print,selectresult))
+                        print(f"->rows: {selectrows}")
                     continue
+                elif any(map(query.__contains__,danger)):
+                        if not "where" in query:
+                            warn=input("->no where clause ")
+                            if warn:
+                                if not any(map(warn.__contains__,agree)):
+                                    continue
+                queryresult=db.queryexec(cur,query)
+                if not queryresult[1]==1:
+                    note["false"].append(query)
+                else:
+                    note["true"].append(query)
+                continue
+        *map(print,enumerate(note["true"])),
+        con.commit()
         con.close()
         return None
 

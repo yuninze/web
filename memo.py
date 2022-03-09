@@ -37,7 +37,7 @@ oirent columns, keys to columns (columns)
 orient: location of keys
 
 
-select_dtypes(in=,ex=)
+select_dtypes(inc=,exc=)
 
 
 more than 10_000 rows
