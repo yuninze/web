@@ -52,7 +52,7 @@ def purify(target:str,danga:int=10)->tuple:
                 frame.loc[i,"JPH"]=3600/(frame.loc[i,"TWT"]/frame.loc[i,"work"])
     return (frame,basis)
 
-def concoction(path:str,zakupDanga:int,auditDanga:int)->pd.DataFrame:
+def concoct(path:str,zakupDanga:int,auditDanga:int)->pd.DataFrame:
     '''
     Result per-directory frame. Recognize zakup and audit. Index occurance is ignored.
     '''
@@ -74,7 +74,7 @@ def concoction(path:str,zakupDanga:int,auditDanga:int)->pd.DataFrame:
     frame=pd.concat([x for x in frames.values()])
     return frame
 
-def sansibar(frames:Iterable,pii:str='c:/'):
+def pmo(frames:Iterable,pii:str='c:/'):
     '''
     Result pii-merged, occdiv-divided result. Can take iterable of frames.
     '''
@@ -116,7 +116,7 @@ def sansibar(frames:Iterable,pii:str='c:/'):
     frame=occdiv(frame).drop('occurance',axis=1)
     #flattening
     frame=frame.applymap(flat)
-    frame['id']=np.uint32(frame['id'])
+    frame['id']=frame['id'].astype(int)
     #try to open pii frame
     piiname=pii
     try:

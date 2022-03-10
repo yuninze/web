@@ -54,19 +54,25 @@ class db:
     #db.query
     def query()->None:
         note={"true":[],"false":[]}
+        danger=("update","delete")
+        agree=("y","yes","ok")
         dbname=input("db: ")
         if not dbname:
             dbname="c:/code/db.db"
-        with sqlite3.connect(f"{dbname}") as con:
+        with sqlite3.connect(dbname) as con:
             cur=con.cursor()
             print(f"connected: {dbname}")
             while dbname:
                 query=input(f"{dbname}->")
+                #quit while status by False query
                 if not query:
                     cur.close()
                     break
-                danger=("update","delete")
-                agree=("y","yes","ok")
+                #history feature
+                if query=="history":
+                    *map(print,enumerate(note["true"])),
+                    continue
+                #filter for select statement
                 if query.startswith("select"):
                     queryresult=db.queryexec(cur,query)
                     if not queryresult[1]==1:
@@ -82,19 +88,18 @@ class db:
                         list(map(print,selectresult))
                         print(f"->rows: {selectrows}")
                     continue
-                elif any(map(query.__contains__,danger)):
+                #filter for update, delete statement
+                if any(map(query.__contains__,danger)):
                         if not "where" in query:
                             warn=input("->no where clause ")
-                            if warn:
-                                if not any(map(warn.__contains__,agree)):
-                                    continue
+                            if not any(map(warn.__contains__,agree)):
+                                continue
+                #execution block
                 queryresult=db.queryexec(cur,query)
                 if not queryresult[1]==1:
                     note["false"].append(query)
                 else:
                     note["true"].append(query)
-                continue
-        *map(print,enumerate(note["true"])),
         con.commit()
         con.close()
         return None

@@ -1,16 +1,21 @@
-import pandas as pd
-import numpy as np
 import re
+import pandas as pd
+
+def removestr(scalar):
+    try:
+        return float(scalar)
+    except:
+        return None
 
 def removeblank(scalar):
-    if scalar=='':
-        return 1
+    if scalar=="":
+        return 0
     else:
         return scalar
 
 def flat(scalar):
     try:
-        return np.float32(scalar)
+        return float(scalar)
     except:
         if isinstance(scalar,str):
             print(f"'{scalar}' is cannot be typed to float")
@@ -48,7 +53,7 @@ def occdiv(frame):
         frame.loc[i,meanstat]=stat/factor
     return frame
 
-def meaning(scalarsum:np.float32,scalarlen)->np.float32:
+def meaning(scalarsum:float,scalarlen)->float:
     '''
     Parameter: Sum of objects,length of objects
     '''
@@ -96,12 +101,12 @@ def getsexage(scalar,year=2022):
         if len(scalar)==14:
             scalar=scalar.replace('-','')[:7]
             scalar=''.join([scalar[:6],'1'])
-            sexix=divmod(np.uint32(scalar[6]),2)[1]
+            sexix=divmod(int(scalar[6]),2)[1]
         if not sexix==0:
             sex='male'
         else:
             sex='female'
-        age=year-np.uint32('19'+scalar[:2])
+        age=year-int('19'+scalar[:2])
         agechk=abs(age)
         if age<0:
             age=agechk+100
