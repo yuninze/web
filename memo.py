@@ -1,4 +1,6 @@
 
+A=12345
+if A>=500:
 
 Working set is a concept in computer science which defines the amount of 
 memory that a process requires in a given time interval.
@@ -25,9 +27,9 @@ unit=parseBasisUnit
 pd.Timestamp()
 
 #returns containing-subset
-where(cond,other=,axis=)
+where((bool Series/DataFrame, array-like, or callable),other=,axis=)
 #inverse boolean of where
-mask(cond,other=,axis=)
+mask((bool Series/DataFrame, array-like, or callable),other=,axis=)
 
 pd.DataFrame.from_dict(
     data=dict,
