@@ -1,6 +1,19 @@
 import re
 import pandas as pd
 
+#Sequential todo elements
+def sani_xls(file:str,sheet_name:int=1,header:int=0):
+    return pd.read_excel(file,
+        header=header,
+        sheet_name=sheet_name,
+        na_values=None)
+
+def sani_xls_obj(obj):
+    err=("#N/A","#NUM!","#NULL!","#REF!","#DIV/0","#NAME?","#VALUE!")
+    if not isinstance(obj,(float,int)):
+        if any(map(obj.__contains__,err)):
+            return float("nan")
+
 def removestr(scalar):
     try:
         return float(scalar)
