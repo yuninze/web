@@ -1,5 +1,33 @@
+import os
+import cv2
+import requests
+import pandas as pd
 import numpy as np
+from io import BytesIO
 from PIL import Image
+def img_from_df():
+    srcpath=input("srcpath: ")
+    if not srcpath:
+        srcpath="C:/Users/yinze/Downloads/kiwi/artwork.csv"
+    src=pd.read_csv(srcpath)
+    srccol=input("srccol: ")
+    srcprefix=input("srcprefix: ")
+    if not isinstance(srcprefix,str):
+        raise TypeError("")
+    src=src.loc[:,srccol].tolist()
+    for q in enumerate(src):
+        print(f"{srcprefix+q[1]}")
+        iu=requests.get(srcprefix+q[1])
+        #https://docs.python-requests.org/en/latest/user/quickstart/#response-status-codes
+        if iu.status_code==requests.codes.ok:
+            with Image.open(BytesIO(iu.content)) as ib:
+                ib=ib.convert("RGB")
+                ib.save(f"{q[0]}.jpg",
+                    "JPEG",
+                    quality=10,
+                    progressive=True,
+                    optimize=True)
+    print(f"done with {len(src)} images")
 
 def stamp(fgifile,bgipath,ts=130,ss=200,rnd=2,qual=5):
     '''
@@ -34,8 +62,8 @@ def stamp(fgifile,bgipath,ts=130,ss=200,rnd=2,qual=5):
             )
             adi=(sf*ar,sf)
             size=tuple(
-                np.uint16(x) for x in [
-                (fgi.size[0]/mod[0])*ar+adi[0],
+                np.uint16(x) for x in [(
+                fgi.size[0]/mod[0])*ar+adi[0],
                 fgi.size[1]/mod[1]+adi[1]
             ])
             #resize if bgi is large
@@ -59,8 +87,7 @@ def stamp(fgifile,bgipath,ts=130,ss=200,rnd=2,qual=5):
                 bgiy1*lf[1]+(lf[1]*100)
             ))
             #paste fgi to bgi
-            bgi.paste(
-                fgi,
+            bgi.paste(fgi,
                 box=(bgix1+bgix2,bgiy1+bgiy2),
                 mask=fgi.convert('RGBA')
             )
@@ -70,17 +97,13 @@ def stamp(fgifile,bgipath,ts=130,ss=200,rnd=2,qual=5):
             bgi=bgi.convert('RGB')
             #save bgi to bgiimagefile
             bgifilename=bgifilename[(bgifilename.rfind('/')+1):]
-            bgi.save(
-                'x'+bgifilename,
+            bgi.save('x'+bgifilename,
                 'JPEG',
                 quality=qual,
                 progressive=True,
                 optimize=True
             )
     return None
-
-import os
-import cv2
 
 def rs(path,d,ratio,quant):
     if "\\" not in path:
