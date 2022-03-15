@@ -8,21 +8,25 @@ from PIL import Image
 def img_from_df():
     srcpath=input("srcpath: ")
     if not srcpath:
-        srcpath="C:/Users/yinze/Downloads/kiwi/artwork.csv"
+        srcpath="C:/Users/yinze/Downloads/kiwi/kiwi_src.csv"
     src=pd.read_csv(srcpath)
     srccol=input("srccol: ")
+    if not srccol:
+        srccol="rep_image_path"
     srcprefix=input("srcprefix: ")
     if not isinstance(srcprefix,str):
         raise TypeError("")
     src=src.loc[:,srccol].tolist()
-    for q in enumerate(src):
-        print(f"{srcprefix+q[1]}")
-        iu=requests.get(srcprefix+q[1])
+    for q in src:
+        iurl=srcprefix+q
+        print(f"{iurl}")
+        iu=requests.get(iurl)
         #https://docs.python-requests.org/en/latest/user/quickstart/#response-status-codes
         if iu.status_code==requests.codes.ok:
             with Image.open(BytesIO(iu.content)) as ib:
                 ib=ib.convert("RGB")
-                ib.save(f"{q[0]}.jpg",
+                ifname=q.replace("/artwork/","")
+                ib.save(f"{ifname}.jpg",
                     "JPEG",
                     quality=10,
                     progressive=True,
