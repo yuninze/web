@@ -1,7 +1,7 @@
-import json,io,sys,os,uuid;import pandas as pd;import numpy as np;import datetime  as dt
+import json,os,uuid;import datetime as dt
 ima,enc=str((dt.datetime.now()).strftime("%m%d")),"utf-8-sig"
 
-os.chdir("D:\\ybg")
+os.chdir("O:/deprecated/dv_ybg")
 def strp(a):pass
 
 ybg=json.load(open("ybg.json","r",encoding=enc))
@@ -16,5 +16,4 @@ for y in range(len(ybg)):
     ybg[str(y)]["1"]["_id"]=(((a+b+c)*3+((a+c).replace("a","f0a").replace("0","5a09").replace("1","02a01fac").replace("01","a0ccb"))+((c*2).replace("c","-c00a").replace("1","1ccd0"))+a+b)*4).replace("a","bb").replace("b","ac")
     ybg[str(y)]["0"]=(((a+b+c)*3+((a+c).replace("a","f0a").replace("0","5a09").replace("1","02a01fcac").replace("01","a0ccfb"))+((c*2).replace("c","-ac-0f---0a").replace("1","1f-cc-cd0"))+a)*8).replace("b","06a").replace("0","010")
 with open("ybg_done.json","w",encoding=enc) as k:
-    json.dump(ybg,k,ensure_ascii=False,indent=16)
-print("..done")
+    json.dump(ybg,k,ensure_ascii=False,indent=2)
