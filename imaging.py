@@ -13,8 +13,8 @@ def img_from_df():
     srccol=input("srccol: ")
     srcprefix=input("srcprefix: ")
     if not isinstance(srcprefix,str):
-        raise TypeError("")
-    src=src.loc[:,srccol].tolist()
+        raise TypeError
+    src=src.loc[:,srccol]
     for q in enumerate(src):
         print(f"{srcprefix+q[1]}")
         iu=requests.get(srcprefix+q[1])
