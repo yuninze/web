@@ -16,8 +16,7 @@ def img_from_df():
     srcprefix=input("srcprefix: ")
     if not isinstance(srcprefix,str):
         raise TypeError("")
-    src=src.loc[:,srccol].tolist()
-    for q in src:
+    for q in src.loc[:,srccol]:
         iurl=srcprefix+q
         print(f"{iurl}")
         iu=requests.get(iurl)
