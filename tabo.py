@@ -17,15 +17,13 @@ def purify(target:str,danga:int=10)->tuple:
         basis="auditRate"
         usecols="A,B,C,D,E,L,N"
     #Column naming
-    cols=[
-        "id",
+    cols=["id",
         "mail",
         "name",
         "nick",
         "work",
         basis,
-        "TWT"
-    ]
+        "TWT"]
     #Attempt to load within settings above
     frame=pd.read_excel(target,usecols=usecols,na_filter=True).drop([0])
     frame.columns=cols
@@ -101,8 +99,7 @@ def pmo(frames:Iterable,pii:str='c:/'):
         'TE1000',
         'EPS',
         'EPH',
-        'JPH'
-    ]].transform('sum')
+        'JPH']].transform('sum')
     newidx=frame.index.nunique(dropna=False)
     if not oldidx==newidx:
         raise IndexError('groupbying resulted a non-unique index')
