@@ -2,13 +2,21 @@ import re
 import pandas as pd
 
 #Sequential todo elements
-def sani_xls(file:str,sheet_name:int=1,header:int=0):
-    return pd.read_excel(file,
-        header=header,
+def sani_xls(
+    file:str,
+    col:list,
+    sheet_name:int=0,
+    header=None)->pd.DataFrame:
+    return pd.read_excel(
+        file,
+        names=col,
         sheet_name=sheet_name,
+        header=header,
         na_values=None)
-
+["idx","mail","name","nick","job","audit","reaudit","audited","pointed","disputed_now","disputed_all","disputed_rate","deleted","worked_all","worked_mean","worked_rate","eph","banned","prob_hist"] 
 def sani_xls_obj(obj):
+    if isinstance(obj,pd.DataFrame):
+        raise TypeError
     err=("#N/A","#NUM!","#NULL!","#REF!","#DIV/0","#NAME?","#VALUE!")
     if not isinstance(obj,(float,int)):
         if any(map(obj.__contains__,err)):

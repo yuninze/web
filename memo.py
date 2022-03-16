@@ -1,8 +1,3 @@
-양육자들을 대상으로 유스바이오글로벌 개발 챗봇 상에서 설문 및 정보 수집을 실시하였다.
-유입된 양육자들을 대상으로 소아과 전문의의 지견에 따라 수정된 문항을 표시하고 그에 대한 응답을 수집하였다.
-챗봇으로 얻어진 참여자별 원형 데이터(raw data, JSON 파일)를 추출 및 결합하였다.
-수집 항목과 사용 범위에 대한 사전 동의를 얻고 수집된 정보 중, 양육자 개인정보에 해당하는 내용은 비식별화 후 코딩하여 통계하였다.
-
 df.replace("nan",np.nan)
 df.loc[q,w] for q in df.index for w in df.columns
 
@@ -67,7 +62,7 @@ ijk
 start stop step
 [i:j:k]
 items = [tuple(func(y) if i == level else y for i, y in enumerate(x)) for x in self]
-{"k:"+a+b:"v:"+a+b for a,b in {a+b:a+b for a in "abcd" for b in "0123" if "a"!="b"}.items()}
+{"key_"+a+b:"val_"+a+b for a,b in {a+b:a+b for a in "abcd" for b in "0123" if "a"!="b"}.items()}
 
 Working binning
 데.누.방.
