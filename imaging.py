@@ -30,7 +30,7 @@ def img_from_df():
                     quality=10,
                     progressive=True,
                     optimize=True)
-    print(f"done with {len(src)} images")
+    return f"done with {len(src)} images"
 
 def stamp(fgifile,bgipath,ts=130,ss=200,rnd=2,qual=5):
     '''
