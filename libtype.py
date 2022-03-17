@@ -2,18 +2,46 @@ import re
 import pandas as pd
 
 #Sequential todo elements
-def sani_xls(
+def sani_bo_xls(
     file:str,
-    col:list,
+    index,
+    col:list=[
+        "idx",
+        "mail",
+        "name",
+        "nick",
+        "job",
+        "audit",
+        "reaudit",
+        "audited",
+        "pointed",
+        "disputed_now",
+        "disputed_all",
+        "disputed_rate",
+        "deleted",
+        "worked_all",
+        "worked_mean",
+        "worked_rate",
+        "eph",
+        "banned",
+        "prob_hist"],
     sheet_name:int=0,
     header=None)->pd.DataFrame:
-    return pd.read_excel(
-        file,
-        names=col,
-        sheet_name=sheet_name,
-        header=header,
-        na_values=None)
-["idx","mail","name","nick","job","audit","reaudit","audited","pointed","disputed_now","disputed_all","disputed_rate","deleted","worked_all","worked_mean","worked_rate","eph","banned","prob_hist"] 
+    if index:
+        return pd.read_excel(
+            file,
+            names=col,
+            sheet_name=sheet_name,
+            header=header,
+            na_values=None).set_index(index)
+    else:
+        return pd.read_excel(
+            file,
+            names=col,
+            sheet_name=sheet_name,
+            header=header,
+            na_values=None)
+
 def sani_xls_obj(obj):
     if isinstance(obj,pd.DataFrame):
         raise TypeError

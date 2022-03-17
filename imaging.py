@@ -21,7 +21,7 @@ def img_from_df():
         print(f"{iurl}")
         iu=requests.get(iurl)
         #https://docs.python-requests.org/en/latest/user/quickstart/#response-status-codes
-        if iu.status_code==requests.codes.ok:
+        if iu.status_code==200:
             with Image.open(BytesIO(iu.content)) as ib:
                 ib=ib.convert("RGB")
                 ifname=q.replace("/artwork/","")
@@ -30,6 +30,8 @@ def img_from_df():
                     quality=10,
                     progressive=True,
                     optimize=True)
+        else:
+            raise Exception(f"{iu.status_code=}")
     return f"done with {len(src)} images"
 
 def stamp(fgifile,bgipath,ts=130,ss=200,rnd=2,qual=5):

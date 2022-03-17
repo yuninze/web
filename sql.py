@@ -70,10 +70,11 @@ class db:
                     break
                 #history feature
                 if query=="history":
-                    *map(print,enumerate(note["true"])),
+                    for q in enumerate(note["true"]):
+                        print(f"{q[0]}: {q[1]}")
                     continue
-                #filter for select statement
-                if query.startswith("select"):
+                #filter for select, pragma
+                if any(map(query.__contains__,("select","pragma"))):
                     queryresult=db.queryexec(cur,query)
                     if not queryresult[1]==1:
                         note["false"].append(query)
@@ -82,13 +83,15 @@ class db:
                     selectresult=queryresult[0].fetchall()
                     selectrows=len(selectresult)
                     if selectrows>99:
-                        list(map(print,selectresult[:99]))
+                        for q in selectresult[:99]:
+                            print(q)
                         print(f"->remaining rows: {selectrows-99}")
                     else:
-                        list(map(print,selectresult))
+                        for q in selectresult:
+                            print(q)
                         print(f"->rows: {selectrows}")
                     continue
-                #filter for update, delete statement
+                #filter for update, delete
                 if any(map(query.__contains__,danger)):
                         if not "where" in query:
                             warn=input("->no where clause ")
