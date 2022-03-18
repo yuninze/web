@@ -52,7 +52,7 @@ def getjsonfile(path):
                 print("COPIED: "+filepath+": "+str(count))
     print("DONE: "+str(count)+" files")
 
-def lachk(path,write=False):
+def lachk(path:str,write:bool=False)->dict:
     '''
     VER. 20220217
     '''

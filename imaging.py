@@ -14,8 +14,6 @@ def img_from_df():
     if not srccol:
         srccol="rep_image_path"
     srcprefix=input("srcprefix: ")
-    if not isinstance(srcprefix,str):
-        raise TypeError("")
     for q in src.loc[:,srccol]:
         iurl=srcprefix+q
         print(f"{iurl}")
@@ -41,7 +39,7 @@ def stamp(fgifile,bgipath,ts=130,ss=200,rnd=2,qual=5):
     '''
     #set object size
     if ts<120:
-        raise ValueError('peculiar object size')
+        raise ValueError('object size is peculiar')
     bgifile=[bgipath+'/'+x for x in os.listdir(bgipath) if '.jp' in x]
     for bgi in bgifile:
         #load bgi
@@ -63,14 +61,12 @@ def stamp(fgifile,bgipath,ts=130,ss=200,rnd=2,qual=5):
             #have mod
             mod=(
                 fgi.size[0]/ts,
-                fgi.size[1]/ts
-            )
+                fgi.size[1]/ts)
             adi=(sf*ar,sf)
             size=tuple(
                 np.uint16(x) for x in [(
                 fgi.size[0]/mod[0])*ar+adi[0],
-                fgi.size[1]/mod[1]+adi[1]
-            ])
+                fgi.size[1]/mod[1]+adi[1]])
             #resize if bgi is large
             if sum(fgi.size)>500:
                 print(f'resizing: {fgi.filename}: {size[0]} x {size[1]}')
@@ -89,13 +85,11 @@ def stamp(fgifile,bgipath,ts=130,ss=200,rnd=2,qual=5):
             bgix2,bgiy2=tuple(
                 np.uint16(w) for w in (
                 bgix1*lf[0]+(lf[0]*100),
-                bgiy1*lf[1]+(lf[1]*100)
-            ))
+                bgiy1*lf[1]+(lf[1]*100)))
             #paste fgi to bgi
             bgi.paste(fgi,
                 box=(bgix1+bgix2,bgiy1+bgiy2),
-                mask=fgi.convert('RGBA')
-            )
+                mask=fgi.convert('RGBA'))
             #empty fgi
             fgi.close()
             #channelConvert RGB
@@ -106,8 +100,7 @@ def stamp(fgifile,bgipath,ts=130,ss=200,rnd=2,qual=5):
                 'JPEG',
                 quality=qual,
                 progressive=True,
-                optimize=True
-            )
+                optimize=True)
     return None
 
 def rs(path,d,ratio,quant):

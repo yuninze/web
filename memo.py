@@ -1,6 +1,15 @@
 df.replace("nan",np.nan)
 df.loc[q,w] for q in df.index for w in df.columns
 
+conditional listdir보다 scandir이 3배 빠름
+scandir->os.DirEntry
+os.scandir.close()
+os.DirEntry.name
+os.DirEntry.path
+os.DirEntry.is_dir()
+os.DirEntry.is_file()
+os.DirEntry.stat.st_size
+
 A=12345
 if A>=500:
 
@@ -25,6 +34,8 @@ format="%Y/%d/%m/"
 infer_datetime_format=False,
 origin=parseableDatetime
 unit=parseBasisUnit
+
+pd.to_datetime(target)
 
 pd.Timestamp()
 
