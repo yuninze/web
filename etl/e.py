@@ -1,22 +1,30 @@
-import os,json;import pandas as pd;import datetime as dt
-ima=str((dt.datetime.now()).strftime("%Y"+"-"+"%m"+"-"+"%d"))
+import os
+import json
+from datetime import datetime 
+import pandas as pd
+
 enc="utf-8-sig"
 
-def calljson(fileObject):
-    try:
-        with open(fileObject,encoding=enc) as fileObject:
-            return json.load(fileObject)
-    except:
-        raise FileNotFoundError(f"{fileObject} has not found")
+def ima()->str:
+    return datetime.now().strftime("%Y"+"-"+"%m"+"-"+"%d")
 
-def dicttocsv(object,namestring):
-    pd.DataFrame(object).to_csv(namestring,encoding=enc,index=False)
-    pd.read_csv(namestring,encoding=enc).to_csv(namestring,encoding=enc,index=False)
+def load_json(filename):
+    try:
+        with open(filename,encoding=enc) as jsonfile:
+            return json.load(jsonfile)
+    except FileNotFoundError as e:
+        return print(f"{e}")
+
+def to_csv(object:dict,filename:str)->None:
+    (pd.DataFrame(object)
+    .to_csv(filename,encoding=enc,index=False))
+    (pd.read_csv(filename,encoding=enc)
+    .to_csv(filename,encoding=enc,index=False))
     return None
 
 def oppai(path,fileObject):
     os.chdir(path)
-    jsondata=calljson(fileObject)
+    jsondata=to_csv(fileObject)
     jsonpath=jsondata["result"]
     canvas=[]
     for z in range(len(jsonpath)):
@@ -45,12 +53,12 @@ def oppai(path,fileObject):
         paper["id"]=str(jsonpath[z]["dataID"])
         canvas.append(paper)
     filenamestring="wonzin_"+ima+"_"+str(len(jsonpath))+".csv"
-    dicttocsv(canvas,filenamestring)
+    to_csv(canvas,filenamestring)
     return None
 
 def noan(path,fileObject):
     os.chdir(path)
-    jsondata=calljson(fileObject)
+    jsondata=load_json(fileObject)
     jsonpath=jsondata["result"]
     canvas=[]
     for z in range(len(jsonpath)):
@@ -81,12 +89,12 @@ def noan(path,fileObject):
         paper["id"]=str(jsonpath[z]["dataID"])
         canvas.append(paper)
     filenamestring="jurye_"+ima+"_"+str(len(jsonpath))+".csv"
-    dicttocsv(canvas,filenamestring)
+    to_csv(canvas,filenamestring)
     return None
 
 def english(fileObject,path='c:/'):
     os.chdir(path)
-    jsondata=calljson(fileObject)
+    jsondata=load_json(fileObject)
     jsonpath=jsondata["result"]
     canvas=[]
     for z in range(len(jsonpath)):
@@ -102,5 +110,5 @@ def english(fileObject,path='c:/'):
         paper['전번연락동의']='녜'
         canvas.append(paper)
     filenamestring="english_"+ima+"_"+str(len(jsonpath))+".csv"
-    dicttocsv(canvas,filenamestring)
+    to_csv(canvas,filenamestring)
     return None

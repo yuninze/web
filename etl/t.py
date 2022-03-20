@@ -3,19 +3,22 @@ from typing import (
     Iterable
 )
 import pandas as pd
-from libtype import *
+from type import *
 
-def purify(target:str,danga:int=10)->tuple:
+def purify(frame:str,danga:int=10)->tuple:
     '''
     Sanitize BO-derived sheetfile.
     '''
     #Purifying setting upon isaudit
-    if isaudit(target):
+    type,earning=chk_status(frame)
+    if type:
         basis="complyRate"
         usecols="A,B,C,D,F,I,K"
     else:
         basis="auditRate"
         usecols="A,B,C,D,E,L,N"
+    if earning:
+        raise NotImplementedError("earning data exist")
     #Column naming
     cols=["id",
         "mail",
@@ -25,12 +28,13 @@ def purify(target:str,danga:int=10)->tuple:
         basis,
         "TWT"]
     #Attempt to load within settings above
-    frame=pd.read_excel(target,usecols=usecols,na_filter=True).drop([0])
+    frame=pd.read_excel(frame,
+        usecols=usecols,
+        na_filter=True).drop([0])
     frame.columns=cols
-    #Fill NaN and null
-    frame=frame.applymap(removeblank)
-    #Set indexes
-    frame.set_index(keys=['mail','name'],inplace=True)
+    #Fill NaN and null, set indexes
+    frame=(frame.applymap(removeblank)
+                .set_index(keys=['mail','name']))
     #Try to parsing TWT to float
     frame.TWT=frame.TWT.apply(getvalue)
     #flattening
@@ -50,31 +54,35 @@ def purify(target:str,danga:int=10)->tuple:
                 frame.loc[i,"JPH"]=3600/(frame.loc[i,"TWT"]/frame.loc[i,"work"])
     return (frame,basis)
 
-def concoct(path:str,zakupDanga:int,auditDanga:int)->pd.DataFrame:
+def concoct(path:str,
+        zakupDanga:int,
+        auditDanga:int)->pd.DataFrame:
     '''
-    Result per-directory frame. Recognize zakup and audit. Index occurance is ignored.
+    Result per-directory frame.
+    Recognize zakup and audit.
+    Index occurance is ignored.
     '''
     #check auditDanga
-    if auditDanga>200:
-        print(f"'{auditDanga=}' is extraordinary")
+    if auditDanga>500:
+        print(f"'{auditDanga=}' is peculiar")
     #framefileObject collecting with pathstring
     sheetfiles=[path+"/"+z for z in os.listdir(path) if ".xls" in z]
     frames={}
     #confirm whether frame type
     for framename in sheetfiles:
-        if isaudit(framename):
+        if chk_status(framename)[0]:
             danga=auditDanga
         else:
             danga=zakupDanga
         #purify upon frame type
         frames[framename]=purify(framename,danga)[0]
     #unconditional concatenate
-    frame=pd.concat([x for x in frames.values()])
-    return frame
+    return pd.concat([q for q in frames.values()])
 
-def pmo(frames:Iterable,pii:str='c:/'):
+def pmo(frames:Iterable,pii:str='c:/')->pd.DataFrame:
     '''
-    Result pii-merged, occdiv-divided result. Can take iterable of frames.
+    Result pii-merged, occdiv-divided result.
+    Can take iterable of frames.
     '''
     #check whether an argument consists of frames
     if isinstance(frames,(set,list,dict,tuple)):
@@ -89,7 +97,7 @@ def pmo(frames:Iterable,pii:str='c:/'):
             raise NotImplementedError(f"'{type(frames)}' is peculiar")
     #id, nick protection for disregarding sum
     idx=frame.loc[:,['id','nick']]
-    frame.drop(columns=['id','nick'],inplace=True)
+    frame=frame.drop(columns=['id','nick'])
     #groupbying and index confirmation
     oldidx=frame.index.nunique(dropna=False)
     frame=frame.groupby(by=frame.index.names)[[
@@ -107,23 +115,23 @@ def pmo(frames:Iterable,pii:str='c:/'):
     frame.loc[:,['id','nick']]=idx
     #aggregate index occurance
     frame.loc[:,'occurance']=frame.index.value_counts()
-    #drop index duplicates
-    frame=frame[~frame.index.duplicated()]
-    #occdiv meanStat, drop temp column
-    frame=occdiv(frame).drop('occurance',axis=1)
+    #occdiv meanStat, drop temp column, drop index duplicates
+    frame=(occdiv(frame[~frame.index.duplicated()])
+            .drop('occurance',axis=1)
+            .applymap(flat))
     #flattening
-    frame=frame.applymap(flat)
     frame['id']=frame['id'].astype(int)
     #try to open pii frame
     piiname=pii
     try:
         pii=pd.read_csv(pii)
         print(f"got '{piiname}'")
-        pii.drop("Unnamed: 0",axis=1,inplace=True)
-        #Set index by name and mail
-        pii.set_index(keys=['mail','name'],inplace=True)
-        #Merge by index
-        return pii.merge(frame,left_index=True,right_index=True)
-    except:
-        print(f"pii file '{piiname}' does not exist")
+        #drop previous index column
+        return (pii.drop("Unnamed: 0",axis=1)
+                #set index by name and mail
+                .set_index(keys=['mail','name'])
+                #Merge by index
+                .merge(frame,left_index=True,right_index=True))
+    except (FileNotFoundError,OSError) as e:
+        print(f"{e}")
         return frame

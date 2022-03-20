@@ -1,3 +1,101 @@
+피처 스케일링
+
+모델이 smooth function이라서 입출력 스케일이 영향됨 -> k-means, nn, rbf, euclidian distance
+
+logical function (step function)은 리절트가 binary
+decision tree model -> sequential step function
+GBM, RF 등 SPT은 입출력 스케일 binary... binning 필요
+
+숫자 피처의 분포 고려
+특정 값이 나타나는 확률
+가우시안 분포
+예상되는 리절트가 넓은 범위에 걸쳐 나올 거 같으면 가우시안 분포 x
+power transform, logarithm 
+복합피처
+
+카운트의 boolean binary 아니면 binning, ranging, quantitization
+
+binning
+np.random.randint(start stop count)->array:sample
+np.floor_divide(sample,10)->10 bins
+
+np.random.randint(start stop count)->array
+np.floor(np.log10(array)) 지수 폭 비닝
+작은 수 확장, 큰 수 축소
+
+quantiling
+
+예측값이 연속형 수이면 단순성형회귀모델 사용
+R squt로 평가, 높을 수록 좋음, =<1
+###
+linear_model.LinearRegression()
+cross_val_score(a,tokenData,targetData,cv=?) cross validation?
+R sqrt 구하는 방법? -> print
+###
+binning하고 대상 variable에 대해 scatter로. 
+ax2.scatter(binnedData,targetVar)
+ax2.tick_params(labelsize=14)
+ax2.set_xlabel(binnedDataLabel,fontsize:int)
+ax2.set_ylabel(targetVar,fontsize:int)
+linearly dependant?
+###
+mean 과 std의 동일화. 푸아송 분포.
+variance-stabilizing transformation
+bayesian method
+box-cox가 더 유효함(안좋았는 곳이 더 resoluting됨 대신 좋았던 곳 resoultion 떨어짐)
+stats.boxcox(target,lmbda=0) _> 로가리듬 비닝
+nd화 param 검출을 해 줌
+q,w=stats.boxcox(targetData)
+w=lambdaParam
+###
+sparse data에는 적용하면 안됨 (피처의 피처가 낮아짐)
+min-max 스케일링 [0,1] 범위로 비닝
+def minmax(x):
+	return x-min(x)/max(x)-min(x)
+preproc.minmix_scale(binningTarget:array)
+
+standarzation
+def standardazation(x):
+	return x-mean(x)/sqrt(variance(x))
+preproc.StandardScaler().fit_transform(binningTarget:array)
+
+def euclidian distance
+preproc.normalize(binningTarget:array,axis=0)
+
+binningTarget의 수치 분포를 변화한다...
+:입력 피처의 정량적 크기가 크게 다를 때 사용한다.
+###
+GLM interactive feature
+multivariables, polynomial feature
+preproc.PolynomialFeatures()
+train_test_split(featureArray,testsetArray,    )
+
+
+Text Feature Extraction
+BoW, B of n-grams
+from sklearn.feature_extraction.text import CountVectorizer
+bow=CountVectorizer(token_pattern="(?u)\\b\\w+\\b")
+trigram=CountVectorizer(token_pattern="(?u)\\b\\w+\\b",ngram_range(3,3))
+
+bow.fit(rawdata:array)
+trigram.fit(rawdata:array)
+q for q in .get_feature_names(), len()
+
+
+
+
+
+
+
+
+
+
+
+
+
+from datetime import datetime
+timedelta(days=90)
+
 df.replace("nan",np.nan)
 df.loc[q,w] for q in df.index for w in df.columns
 
@@ -8,7 +106,7 @@ os.DirEntry.name
 os.DirEntry.path
 os.DirEntry.is_dir()
 os.DirEntry.is_file()
-os.DirEntry.stat.st_size
+os.DirEntry.stat().st_size
 
 A=12345
 if A>=500:

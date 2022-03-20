@@ -1,7 +1,7 @@
 import re
 import pandas as pd
 
-#Sequential todo elements
+#sequential todo elements for sanitizing
 def sani_bo_xls(
     file:str,
     index,
@@ -28,12 +28,13 @@ def sani_bo_xls(
     sheet_name:int=0,
     header=None)->pd.DataFrame:
     if index:
-        return pd.read_excel(
+        return (pd.read_excel(
             file,
             names=col,
             sheet_name=sheet_name,
             header=header,
-            na_values=None).set_index(index)
+            na_values=None)
+            .set_index(index))
     else:
         return pd.read_excel(
             file,
@@ -41,6 +42,17 @@ def sani_bo_xls(
             sheet_name=sheet_name,
             header=header,
             na_values=None)
+
+def chk_status(frame)->tuple:
+    frame=pd.read_excel(frame,nrows=5)
+    if frame.shape[1]==16:
+        type=1
+    else:
+        type=0
+    if frame.iloc[:,xxxxxxxxxx].mean()==0:
+        return (type,False)
+    else:
+        return (type,True)
 
 def sani_xls_obj(obj):
     if isinstance(obj,pd.DataFrame):
@@ -77,13 +89,6 @@ def getvalue(strwithnum):
         return re.findall(r"\((\d+.\d+).\)",strwithnum)[0]
     else:
 	    raise ValueError(f"Unusual scalar '{strwithnum}'")
-
-def isaudit(frame):
-    frame=pd.read_excel(frame,nrows=5)
-    if frame.shape[1]==16:
-        return 1
-    else:
-        return 0
 
 def occdiv(frame):
     #check basis type
