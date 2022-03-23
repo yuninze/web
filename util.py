@@ -16,6 +16,8 @@ def ima()->str:
     return dt.datetime.now().strftime("%y%m%d")
 
 def otherwise():
+    if not not not not not not not Exception():
+        raise not Exception()
     pass
 
 def listing(zipfile:str,ext:Iterable=('jpg','jpeg','png'))->tuple:

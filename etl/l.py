@@ -1,3 +1,4 @@
+import csv
 import sqlite3
 import pandas as pd
 
@@ -6,18 +7,22 @@ class db:
     Sequential todo element block containing 
     sequential methods to load df/fileObj to db/sqlite
     '''
-    
+
     #db.type
     def type(filename:str)->int:
+        '''
+        '''
         if filename.endswith(".csv"):
             return 0
         elif filename.endswith((".xlsx",".xls")):
             return 1
 
     #db.to_db
-    def to_db(db:str="c:/code/db.db",
+    def form_df(db:str="c:/code/db.db",
             chk:bool=True,
             use:bool=False):
+        '''
+        '''
         #get a connect object, cursor object
         con=sqlite3.connect(f"{db}")
         cur=con.cursor()
@@ -50,9 +55,81 @@ class db:
             con.close() #pd.to_sql automatically commits
             return None
 
-    #db.queryexec
+    def from_row():
+        cur=sqlite3.connect().cursor()
+        cur.executescript('''
+        drop table if exist tableName;
+        create table pkr(
+            "id" text,
+            "name0" text,
+            "name1" text,
+            "name2" text,
+            "name3" text,
+            "cat0" text,
+            "cat1" text,
+            "cat2" text,
+            "cat3" text,
+            "price0" INTEGER,
+            "price1" INTEGER
+            )
+        ''')
+
+        #get default csvfile name
+        if len(csvfilename)==0:
+            csvfilename='csvfile.csv'
+        #get csvfile
+        with open(csvfilename,newline='') as csvfile:
+            r=csv.reader(csvfile,delimiter=',')
+            #have per-line iterables
+            for line in r:
+                #set per-column scalars in the row
+                print(line)
+                id=line[0]
+                name0=line[1]
+                name1=line[2]
+                name2=line[3]
+                name3=line[4]
+                cat0=line[5]
+                cat1=line[6]
+                cat2=line[7]
+                cat3=line[8]
+                price0=int(line[9])
+                price1=int(line[10])
+                #qmark style insertion https://dev.mysql.com/doc/refman/8.0/en/insert.html
+                cur.execute('''
+                insert into pkr(
+                    id,
+                    name0,
+                    name1,
+                    name2,
+                    name3,
+                    cat0,
+                    cat1,
+                    cat2,
+                    cat3,
+                    price0,
+                    price1
+                    )
+                values (?,?,?,?,?,?,?,?,?,?,?)
+                ''',(
+                    id,
+                    name0,
+                    name1,
+                    name2,
+                    name3,
+                    cat0,
+                    cat1,
+                    cat2,
+                    cat3,
+                    price0,
+                    price1
+                    ))
+                con.commit()
+
     def queryexec(cur,
             query:str)->tuple:
+        '''
+        '''
         try:
             return cur.execute(query),1
         except (sqlite3.ProgrammingError,
@@ -60,8 +137,9 @@ class db:
                 sqlite3.NotSupportedError) as e:
             return print(f"->{e} '{query}'"),2
 
-    #db.query
     def query()->None:
+        '''
+        '''
         note={"true":[],"false":[]}
         danger=("update","delete")
         agree=("y","yes","ok")
