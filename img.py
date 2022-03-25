@@ -17,13 +17,13 @@ def img_from_df():
     srcprefix=input("srcprefix: ")
     for q in src.loc[:,srccol]:
         iurl=srcprefix+q
-        print(f"{iurl}")
+        print(iurl)
         iu=requests.get(iurl)
         #https://docs.python-requests.org/en/latest/user/quickstart/#response-status-codes
         if iu.status_code==200:
             with Image.open(BytesIO(iu.content)) as ib:
-                ib=ib.convert("RGB")
                 ifname=q.replace("/artwork/","")
+                ib=ib.convert("RGB")
                 ib.save(f"{ifname}.jpg",
                     "JPEG",
                     quality=10,
@@ -104,43 +104,41 @@ def stamp(fgifile,bgipath,ts=130,ss=200,rnd=2,qual=5):
                 optimize=True)
     return None
 
-def rs(path,d,ratio,quant):
-    if "\\" not in path:
-        path=str(path).replace("\\","\\\\")
-    os.chdir(path)
-    if d is not None:
-        if os.path.isdir(d):
-            shutil.rmtree(d)
-            print("..deleted")
-        else:
-            os.mkdir(d)
-    if ratio<1:
-        ratio=float(ratio)
-    elif ratio>1:
-        ratio=float(ratio*0.01)
-    elif ratio==1:
-        ratio=int(ratio)
-    if quant<=100:
-        quant=int(quant)
-    elif quant>=100:
+def rs(path:str,
+        ratio:float,
+        quant:int=10)->None:
+    if not ratio<=100:
+        ratio=100
+    if not quant<=100:
         quant=100
-    f=glob.glob("*.jp*")
-    for x in f:
-        if os.path.getsize(x)==0:
-            f.remove(x)
-    for x in f:
-        img=(Image.open(str(x),"r")).convert("RGB")
-        imgx,imgy=(int(img.size[a]*ratio) for a in [0,1])
-        imgfile=img.resize((imgx,imgy),Image.LANCZOS)
-        if d is None:
-            imgfile.save(str(x),"JPEG",quality=int(quant),progressive=True,optimize=True)
-        else:
-            imgfile.save(d+"//"+str(x),"JPEG",quality=int(quant),progressive=True,optimize=True)
-        print(str(x)+"..: "+str(imgx)+" x "+str(imgy))
-    print("..done")
+    if not path.isalnum():
+        path=f"{path}//"
+    os.chdir(path)
+    imgfile=[q.name for q in os.scandir() 
+            if q.name.endswith(".jpg") and q.stat().st_size!=0]
+    for q in imgfile:
+        with Image.open(q) as ib:
+            ibx,iby=int(ib.size[q]*ratio)
+            ib=(ib
+                .resize((ibx,iby),Image.LANCZOS)
+                .convert("RGB"))
+            if not path:
+                ib.save(f"rs_{q}",
+                    "JPEG",
+                    quality=quant,
+                    progressive=True,
+                    optimize=True)
+            else:
+                ib.save(f"{path}//rs_{q}",
+                    "JPEG",
+                    quality=quant,
+                    progressive=True,
+                    optimize=True)
+            print(f"{q}: {ibx} x {iby}")
+    print(f"SUCCESS: {len(imgfile)} with files")
     return None
-#rs("D:\\atc\\total",None,1,20)
 
+#debt
 def show(i):
     if isinstance(i,str):
         a=i
@@ -177,7 +175,6 @@ def show(i):
             cv2.imshow(str(b[x]),c[x])
             cv2.waitKey(0),cv2.destroyAllWindows()
         return print(str(a))
-#show("a.jpg")
 
 def bloc(blockNumber,quant=30):
     if blockNumber>=6:

@@ -92,7 +92,7 @@ def pmo(frames:Iterable,pii:str='c:/')->pd.DataFrame:
         #Frame is frames if non-iterable
         frame=frames
     if isinstance(frames,dict):
-        #for dicted frames, it's not have been implemented yet
+        #for dicted frames, it's have not been implemented yet
         if len(frames)<1:
             raise NotImplementedError(f"'{type(frames)}' is peculiar")
     #id, nick protection for disregarding sum

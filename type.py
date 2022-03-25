@@ -35,13 +35,12 @@ def sani_bo_xls(
             header=header,
             na_values=None)
             .set_index(index))
-    else:
-        return pd.read_excel(
-            file,
-            names=col,
-            sheet_name=sheet_name,
-            header=header,
-            na_values=None)
+    return pd.read_excel(
+        file,
+        names=col,
+        sheet_name=sheet_name,
+        header=header,
+        na_values=None)
 
 def chk_status(frame)->tuple:
     frame=pd.read_excel(frame,nrows=5)

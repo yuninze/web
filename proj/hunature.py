@@ -23,7 +23,6 @@ def huNature():
     for x in range(len(j["result"])):
         if str(j["result"][x]["sourceValue"]) in ((y[0:8]) for y in hnException):
             a.loc["HN.IMG"][x]=str(j["result"][x]["sourceValue"])
-            a.loc[HN]
     pass
 #
 
