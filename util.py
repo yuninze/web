@@ -20,6 +20,9 @@ def otherwise():
         raise not Exception()
     pass
 
+def magnolia():
+    pass
+
 def listing(zipfile:str,ext:Iterable=('jpg','jpeg','png'))->tuple:
     '''Provide namelist dict of zipfile'''
     if not isinstance(ext,Iterable):
