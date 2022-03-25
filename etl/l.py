@@ -7,7 +7,6 @@ class db:
     Sequential todo element block containing 
     sequential methods to load df/fileObj to db/sqlite
     '''
-
     #db.type
     def type(filename:str)->int:
         '''
@@ -18,7 +17,7 @@ class db:
             return 1
 
     #db.to_db
-    def form_df(db:str="c:/code/db.db",
+    def from_df(db:str="c:/code/db.db",
             chk:bool=True,
             use:bool=False):
         '''

@@ -1,28 +1,13 @@
-import os,json,csv,glob,shutil
 import sys
-import pandas as pd;import datetime as dt;from zipfile import ZipFile
+import os,json,csv,glob,shutil
+import pandas as pd
 import pathlib
+from zipfile import ZipFile
+
 enc='utf-8-sig'
 idea='=='
 
 sys.setrecursionlimit(200_000_000)
-
-def strCheck(prop):
-    if type(prop) is int or float:
-        raise TypeError("a prop should be a str")
-    elif type(prop) is str:
-        return prop
-    else:
-        raise TypeError("no such prop")
-
-def EndSwitch(switch):
-    while switch:
-        for x in ["--","//","\\\\"]:
-            print("\b\b"+x,end="")
-    return None
-
-def pathStrip(s):
-    return str(s).upper().replace("D:\\82\\","")
 
 def garaAO():
     arc=ZipFile("82.zip","r")

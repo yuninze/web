@@ -12,6 +12,23 @@ import pandas as pd
 
 enc,idea="utf-8","=="
 
+def strCheck(prop):
+    if type(prop) is int or float:
+        raise TypeError("a prop should be a str")
+    elif type(prop) is str:
+        return prop
+    else:
+        raise TypeError("no such prop")
+
+def EndSwitch(switch):
+    while switch:
+        for x in ["--","//","\\\\"]:
+            print("\b\b"+x,end="")
+    return None
+
+def pathStrip(s):
+    return str(s).upper().replace("D:\\82\\","")
+
 def ima()->str:
     return dt.datetime.now().strftime("%y%m%d")
 

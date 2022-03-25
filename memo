@@ -60,6 +60,7 @@ ax2.tick_params(labelsize=14)
 ax2.set_xlabel(binnedDataLabel,fontsize:int)
 ax2.set_ylabel(targetVar,fontsize:int)
 linearly dependant?
+
 ###
 mean 과 std의 동일화. 푸아송 분포.
 variance-stabilizing transformation
@@ -70,6 +71,7 @@ nd화 param 검출을 해 줌
 q,w=stats.boxcox(targetData)
 w=lambdaParam
 ###
+
 sparse data에는 적용하면 안됨 (피처의 피처가 낮아짐)
 min-max 스케일링 [0,1] 범위로 비닝
 def minmax(x):
@@ -93,6 +95,9 @@ GLM interactive feature
 multivariables, polynomial feature
 preproc.PolynomialFeatures()
 train_test_split(featureArray,testsetArray,    )
+
+
+
 ###
 Text Feature Extraction
 BoW, B of n-grams
@@ -100,7 +105,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 CountVectorizer cursor 생성...
 bow=CountVectorizer(input="",token_pattern="(?u)\\b\\w+\\b")
 trigram=CountVectorizer(input="",token_pattern="(?u)\\b\\w+\\b",ngram_range(3,3))
-*(q.fit_tranasform(content) for q in bow,trigram),
+*(q.fit_transform(content) for q in bow,trigram),
 
 
 
