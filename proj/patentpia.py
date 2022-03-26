@@ -23,7 +23,7 @@ def lighting_text(
                 engSent=pp.loc[q,"SENTENCE_EN"]
                 if not engWord in engSent:
                     engWordNotInEngSent["word"].append(engWord)
-            print(str(len(engWordNotInEngSent["word"])))
+            print(len(engWordNotInEngSent["word"]))
             #main excution block: highlighting
             for q in enumerate(pp.index):
                 engWord=pp.loc[q[1],"KW_EN"]
@@ -33,4 +33,5 @@ def lighting_text(
                         color:#FE0000">{engWord}</span>'''))
             pp.to_csv("patentpia.csv",encoding=encoding)
             return pp
+        raise IndexError("duplicated value in no. column")
     raise NameError("peculiar content")
