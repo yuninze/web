@@ -54,8 +54,9 @@ class db:
             con.close() #pd.to_sql automatically commits
             return None
 
-    def from_row():
-        cur=sqlite3.connect().cursor()
+    def from_row(db):
+        con=sqlite3.connect(db)
+        cur=con.cursor()
         cur.executescript('''
         drop table if exist tableName;
         create table pkr(
@@ -72,7 +73,6 @@ class db:
             "price1" INTEGER
             )
         ''')
-
         #get default csvfile name
         if len(csvfilename)==0:
             csvfilename='csvfile.csv'

@@ -6,25 +6,29 @@ import pandas as pd
 enc="utf-8-sig"
 
 def ima()->str:
+    '''Get strings of current time'''
     return datetime.now().strftime("%Y"+"-"+"%m"+"-"+"%d")
 
-def load_json(filename):
+def load_json(filename:str):
+    '''JSON binary loader'''
     try:
         with open(filename,encoding=enc) as jsonfile:
             return json.load(jsonfile)
     except FileNotFoundError as e:
         return print(f"{e}")
 
-def to_csv(object:dict,filename:str)->None:
-    (pd.DataFrame(object)
+def dict_to_csv(obj:dict,filename:str)->None:
+    '''Save dataframe as CSV from dict'''
+    (pd.DataFrame(obj)
     .to_csv(filename,encoding=enc,index=False))
     (pd.read_csv(filename,encoding=enc)
     .to_csv(filename,encoding=enc,index=False))
     return None
 
-def oppai(path,fileObject):
+def clin_oppai(path,fileObject):
+    '''Project-specific JSON2CSV'''
     os.chdir(path)
-    jsondata=to_csv(fileObject)
+    jsondata=load_json(fileObject)
     jsonpath=jsondata["result"]
     canvas=[]
     for z in range(len(jsonpath)):
@@ -53,10 +57,11 @@ def oppai(path,fileObject):
         paper["id"]=str(jsonpath[z]["dataID"])
         canvas.append(paper)
     filenamestring="wonzin_"+ima+"_"+str(len(jsonpath))+".csv"
-    to_csv(canvas,filenamestring)
+    dict_to_csv(canvas,filenamestring)
     return None
 
-def noan(path,fileObject):
+def clin_noan(path,fileObject):
+    '''Project-specific JSON2CSV'''
     os.chdir(path)
     jsondata=load_json(fileObject)
     jsonpath=jsondata["result"]
@@ -89,10 +94,11 @@ def noan(path,fileObject):
         paper["id"]=str(jsonpath[z]["dataID"])
         canvas.append(paper)
     filenamestring="jurye_"+ima+"_"+str(len(jsonpath))+".csv"
-    to_csv(canvas,filenamestring)
+    dict_to_csv(canvas,filenamestring)
     return None
 
-def english(fileObject,path='c:/'):
+def ta_english(fileObject,path='c:/'):
+    '''Project-specific JSON2CSV'''
     os.chdir(path)
     jsondata=load_json(fileObject)
     jsonpath=jsondata["result"]
@@ -110,5 +116,5 @@ def english(fileObject,path='c:/'):
         paper['전번연락동의']='녜'
         canvas.append(paper)
     filenamestring="english_"+ima+"_"+str(len(jsonpath))+".csv"
-    to_csv(canvas,filenamestring)
+    dict_to_csv(canvas,filenamestring)
     return None

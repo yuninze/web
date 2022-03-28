@@ -38,70 +38,66 @@ def stamp(fgifile,bgipath,ts=130,ss=200,rnd=2,qual=5):
     Stamps the specific to the images regarding randomized
     size and location.
     '''
-    #set object size
+    #check object size
     if ts>120:
         bgifile=[bgipath+'/'+x for x in os.listdir(bgipath) if '.jp' in x]
-        for bgi in bgifile:
-            #load bgi
-            with Image.open(bgi,'r') as bgi:
-                #load fgi
-                fgi=Image.open(fgifile,'r')
-                #if pngfile check imagemode
-                if fgi.filename.endswith('.png'):
-                    ispng=True
-                    if fgi.mode!='RGBA':
-                        raise ValueError(f'peculiar pngfile ({fgi.mode=})')
-                #initiate f, locf, sizef
-                seed=np.random.random_sample(10)
-                f=np.random.choice(seed,size=2)
-                lf=f*rnd
-                sf=f[0]*ss
-                #have ar
-                ar=fgi.size[0]/fgi.size[1]
-                #have mod
-                mod=(fgi.size[0]/ts,
-                    fgi.size[1]/ts)
-                adi=(sf*ar,sf)
-                size=tuple(
-                    np.uint16(x) for x in [(
-                    fgi.size[0]/mod[0])*ar+adi[0],
-                    fgi.size[1]/mod[1]+adi[1]])
-                #resize if bgi is large
-                if sum(fgi.size)>500:
-                    print(f'resizing: {fgi.filename}: {size[0]} x {size[1]}')
-                    fgi=fgi.resize(size,Image.LANCZOS)
-                else:
-                    print(f'not resized: {fgi.filename}: {fgi.size[0]} x {fgi.size[1]}')
-                #preserve bgi filename
-                bgifilename=bgi.filename
-                #channelConvert RGBA
-                bgi=bgi.convert('RGBA')
-                #have initial coordinates
-                bgix0,bgiy0=bgi.size
-                #have coordinates of upper-left region
-                bgix1,bgiy1=np.uint16(bgix0*0.05),np.uint16(bgiy0*0.05)
-                #have moderately moved coordinates of upper-left region
-                bgix2,bgiy2=tuple(
-                    np.uint16(w) for w in (
-                    bgix1*lf[0]+(lf[0]*100),
-                    bgiy1*lf[1]+(lf[1]*100)))
-                #paste fgi to bgi
-                bgi.paste(fgi,
-                    box=(bgix1+bgix2,bgiy1+bgiy2),
-                    mask=fgi.convert('RGBA'))
-                #empty fgi
-                fgi.close()
-                #channelConvert RGB
-                bgi=bgi.convert('RGB')
-                #save bgi to bgiimagefile
-                bgifilename=bgifilename[(bgifilename.rfind('/')+1):]
-                bgi.save('x'+bgifilename,
-                    'JPEG',
-                    quality=qual,
-                    progressive=True,
-                    optimize=True)
-            return None
-        raise ValueError('object size is peculiar')
+        for bgifile in bgifile:
+            with Image.open(bgifile) as bgi:
+                with Image.open(fgifile) as fgi:
+                    #if pngfile check imagemode
+                    if fgi.filename.endswith('.png'):
+                        ispng=True
+                        if not fgi.mode=='RGBA':
+                            raise ValueError(f'peculiar pngfile ({fgi.mode=})')
+                    #initiate f, locf, sizef
+                    seed=np.random.random_sample(10)
+                    f=np.random.choice(seed,size=2)
+                    lf=f*rnd
+                    sf=f[0]*ss
+                    #have ar
+                    ar=fgi.size[0]/fgi.size[1]
+                    #have mod
+                    mod=(fgi.size[0]/ts,
+                        fgi.size[1]/ts)
+                    adi=(sf*ar,sf)
+                    size=tuple(
+                        np.uint16(x) for x in [(
+                        fgi.size[0]/mod[0])*ar+adi[0],
+                        fgi.size[1]/mod[1]+adi[1]])
+                    #resize if bgi is large
+                    if sum(fgi.size)>500:
+                        print(f'resizing: {fgi.filename}: {size[0]} x {size[1]}')
+                        fgi=fgi.resize(size,Image.LANCZOS)
+                    else:
+                        print(f'not resized: {fgi.filename}: {fgi.size[0]} x {fgi.size[1]}')
+                    #preserve bgi filename
+                    bgifilename=bgi.filename
+                    #channelConvert RGBA
+                    bgi=bgi.convert('RGBA')
+                    #have initial coordinates
+                    bgix0,bgiy0=bgi.size
+                    #have coordinates of upper-left region
+                    bgix1,bgiy1=np.uint16(bgix0*0.05),np.uint16(bgiy0*0.05)
+                    #have moderately moved coordinates of upper-left region
+                    bgix2,bgiy2=tuple(
+                        np.uint16(w) for w in (
+                        bgix1*lf[0]+(lf[0]*100),
+                        bgiy1*lf[1]+(lf[1]*100)))
+                    #paste fgi to bgi
+                    bgi.paste(fgi,
+                        box=(bgix1+bgix2,bgiy1+bgiy2),
+                        mask=fgi.convert('RGBA'))
+                    #channelConvert RGB
+                    bgi=bgi.convert('RGB')
+                    #save bgi to bgiimagefile
+                    bgifilename=bgifilename[(bgifilename.rfind('/')+1):]
+                    bgi.save('x'+bgifilename,
+                        'JPEG',
+                        quality=qual,
+                        progressive=True,
+                        optimize=True)
+                return None
+    raise ValueError('object size is peculiar')
 
 def rs(path:str,
         ratio:int,
@@ -215,19 +211,15 @@ def bloc(blockNumber,quant=30):
 bloc(3,3)
 
 def face(path):
-    os.chdir(path)
-    if len(glob.glob("*.jp*"))==0:
-        raise OSError("")
-    else:
-        for z in glob.glob("*.jp*"):
-            ib=cv2.imread(z)
-            c=cv2.CascadeClassifier("frontalFace.xml").detectMultiScale(ib)
-            for b in range(len(c)):
-                x,y,w,h=c[b]
-                x2,y2=x+w,y+h
-                cv2.rectangle(ib,(x,y),(x2,y2),(0,0,255),4)
-                cv2.imshow(str(x),ib)
-                cv2.waitKey(0),cv2.destroyAllWindows()
+    for z in glob.glob("*.jp*"):
+        ib=cv2.imread(z)
+        c=cv2.CascadeClassifier("frontalFace.xml").detectMultiScale(ib)
+        for b in range(len(c)):
+            x,y,w,h=c[b]
+            x2,y2=x+w,y+h
+            cv2.rectangle(ib,(x,y),(x2,y2),(0,0,255),4)
+            cv2.imshow(str(x),ib)
+            cv2.waitKey(0),cv2.destroyAllWindows()
     return None
 
 def data(a):
