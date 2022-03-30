@@ -197,16 +197,10 @@ f['TErng']=pd.cut(x=f.TE,bins=pd.interval_range(start=0,end=f.TE
 Entropy binning for workrng, TErng
 frame['wrkrng']=pd.cut(x=frame.age,bins=pd.interval_range(start=0,end=110,periods=10)).to_numpy()
 
-annot=True,fmt='d',linewidths=.1,cmap='plasma'
-
-ax=sns.heatmap(atc1,annot=True,fmt='d',linewidths=.5,cmap='viridis',vmax=500)
 atc.groupby('usersex')['paytimerng'].value_counts()
 
 ax4=ax4[ax4>0].dropna(axis=0,how='all')
 a0[np.isnan(a0[~np.isnan(a0)])]=0
-
-xticklabels
-yticklabels
 
 NaN, NaT, null, 0, ''
 pd.isna
