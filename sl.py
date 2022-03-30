@@ -3,8 +3,8 @@ from pprint import pprint as pr
 import logging
 import matplotlib.pyplot as plt
 
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.feature_extraction.text import CountVectorizer,TfidfTransformer,TfidfVectorizer
+from sklearn.decomposition import NMF, LatentDirichletAllocation
 from sklearn.linear_model import SGDClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn.pipeline import Pipeline
@@ -99,8 +99,8 @@ def spacing():
     pass
 
 #https://scikit-learn.org/stable/modules/classes.html#module-sklearn.decomposition
-#plotting용 함수 제작
-#decompositioning용 method 선택(dim reduction용)
+#plotting 함수 제작
+#decomposition method 선택(dim reduction용)
 #tf-idf
 #raw term count
 #이제 이걸 LDA 하든지 해서 decompositioning함
@@ -110,18 +110,10 @@ def spacing():
 #         Chyi-Kwei Yau <chyikwei.yau@gmail.com>
 # License: BSD 3 clause
 
-from time import time
-import matplotlib.pyplot as plt
-
-from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
-from sklearn.decomposition import NMF, LatentDirichletAllocation
-from sklearn.datasets import fetch_20newsgroups
-
 n_samples = 2000
 n_features = 1000
 n_components = 10
 n_top_words = 20
-
 
 def plot_top_words(model, feature_names, n_top_words, title):
     fig, axes = plt.subplots(2, 5, figsize=(30, 15), sharex=True)
@@ -143,7 +135,6 @@ def plot_top_words(model, feature_names, n_top_words, title):
     plt.subplots_adjust(top=0.90, bottom=0.05, wspace=0.90, hspace=0.3)
     plt.show()
 
-
 # Load the 20 newsgroups dataset and vectorize it. We use a few heuristics
 # to filter out useless terms early on: the posts are stripped of headers,
 # footers and quoted replies, and common English words, words occurring in
@@ -158,26 +149,23 @@ data, _ = fetch_20newsgroups(
     return_X_y=True,
 )
 data_samples = data[:n_samples]
-print("done in %0.3fs." % (time() - t0))
+print(f"done in {time()-t0}")
 
 # Use tf-idf features for NMF.
 print("Extracting tf-idf features for NMF...")
 tfidf_vectorizer = TfidfVectorizer(
-    max_df=0.95, min_df=2, max_features=n_features, stop_words="english"
-)
+    max_df=0.95, min_df=2, max_features=n_features, stop_words="english")
 t0 = time()
 tfidf = tfidf_vectorizer.fit_transform(data_samples)
-print("done in %0.3fs." % (time() - t0))
+print(f"done in {time()-t0}")
 
-# Use tf (raw term count) features for LDA.
+# Use term frequency for LDA.
 print("Extracting tf features for LDA...")
 tf_vectorizer = CountVectorizer(
-    max_df=0.95, min_df=2, max_features=n_features, stop_words="english"
-)
+    max_df=0.95, min_df=2, max_features=n_features, stop_words="english")
 t0 = time()
 tf = tf_vectorizer.fit_transform(data_samples)
-print("done in %0.3fs." % (time() - t0))
-print()
+print(f"done in {time()-t0}")
 
 # Fit the NMF model
 print(
@@ -186,7 +174,7 @@ print(
 )
 t0 = time()
 nmf = NMF(n_components=n_components, random_state=1, alpha=0.1, l1_ratio=0.5).fit(tfidf)
-print("done in %0.3fs." % (time() - t0))
+print(f"done in {time()-t0}")
 
 
 tfidf_feature_names = tfidf_vectorizer.get_feature_names_out()
