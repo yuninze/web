@@ -97,12 +97,6 @@ q for q in .get_feature_names(), len()
 
 
 
-
-
-
-
-
-
 from datetime import datetime
 timedelta(days=90)
 
@@ -276,15 +270,6 @@ r"\((\d+.\d+).\)"
 @*
 ^\S+@\S+$
 
-
-items = [
-    tuple(func(y) if i == level else y for i, y in enumerate(x)) for x in self
-]
-
-Working binning
-데.누.방.
-Bin Width 검증하기, 어떻게 supervised binning
-
 f_sexage=pd.DataFrame(list(map(getsexage,f.cn.values)))
 f['sex']=f_sexage.iloc[:,0].to_numpy()
 f['age']=f_sexage.iloc[:,1].to_numpy()
@@ -300,8 +285,6 @@ f['TErng']=pd.cut(x=f.TE,bins=pd.interval_range(start=0,end=f.TE
 
 Entropy binning for workrng, TErng
 frame['wrkrng']=pd.cut(x=frame.age,bins=pd.interval_range(start=0,end=110,periods=10)).to_numpy()
-
-
 
 with open('c:/filenamelist.csv',encoding='utf-8',newline='',mode='w+') as filenamelistcsvfile:
 	csvwriter=csv.writer(filenamelistcsvfile);[csvwriter.writerow([t]) for t in filenamelist]
@@ -338,7 +321,6 @@ cw.cn=cw.cn.apply(dashingcn)
 cw.pn=cw.pn.apply(dashingpn)
 cw.money=cw.money.apply(accountingtostr)
 cw.set_index(['name','cn','pn'],inplace=True)
-	
 	
 frame3=frame2[pd.isna(frame2.성명)]
 for i in frame3.index:

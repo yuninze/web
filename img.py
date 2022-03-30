@@ -17,10 +17,10 @@ def img_from_df():
     srcprefix=input("srcprefix: ")
     for q in src.loc[:,srccol]:
         iurl=srcprefix+q
-        print(iurl)
         iu=requests.get(iurl)
         #https://docs.python-requests.org/en/latest/user/quickstart/#response-status-codes
         if iu.status_code==200:
+            print(f"ok: {iu.status_code}->{q}")
             with Image.open(BytesIO(iu.content)) as ib:
                 ifname=q.replace("/artwork/","")
                 ib=ib.convert("RGB")
@@ -30,9 +30,9 @@ def img_from_df():
                     progressive=True,
                     optimize=True)
         else:
-            raise Exception(f"{iu.status_code=}")
+            print(f"err: {iu.status_code}->{q}")
     return f"done with {len(src)} images"
-
+    
 def stamp(fgifile,bgipath,ts=130,ss=200,rnd=2,qual=5):
     '''
     Stamps the specific to the images regarding randomized

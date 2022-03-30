@@ -7,7 +7,7 @@ from zipfile import ZipFile
 enc='utf-8-sig'
 idea='=='
 
-sys.setrecursionlimit(200_000_000)
+sys.setrecursionlimit(900_000)
 
 def garaAO():
     arc=ZipFile("82.zip","r")

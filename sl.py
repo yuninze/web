@@ -1,6 +1,7 @@
-from pprint import pprint as pr
 from time import time
+from pprint import pprint as pr
 import logging
+import matplotlib.pyplot as plt
 
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
@@ -15,42 +16,36 @@ logging.basicConfig(
     format="%(asctime)s %(Levelname)s %(message)s")
 
 #get categories
-cat=[
-    "alt.atheism",
-    "talk.religion.misc",
-]
+cat=[]
+
 while True:
     cat_input=input(f"category: ")
     if not cat_input:
         break
     cat.append(cat_input)
-    print(f"added: {cat_input}")
-print("Loaded categories: %d" % len(cat))
+    print(f"added->{cat_input}")
+print(f"categories->{len(cat)}")
 
 if not len(cat)==0:
     print(cat)
-
     #dataset sklearn.datasets.fetch_20newsgroups
     src=fetch_20newsgroups(categories=cat)
     print(f"{len(src.filenames)} documents")
-
     #sequences of text feature extractor
     pl=Pipeline(
-        [
-            ("vc",CountVectorizer()),
-            ("tfidf",TfidfTransformer()),
-            ("clf",SGDClassifier())
-        ]
+        [("vc",CountVectorizer()),
+        ("tfidf",TfidfTransformer()),
+        ("clf",SGDClassifier())]
     )
-
-    #parameters will give better power but will increase processing time
     params={
-        "vc__max_df":(0.5,0.75,1.0),
-        "vc__max_features":(None,5_000,10_000,50_000),
-        "vc__ngram_range":((1,1),(2,2)), #unigrams or bigrams
-        "tfidf__use_idf":(True,False),
-        "tfidf__norm":("l1","l2"),
-        "clf__max_iter":(20,50,),
+        #"vc__ngram_range":((1,1),(2,2)), #n-grams
+        "vc__max_df":([.8,.9]), #have the highest tf
+        #"vc__min_df":(), #have the lowest tf
+        "vc__max_features":(None,10,10_000,10_0000), #only uses top-ranked vocabs
+        "tfidf__norm":("l2","l1"),
+        #"tfidf__use_idf":(True,False),
+        #"tfidf__smooth_idf":(True,False),
+        "clf__max_iter":(100,200),
         "clf__alpha":(0.00_001,0.00_0001),
         "clf__penalty":("l2","elasticnet"),
     }
@@ -65,9 +60,9 @@ if not len(cat)==0:
         pr(params)
         t0=time()
         grid_search.fit(src.data,src.target)
-        print("done in %0.3fs" % (time()-t0))
+        print(f"done in {(time()-t0)}s")
 
-        print("Best score: %0.3f" % grid_search.best_score_)
+        print(f"Best score: {grid_search.best_score_}")
         best_params=grid_search.best_estimator_.get_params()
         for q in sorted(params.keys()):
             print(f"\t{q}: {best_params[q]}")
@@ -99,3 +94,148 @@ def prac():
     #get column index of specific feature
     cursor.vocabulary_.get("정신분열증")
     return None
+
+def spacing():
+    pass
+
+#https://scikit-learn.org/stable/modules/classes.html#module-sklearn.decomposition
+#plotting용 함수 제작
+#decompositioning용 method 선택(dim reduction용)
+#tf-idf
+#raw term count
+#이제 이걸 LDA 하든지 해서 decompositioning함
+
+# Author: Olivier Grisel <olivier.grisel@ensta.org>
+#         Lars Buitinck
+#         Chyi-Kwei Yau <chyikwei.yau@gmail.com>
+# License: BSD 3 clause
+
+from time import time
+import matplotlib.pyplot as plt
+
+from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
+from sklearn.decomposition import NMF, LatentDirichletAllocation
+from sklearn.datasets import fetch_20newsgroups
+
+n_samples = 2000
+n_features = 1000
+n_components = 10
+n_top_words = 20
+
+
+def plot_top_words(model, feature_names, n_top_words, title):
+    fig, axes = plt.subplots(2, 5, figsize=(30, 15), sharex=True)
+    axes = axes.flatten()
+    for topic_idx, topic in enumerate(model.components_):
+        top_features_ind = topic.argsort()[: -n_top_words - 1 : -1]
+        top_features = [feature_names[i] for i in top_features_ind]
+        weights = topic[top_features_ind]
+
+        ax = axes[topic_idx]
+        ax.barh(top_features, weights, height=0.7)
+        ax.set_title(f"Topic {topic_idx +1}", fontdict={"fontsize": 30})
+        ax.invert_yaxis()
+        ax.tick_params(axis="both", which="major", labelsize=20)
+        for i in "top right left".split():
+            ax.spines[i].set_visible(False)
+        fig.suptitle(title, fontsize=40)
+
+    plt.subplots_adjust(top=0.90, bottom=0.05, wspace=0.90, hspace=0.3)
+    plt.show()
+
+
+# Load the 20 newsgroups dataset and vectorize it. We use a few heuristics
+# to filter out useless terms early on: the posts are stripped of headers,
+# footers and quoted replies, and common English words, words occurring in
+# only one document or in at least 95% of the documents are removed.
+
+print("Loading dataset...")
+t0 = time()
+data, _ = fetch_20newsgroups(
+    shuffle=True,
+    random_state=1,
+    remove=("headers", "footers", "quotes"),
+    return_X_y=True,
+)
+data_samples = data[:n_samples]
+print("done in %0.3fs." % (time() - t0))
+
+# Use tf-idf features for NMF.
+print("Extracting tf-idf features for NMF...")
+tfidf_vectorizer = TfidfVectorizer(
+    max_df=0.95, min_df=2, max_features=n_features, stop_words="english"
+)
+t0 = time()
+tfidf = tfidf_vectorizer.fit_transform(data_samples)
+print("done in %0.3fs." % (time() - t0))
+
+# Use tf (raw term count) features for LDA.
+print("Extracting tf features for LDA...")
+tf_vectorizer = CountVectorizer(
+    max_df=0.95, min_df=2, max_features=n_features, stop_words="english"
+)
+t0 = time()
+tf = tf_vectorizer.fit_transform(data_samples)
+print("done in %0.3fs." % (time() - t0))
+print()
+
+# Fit the NMF model
+print(
+    "Fitting the NMF model (Frobenius norm) with tf-idf features, "
+    "n_samples=%d and n_features=%d..." % (n_samples, n_features)
+)
+t0 = time()
+nmf = NMF(n_components=n_components, random_state=1, alpha=0.1, l1_ratio=0.5).fit(tfidf)
+print("done in %0.3fs." % (time() - t0))
+
+
+tfidf_feature_names = tfidf_vectorizer.get_feature_names_out()
+plot_top_words(
+    nmf, tfidf_feature_names, n_top_words, "Topics in NMF model (Frobenius norm)"
+)
+
+# Fit the NMF model
+print(
+    "\n" * 2,
+    "Fitting the NMF model (generalized Kullback-Leibler "
+    "divergence) with tf-idf features, n_samples=%d and n_features=%d..."
+    % (n_samples, n_features),
+)
+t0 = time()
+nmf = NMF(
+    n_components=n_components,
+    random_state=1,
+    beta_loss="kullback-leibler",
+    solver="mu",
+    max_iter=1000,
+    alpha=0.1,
+    l1_ratio=0.5,
+).fit(tfidf)
+print("done in %0.3fs." % (time() - t0))
+
+tfidf_feature_names = tfidf_vectorizer.get_feature_names_out()
+plot_top_words(
+    nmf,
+    tfidf_feature_names,
+    n_top_words,
+    "Topics in NMF model (generalized Kullback-Leibler divergence)",
+)
+
+print(
+    "\n" * 2,
+    "Fitting LDA models with tf features, n_samples=%d and n_features=%d..."
+    % (n_samples, n_features),
+)
+lda = LatentDirichletAllocation(
+    n_components=n_components,
+    max_iter=5,
+    learning_method="online",
+    learning_offset=50.0,
+    random_state=0,
+)
+t0 = time()
+lda.fit(tf)
+print("done in %0.3fs." % (time() - t0))
+
+tf_feature_names = tf_vectorizer.get_feature_names_out()
+plot_top_words(lda, tf_feature_names, n_top_words, "Topics in LDA model")
