@@ -10,7 +10,6 @@ def ima()->str:
     return datetime.now().strftime("%Y"+"-"+"%m"+"-"+"%d")
 
 def load_json(filename:str):
-    '''JSON binary loader'''
     try:
         with open(filename,encoding=enc) as jsonfile:
             return json.load(jsonfile)

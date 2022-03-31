@@ -21,6 +21,7 @@ class db:
             chk:bool=True,
             use:bool=False):
         '''
+        to-db converter
         '''
         #get a connect object, cursor object
         con=sqlite3.connect(f"{db}")
