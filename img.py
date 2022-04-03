@@ -1,6 +1,7 @@
 import os
-import cv2
+import time
 import requests
+import cv2
 import pandas as pd
 import numpy as np
 from io import BytesIO
@@ -15,6 +16,7 @@ def img_from_df():
     if not srccol:
         srccol="rep_image_path"
     srcprefix=input("srcprefix: ")
+    t0=time()
     for q in src.loc[:,srccol]:
         iurl=srcprefix+q
         iu=requests.get(iurl)
@@ -31,13 +33,9 @@ def img_from_df():
                     optimize=True)
         else:
             print(f"err: {iu.status_code}->{q}")
-    return f"done with {len(src)} images"
+    return print(f"done with {len(src)} images, elapsed {time()-t0}s")
     
 def stamp(fgifile,bgipath,ts=130,ss=200,rnd=2,qual=5):
-    '''
-    Stamps the specific to the images regarding randomized
-    size and location.
-    '''
     #check object size
     if ts>120:
         bgifile=[bgipath+'/'+x for x in os.listdir(bgipath) if '.jp' in x]
