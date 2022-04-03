@@ -1,5 +1,4 @@
-wcld.png
-wc.png
-.vscode/
+.vscode
+.vscode/settings.json
 .__pycache__
 *.png
