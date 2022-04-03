@@ -66,6 +66,9 @@ preproc.StandardScaler().fit_transform(binningTarget:array)
 def euclidian distance
 preproc.normalize(binningTarget:array,axis=0)
 
+
+
+
 binningTarget의 수치 분포를 변화한다...
 :입력 피처의 정량적 크기가 크게 다를 때 사용한다.
 ###
