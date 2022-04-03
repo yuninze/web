@@ -9,8 +9,6 @@ class db:
     '''
     #db.type
     def type(filename:str)->int:
-        '''
-        '''
         if filename.endswith(".csv"):
             return 0
         elif filename.endswith((".xlsx",".xls")):
@@ -20,9 +18,6 @@ class db:
     def from_df(db:str="c:/code/db.db",
             chk:bool=True,
             use:bool=False):
-        '''
-        to-db converter
-        '''
         #get a connect object, cursor object
         con=sqlite3.connect(f"{db}")
         cur=con.cursor()
@@ -138,8 +133,6 @@ class db:
             return print(f"->{e} '{query}'"),2
 
     def query()->None:
-        '''
-        '''
         note={"true":[],"false":[]}
         danger=("update","delete")
         agree=("y","yes","ok")
