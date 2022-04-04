@@ -23,7 +23,7 @@ def get_txt(txtfile=None)->str:
         return txtfile.read()
 
 def l2s(i,l):
-    i=np.array(i,dtype=np.float64)
+    i=np.asarray(i,dtype=np.float64)
     base=round(i.prod()**(1/l),5)
     dist=np.sqrt((i-base)**2)
     return dist
