@@ -69,13 +69,15 @@ def make_wcld(f_noun,
     wc_cmap=diverging_palette(240,10,as_cmap=True),
     wc_bgcolor=None,
     wc_output_imgfile=output_imgfile,
-    wc_output_imgfile_mode="RGBA"):
+    wc_output_imgfile_mode="RGBA",
+    show=False):
     t0=t()
     if wc_oval_shape:
         x,y=np.ogrid[:wc_size[0],:wc_size[1]]
         wc_mask=(
-                (x-wc_size[0]//2)**2 + (y-wc_size[1]//2)**2 > 
-                (sum(wc_size)//2-(sum(wc_size)*0.25))**2)
+                (x//2)**2 + (y//2)**2 > 
+                ((sum(wc_size)//2)-(sum(wc_size)*0.25))**2
+				)
         #bool to int
         wc_mask=wc_mask.astype(int)*255
     wc=WordCloud(max_words=1000,
@@ -92,11 +94,16 @@ def make_wcld(f_noun,
     plt.imshow(wc,interpolation="bicubic")
     plt.axis("off")
     print(f"make_wcld: elasped in {t()-t0:.4f}s")
-    plt.show()
+    if show:
+        plt.show()
+    return None
 
 txt=get_txt("ko.txt")
 n_freq=noun_freq(txt,n_noun=100,norm=True)
-make_wcld(n_freq)
+make_wcld(n_freq,
+    wc_bgcolor="black",
+    wc_output_imgfile_mode="RGB",
+    show=True)
 
 def prac():
     return 0
