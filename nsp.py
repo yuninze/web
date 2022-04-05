@@ -80,9 +80,10 @@ def quick_visual(occur_data):
                 columns=["freq"])
         else:
             raise NotImplementedError(f"{type(occur_data)=}")
-    data.plot(kind="bar",rot=45,figsize=(20,15),
+    plot=data.plot(kind="bar",rot=45,figsize=(20,15),
         title="noun_freq_map_chk",
         xlabel="noun_name",ylabel="noun_freq")
+    plot.get_legend().remove()
     print(f"quick_visual: elapsed in {t()-t0:.4f}s")
     plt.show()
 
@@ -107,7 +108,7 @@ def make_wcld(f_noun,
                 ((wc_mask_base*wc_mask_factor))**2)
         #bool2int to black(255) mask
         wc_mask=wc_mask.astype(int)*255
-    wc=WordCloud(max_words=1000,
+    wc=WordCloud(max_words=500,
         font_path=wc_font,
         height=wc_size[0],width=wc_size[1],
         mask=wc_mask,
@@ -126,6 +127,6 @@ def make_wcld(f_noun,
     return None
 
 txt=get_txt("ko.txt")
-n_freq=noun_freq(txt,n_noun=100,norm=True,factor=1)
+n_freq=noun_freq(txt,n_noun=200,norm=True,factor=1)
 make_wcld(n_freq,
     wc_bgcolor="black",wc_output_imgfile_mode="RGB",show=True)
