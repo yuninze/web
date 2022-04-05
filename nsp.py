@@ -12,6 +12,21 @@ jvm="C:/Program Files/Java/jdk-18/bin/server/jvm.dll"
 font="C:/code/base/GBR.ttf"
 output_imgfile="wc.png"
 
+def prac():
+    return 0
+    #set vectorizer
+    cursor=CountVectorizer()
+    #fit source
+    data=cursor.fit_transform(corpus)
+    #get analyzer as target
+    anal=cursor.build_analyzer()
+    #get feature names
+    cursor.get_feature_names_out()
+    #CSR matrix to ndarray
+    data.toarray()
+    #get column index of specific feature
+    cursor.vocabulary_.get("정신")
+
 def gdstrb()->tuple:
     return tuple(nprnd.default_rng().integers(0,255,size=3))
 
@@ -24,48 +39,57 @@ def get_txt(txtfile=None)->str:
         return txtfile.read()
 
 def l2_scaler(i,l):
-    i=np.array(i,dtype=np.float64)
+    i=np.array(i,dtype=np.float64) 
     base=i.prod()**(1/l)
     dist=np.sqrt((i-base)**2)
     return dist
 
+def chk_map_dict_mean(map:dict):
+    return sum([q for q in map.values()])/len(map)
+
+def stdev():
+    obs="Iterable"
+    mean="mean"
+    np.sqrt(sum([(q-mean)**2 for q in iterableObs])/len(iterableObs))
+    return 0
+
 def noun_freq(text,
     l_noun=2,
     n_noun=500,
-    norm=True)->dict:
+    norm=True,
+    factor=1)->dict:
     t0=t()
     okt=Okt(jvmpath=jvm)
     noun=okt.nouns(text)
     noun=Counter([q for q in noun if len(q)>=l_noun])
-    noun_map={q:w for q,w in noun.most_common(n_noun)}
+    noun_map={q:w*factor for q,w in noun.most_common(n_noun)}
     if norm:
         noun_map_len=len(noun)
         noun_map_base=[noun_map[q] for q in noun_map.keys()]
         noun_map_dist=l2_scaler(noun_map_base,noun_map_len)
         noun_f={q:w for q,w in zip(noun_map.keys(),noun_map_dist)}
-    try:
-        return noun_f
-    except:
-        return noun_map
-    finally:
-        print(f"noun_freq: elapsed in {t()-t0:.4f}s")
+    print(f"noun_freq: elapsed in {t()-t0:.4f}s")
+    return noun_f or noun_map
 
 def quick_visual(occur_data):
     t0=t()
-    data=pd.DataFrame.from_dict(occur_data,
-        orient="index",
-        columns=["occurance"])
-    data.plot.bar(rot=45)
-    plt.figure(figsize=(100,50))
-    plt.xlabel("noun_name")
-    plt.ylabel("noun_freq")
+    if not isinstance(occur_data,pd.DataFrame):
+        if isinstance(occur_data,dict):
+            data=pd.DataFrame.from_dict(occur_data,
+                orient="index",
+                columns=["freq"])
+        else:
+            raise NotImplementedError(f"{type(occur_data)=}")
+    data.plot(kind="bar",rot=45,figsize=(20,15),
+        title="noun_freq_map_chk",
+        xlabel="noun_name",ylabel="noun_freq")
     print(f"quick_visual: elapsed in {t()-t0:.4f}s")
     plt.show()
 
 def make_wcld(f_noun,
     wc_font=font,
     wc_size=(1000,1000),
-    wc_mask=None,wc_oval_shape=True,
+    wc_mask=None,wc_oval_shape=True,wc_mask_factor=.95,
     wc_cmap=diverging_palette(240,10,as_cmap=True),
     wc_bgcolor=None,
     wc_output_imgfile=output_imgfile,
@@ -73,12 +97,15 @@ def make_wcld(f_noun,
     show=False):
     t0=t()
     if wc_oval_shape:
+        #ogrid result (n,1..),(1,n..),ndim2 array
         x,y=np.ogrid[:wc_size[0],:wc_size[1]]
-        wc_mask=(
-                (x//2)**2 + (y//2)**2 > 
-                ((sum(wc_size)//2)-(sum(wc_size)*0.25))**2
-				)
-        #bool to int
+        #base coordinates for center
+        wc_mask_base=sum(wc_size)/4
+        #as x,y are ndarray, broadcasted
+        #norm(x), norm(y) > norm(factor)
+        wc_mask=((x-wc_mask_base)**2 + (y-wc_mask_base)**2 > 
+                ((wc_mask_base*wc_mask_factor))**2)
+        #bool2int to black(255) mask
         wc_mask=wc_mask.astype(int)*255
     wc=WordCloud(max_words=1000,
         font_path=wc_font,
@@ -99,23 +126,6 @@ def make_wcld(f_noun,
     return None
 
 txt=get_txt("ko.txt")
-n_freq=noun_freq(txt,n_noun=100,norm=True)
+n_freq=noun_freq(txt,n_noun=100,norm=True,factor=1)
 make_wcld(n_freq,
-    wc_bgcolor="black",
-    wc_output_imgfile_mode="RGB",
-    show=True)
-
-def prac():
-    return 0
-    #set vectorizer
-    cursor=CountVectorizer()
-    #fit source
-    data=cursor.fit_transform(corpus)
-    #get analyzer as target
-    anal=cursor.build_analyzer()
-    #get feature names
-    cursor.get_feature_names_out()
-    #CSR matrix to ndarray
-    data.toarray()
-    #get column index of specific feature
-    cursor.vocabulary_.get("정신")
+    wc_bgcolor="black",wc_output_imgfile_mode="RGB",show=True)
