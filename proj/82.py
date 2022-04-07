@@ -26,7 +26,7 @@ def garaAO():
 
 def getjsonfile(path):
     count=0
-    for root,dirs,file in os.walk(path):
+    for root,_,file in os.walk(path):
         for filename in file:
             if filename.endswith(".json"):
                 filepath=os.path.join(root,filename)

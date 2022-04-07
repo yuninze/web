@@ -39,7 +39,7 @@ def get_txt(txtfile=None)->str:
         return txtfile.read()
 
 def l2_scaler(i,l):
-    i=np.array(i,dtype=np.float64) 
+    i=np.array(i,dtype=np.float64)
     base=i.prod()**(1/l)
     dist=np.sqrt((i-base)**2)
     return dist
@@ -50,6 +50,7 @@ def chk_map_dict_mean(map:dict):
 def stdev():
     obs="Iterable"
     mean="mean"
+    #eachIterable-mean ** 2 sum divided by len(iterable)
     np.sqrt(sum([(q-mean)**2 for q in iterableObs])/len(iterableObs))
     return 0
 
@@ -80,7 +81,7 @@ def quick_visual(occur_data):
                 columns=["freq"])
         else:
             raise NotImplementedError(f"{type(occur_data)=}")
-    plot=data.plot(kind="bar",rot=45,figsize=(20,15),
+    plot=data.plot(kind="bar",rot=50,figsize=(20,15),
         title="noun_freq_map_chk",
         xlabel="noun_name",ylabel="noun_freq")
     plot.get_legend().remove()
@@ -101,7 +102,7 @@ def make_wcld(f_noun,
         #ogrid result (n,1..),(1,n..),ndim2 array
         x,y=np.ogrid[:wc_size[0],:wc_size[1]]
         #base coordinates for center
-        wc_mask_base=sum(wc_size)/4
+        wc_mask_base=sum(wc_size)/(len(wc_size)*2)
         #as x,y are ndarray, broadcasted
         #norm(x), norm(y) > norm(factor)
         wc_mask=((x-wc_mask_base)**2 + (y-wc_mask_base)**2 > 
