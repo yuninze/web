@@ -9,7 +9,7 @@ def lighting_text(
             'KW_KO',
             'SENTENCE_EN',
             'SENTENCE_KO'))->pd.DataFrame:
-    '''tag'''
+    '''patentPia'''
     pp=pd.read_excel(srcData)
     #check as patentpia
     if tuple(pp.columns)==colBasis:
