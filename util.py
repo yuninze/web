@@ -33,7 +33,7 @@ def ima()->str:
     return dt.datetime.now().strftime("%y%m%d")
 
 def otherwise():
-    if not not not not not not not Exception():
+    if __self__==False:
         raise not Exception()
     pass
 

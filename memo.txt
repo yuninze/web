@@ -1,14 +1,19 @@
-os.environ.get('FONT_PATH', os.path.join(FILE, 'DroidSansMono.ttf'))
 
+append pd.DataFrame classes for feature
+concatenate
 
+def merging_dataframes(a_df, b_df):
+    merged_df = b_df.join(a_df, on=['userId'], how='left')
+    return merged_df
 
-wc_size=(1000,1000)
-wc_array_base=wc_size//2
-wc_array_
-        wc_mask=(
-                (x//2)**2 + (y//2)**2 > 
-                ((sum(wc_size)//2)-((sum(wc_size)//len(wc_size))*0.25))**2
-				)
+for names in features[1:]:
+    final_df = merging_dataframes(final_df, names)
+
+in[59]~
+
+os.environ->dict:environValues
+
+Attention Mechanism, Word Embedding
 
 shape=(1000,1000)
 shape_base=sum(shape)//len(shape)
@@ -130,7 +135,7 @@ from datetime import datetime
 timedelta(days=90)
 
 df.replace("nan",np.nan)
-df.loc[q,w] for q in df.index for w in df.columns
+*(df.loc[q,w] for q in df.index for w in df.columns),
 
 conditional listdir보다 scandir이 3배 빠름
 scandir->os.DirEntry
