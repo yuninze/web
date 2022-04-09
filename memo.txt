@@ -8,7 +8,53 @@ def merging_dataframes(df0,df1,index:str):
 for names in features[1:]:
     final_df = merging_dataframes(final_df, names)
 
+
+In: 59
+#https://scikit-learn.org/stable/auto_examples/compose/plot_column_transformer_mixed_types.html#sphx-glr-auto-examples-compose-plot-column-transformer-mixed-types-py
+
 pyspark.vectorAssembler
+###
+
+from sklearn.compose import ColumnTransformer
+
+0.classifying features
+numeric features: (to_numeric)(select_dtype)
+categorical features: sex, occupation, ordinal int (e.g. rank)
+
+1.coding and standardazation
+num_feat=[numericDataColNames]
+num_tran=Pipeline(steps=[
+("imputer",SimpleImputer(strategy="median")),("scaler",StandScaler())
+]) #Is it standardazation?
+cat_feat=[colNames]
+cat_tran=OneHotEncoder(handle_unknown="ignore")
+
+2.append classifier to preprocessing
+
+###
+
+tgt
+Return a list of the words in the string, using sep as the delimiter string. If maxsplit is given, at most maxsplit splits are done (thus, the list will have at most maxsplit+1 elements). If maxsplit is not specified or -1, then there is no limit on the number of splits (all possible splits are made).
+
+q=[q for q in enumerate(tgt.split())]
+
+(t-test)와 회귀분석
+(DID, Fixed Effect, RDD 등)
+EDA, 퍼널 분석, 코호트 분석, 클러스터링을 활용한 유저군집화
+
+df.groupby('qtr').agg({"realgdp": ["mean",  "std"], "unemp": "mean"})
+fig, ax = plt.subplots(figsize=(5, 8))
+sns.boxplot(data=life_time_df, x='user_churn', y='max(life_time)')
+plt.xlabel('User Churn')
+plt.ylabel('Time Since Registration')
+plt.title('Time since registration and churn')
+ax.set(xticklabels=['Not Churned', 'Churned'])
+
+{"key_"+a+b:"val_"+a+b for a,b in {a+b:a+b for a in "abcd" for b in "0123" if "a"!="b"}}
+({"color":gdstrb(),"tag":q,"size":w*mtl} for q,w in n_nouns.most_common(n_noun))
+{q:int(w*mtl) for q,w in noun.most_common(n_noun)}
+
+
 
 os.environ->dict:environValues
 
