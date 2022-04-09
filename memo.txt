@@ -2,14 +2,13 @@
 append pd.DataFrame classes for feature
 concatenate
 
-def merging_dataframes(a_df, b_df):
-    merged_df = b_df.join(a_df, on=['userId'], how='left')
-    return merged_df
+def merging_dataframes(df0,df1,index:str):
+    return df0.join(df1,on=[f"{index}"],how='left')
 
 for names in features[1:]:
     final_df = merging_dataframes(final_df, names)
 
-in[59]~
+pyspark.vectorAssembler
 
 os.environ->dict:environValues
 
