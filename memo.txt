@@ -1,4 +1,3 @@
-
 append pd.DataFrame classes for feature
 concatenate
 
@@ -8,28 +7,77 @@ def merging_dataframes(df0,df1,index:str):
 for names in features[1:]:
     final_df = merging_dataframes(final_df, names)
 
+def seed(q,rng):
+	rng=np.random.default_rng(100)
 
-In: 59
-#https://scikit-learn.org/stable/auto_examples/compose/plot_column_transformer_mixed_types.html#sphx-glr-auto-examples-compose-plot-column-transformer-mixed-types-py
-
-pyspark.vectorAssembler
+In: 59: pyspark.vectorAssembler
 ###
 
-from sklearn.compose import ColumnTransformer
+#from sklearn.pipeline import Pipeline
+Pipeline(steps=list of tuple(name,transform)
+	)
+Pipeline.named_steps: access the steps by name
 
-0.classifying features
-numeric features: (to_numeric)(select_dtype)
+prerequisiting
+#load q as target
+q=df.frame[targetColLabel]
+#load w as variable
+w=df.frame.drop(f"{targetColLabel",axis=1)
+
+0.preprocessing, classifying features
+#by using select_dtypes like sklearn.compose.make_column_selector
+#preprocessing would be better than using make_column_selector
+#as make_column_selector requires category requisite for tabulars
+from sklearn.compose import ColumnTransformer
+numeric features: (from_numeric) (to_numeric)
 categorical features: sex, occupation, ordinal int (e.g. rank)
 
-1.coding and standardazation
+1.coding
+#missing value interpolation
+from sklearn.impute import SimpleImputer
+SimpleImputer(
+	missing_values=np.nan
+	strategy="mean","median","most_frequent","constant",
+	fill_value:if strategy="constant" -> str
+	verbose=0)
+
+#scaling, standardazation
+#standardize features by removing the mean and scailing to unit variance
+#the result of a sample x is calculated as:
+from sklearn.preprocessing import StandardScaler
+StandardScaler(
+	with_mean=True,
+	with_std=True)
+
 num_feat=[numericDataColNames]
 num_tran=Pipeline(steps=[
 ("imputer",SimpleImputer(strategy="median")),("scaler",StandScaler())
-]) #Is it standardazation?
+])
 cat_feat=[colNames]
 cat_tran=OneHotEncoder(handle_unknown="ignore")
 
-2.append classifier to preprocessing
+2.append classifier for features
+lf=Pipeline(
+	steps=[
+		("preprocess",preprocessor),
+		("classify",LogisiticRegression())
+		])
+
+3.assert a train, test set
+sklearn.model_selection.train_test_split(
+	arrayAlike,
+	test_size=.1,
+	train_size=1.,
+	random_state=None,
+	shuffle=True,
+	stratify=None
+	)
+Xtrain,Xtest,Ytrain,Ytest=train_test_split()
+
+4.execution
+lf.fit(Xtrain,Ytrain)
+print(f"score {clf.score(Xtest,Ytest):.4f}")
+
 
 ###
 
