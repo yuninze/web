@@ -1,49 +1,45 @@
-append pd.DataFrame classes for feature
-concatenate
+append pd.DataFrame classes for preprocessed features, concatenate feature dataframes
 
 def merging_dataframes(df0,df1,index:str):
     return df0.join(df1,on=[f"{index}"],how='left')
-
 for names in features[1:]:
     final_df = merging_dataframes(final_df, names)
-
 def seed(q,rng):
 	rng=np.random.default_rng(100)
 
 In: 59: pyspark.vectorAssembler
-###
-
-#from sklearn.pipeline import Pipeline
+###Pipeline of transfomring final estimater
+###from sklearn.pipeline import Pipeline
 Pipeline(steps=list of tuple(name,transform)
 	)
 Pipeline.named_steps: access the steps by name
 
 prerequisiting
-#load q as target
+###load q as target
 q=df.frame[targetColLabel]
-#load w as variable
+###load w as variable
 w=df.frame.drop(f"{targetColLabel",axis=1)
 
 0.preprocessing, classifying features
-#by using select_dtypes like sklearn.compose.make_column_selector
-#preprocessing would be better than using make_column_selector
-#as make_column_selector requires category requisite for tabulars
+###by using select_dtypes like sklearn.compose.make_column_selector
+###preprocessing would be better than using make_column_selector
+###as make_column_selector requires category requisite for tabulars
 from sklearn.compose import ColumnTransformer
 numeric features: (from_numeric) (to_numeric)
 categorical features: sex, occupation, ordinal int (e.g. rank)
 
 1.coding
-#missing value interpolation
+###missing value interpolation
+###imputation techniques: mean substitution, NMF, regression
 from sklearn.impute import SimpleImputer
-SimpleImputer(
-	missing_values=np.nan
+SimpleImputer(missing_values=np.nan
 	strategy="mean","median","most_frequent","constant",
 	fill_value:if strategy="constant" -> str
 	verbose=0)
 
-#scaling, standardazation
-#standardize features by removing the mean and scailing to unit variance
-#the result of a sample x is calculated as:
+###scaling, standardazation
+###standardize features by removing the mean and scailing to unit variance
+###the result of a sample x is calculated as:
 from sklearn.preprocessing import StandardScaler
 StandardScaler(
 	with_mean=True,
@@ -68,8 +64,8 @@ sklearn.model_selection.train_test_split(
 	arrayAlike,
 	test_size=.1,
 	train_size=1.,
-	random_state=None,
-	shuffle=True,
+	#Pass an int for reproducible output across multiple function calls.
+	random_state=None,shuffle=True,
 	stratify=None
 	)
 Xtrain,Xtest,Ytrain,Ytest=train_test_split()
@@ -88,7 +84,7 @@ q=[q for q in enumerate(tgt.split())]
 
 (t-test)와 회귀분석
 (DID, Fixed Effect, RDD 등)
-EDA, 퍼널 분석, 코호트 분석, 클러스터링을 활용한 유저군집화
+EDA, 퍼널 분석, 코호트 분석, 클러스터링: 유저군집화
 
 df.groupby('qtr').agg({"realgdp": ["mean",  "std"], "unemp": "mean"})
 fig, ax = plt.subplots(figsize=(5, 8))

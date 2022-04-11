@@ -55,9 +55,9 @@ def listing(zipfile:str,ext:Iterable=('jpg','jpeg','png'))->tuple:
             idx=infolist[z]
             if any(map(idx.filename.lower().__contains__,ext)):
                 if idx.file_size!=0:
-                    namelist['ok'].append(idx.filename)
+                    namelist['ok'].append(rf"{idx.filename}")
                 else:
-                    namelist['ng'].append(idx.filename)
+                    namelist['ng'].append(rf"{idx.filename}")
         return filename,namelist
 
 def mkcsv(namestring:str,iterable,header='filename',mode='w')->None:
@@ -84,7 +84,7 @@ def mkmt(zipfile:str,ext:Iterable=('jpg','jpeg','png'))->None:
     return None
 
 def mkmtcnse(zipfile:str,ext:Iterable=('jpg','jpeg','png'),by:int=10)->list:
-    if isinstance(by,int)==False:
+    if not isinstance(by,int):
         raise TypeError(f"parameter 'by' should be an intp")
     filename,namelist=listing(zipfile,ext)
     namestring=filename.replace('.zip','_con.csv')
@@ -96,7 +96,7 @@ def mkmtcnse(zipfile:str,ext:Iterable=('jpg','jpeg','png'),by:int=10)->list:
         idxstring=name[:by]
         for name0 in namelist['ok']:
             if name0[:by]==idxstring:
-                idx0.append("\'"+name0+"\'")
+                idx0.append(rf"\\{name0}\\")
                 namelist['ok'].remove(name0.strip("\'"))
         idx.append(idx0)
         print(f"{idx=}")
