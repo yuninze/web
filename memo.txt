@@ -7,11 +7,36 @@ for names in features[1:]:
 def seed(q,rng):
 	rng=np.random.default_rng(100)
 
+###Basic visualizing
+#The innermost EDA for numeric,binned data
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+sns.pairplot(dataframe,x_vars=[],y_vars=target_vars,size=4,aspect=1,kind="scatter")
+plot.show()
+
+#check corr
+corr=df.corr()
+mask=np.triu(np.ones_like(corr,dtype=bool))
+f,ax=plt.subplots(figsize=(11,9))
+cmap=sns.diverging_palette(230,20,as_cmap=True)
+sns.heatmap(dataframe.corr(),cmap="",annot=True)
+sns.heatmap(corr,mask=mask,cmap=cmap,center=0,square=True,linewidths=.5)
+|||
+f,ax=plt.subplots(figsize=(9,6))
+sns.heatmap(df,annot=True,fmt="d",linewidths=.5,ax=ax)
+
+const+coef*x
+
+
+
+
+
+
 In: 59: pyspark.vectorAssembler
 ###Pipeline of transfomring final estimater
 ###from sklearn.pipeline import Pipeline
-Pipeline(steps=list of tuple(name,transform)
-	)
+Pipeline(steps=list of tuple(name,transform))
 Pipeline.named_steps: access the steps by name
 
 prerequisiting

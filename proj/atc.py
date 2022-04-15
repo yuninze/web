@@ -7,7 +7,7 @@ def sani(a):
 #atc0=atc[atc.productname.isin(atc.productname.value_counts().index[atc.productname.value_counts()>1])]
 #atc0=atc0[atc0.paytime.isin(atc0.paytime.value_counts().index[atc0.paytime.value_counts()>1])]
 #atc0=atc0.drop_duplicates(subset="dataID").sort_values("paytime")
-#fuck=fuck[~fuck.paytime.isin(fuck.paytime.value_counts().index[fuck.paytime.value_counts()=
+#x=x[~x.paytime.isin(x.paytime.value_counts().index[x.paytime.value_counts()=
 
 def atcR(p):
     os.chdir(p)
