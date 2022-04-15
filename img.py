@@ -24,9 +24,9 @@ def img_from_df():
         if iu.status_code==200:
             print(f"ok: {iu.status_code}->{q}")
             with Image.open(BytesIO(iu.content)) as ib:
-                ifname=q.replace("/artwork/","")
+                ifname=q.replace(".png","jpg")
                 ib=ib.convert("RGB")
-                ib.save(f"{ifname}.jpg",
+                ib.save(f"{ifname}",
                     "JPEG",
                     quality=10,
                     progressive=True,

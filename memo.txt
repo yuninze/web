@@ -47,17 +47,16 @@ StandardScaler(
 
 num_feat=[numericDataColNames]
 num_tran=Pipeline(steps=[
-("imputer",SimpleImputer(strategy="median")),("scaler",StandScaler())
-])
+	("imputer",SimpleImputer(strategy="median")),("scaler",StandScaler())
+	])
 cat_feat=[colNames]
 cat_tran=OneHotEncoder(handle_unknown="ignore")
 
 2.append classifier for features
-lf=Pipeline(
-	steps=[
-		("preprocess",preprocessor),
-		("classify",LogisiticRegression())
-		])
+lf=Pipeline(steps=[
+	("preprocess",preprocessor),
+	("classify",LogisiticRegression())
+	])
 
 3.assert a train, test set
 sklearn.model_selection.train_test_split(
