@@ -5,7 +5,6 @@ from typing import (
 import pandas as pd
 from type import *
 
-
 def purify(frame:str,danga:int=10)->tuple:
     '''
     Sanitize BO-derived sheetfile.

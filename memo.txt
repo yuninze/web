@@ -4,34 +4,8 @@ def merging_dataframes(df0,df1,index:str):
     return df0.join(df1,on=[f"{index}"],how='left')
 for names in features[1:]:
     final_df = merging_dataframes(final_df, names)
-def seed(q,rng):
-	rng=np.random.default_rng(100)
-
-###Basic visualizing
-#The innermost EDA for numeric,binned data
-import matplotlib.pyplot as plt
-import seaborn as sns
-
-sns.pairplot(dataframe,x_vars=[],y_vars=target_vars,size=4,aspect=1,kind="scatter")
-plot.show()
-
-#check corr
-corr=df.corr()
-mask=np.triu(np.ones_like(corr,dtype=bool))
-f,ax=plt.subplots(figsize=(11,9))
-cmap=sns.diverging_palette(230,20,as_cmap=True)
-sns.heatmap(dataframe.corr(),cmap="",annot=True)
-sns.heatmap(corr,mask=mask,cmap=cmap,center=0,square=True,linewidths=.5)
-|||
-f,ax=plt.subplots(figsize=(9,6))
-sns.heatmap(df,annot=True,fmt="d",linewidths=.5,ax=ax)
 
 const+coef*x
-
-
-
-
-
 
 In: 59: pyspark.vectorAssembler
 ###Pipeline of transfomring final estimater
@@ -39,13 +13,13 @@ In: 59: pyspark.vectorAssembler
 Pipeline(steps=list of tuple(name,transform))
 Pipeline.named_steps: access the steps by name
 
-prerequisiting
+0.prerequisiting
 ###load q as target
 q=df.frame[targetColLabel]
 ###load w as variable
 w=df.frame.drop(f"{targetColLabel",axis=1)
 
-0.preprocessing, classifying features
+00.preprocessing, classifying features
 ###by using select_dtypes like sklearn.compose.make_column_selector
 ###preprocessing would be better than using make_column_selector
 ###as make_column_selector requires category requisite for tabulars
@@ -111,13 +85,7 @@ q=[q for q in enumerate(tgt.split())]
 (DID, Fixed Effect, RDD 등)
 EDA, 퍼널 분석, 코호트 분석, 클러스터링: 유저군집화
 
-df.groupby('qtr').agg({"realgdp": ["mean",  "std"], "unemp": "mean"})
-fig, ax = plt.subplots(figsize=(5, 8))
-sns.boxplot(data=life_time_df, x='user_churn', y='max(life_time)')
-plt.xlabel('User Churn')
-plt.ylabel('Time Since Registration')
-plt.title('Time since registration and churn')
-ax.set(xticklabels=['Not Churned', 'Churned'])
+
 
 {"key_"+a+b:"val_"+a+b for a,b in {a+b:a+b for a in "abcd" for b in "0123" if "a"!="b"}}
 ({"color":gdstrb(),"tag":q,"size":w*mtl} for q,w in n_nouns.most_common(n_noun))
