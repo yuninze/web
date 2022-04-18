@@ -3,14 +3,14 @@ import pandas as pd
 encoding="utf-8-sig"
 
 def lighting_text(
-        srcData:str="patentpia.xlsx",
+        src:str="patentpia.xlsx",
         colBasis:tuple=('no.'
             'KW_EN',
             'KW_KO',
             'SENTENCE_EN',
             'SENTENCE_KO'))->pd.DataFrame:
     '''patentPia'''
-    pp=pd.read_excel(srcData)
+    pp=pd.read_excel(src)
     #check as patentpia
     if tuple(pp.columns)==colBasis:
         incIdxLen=pp.index.nunique()

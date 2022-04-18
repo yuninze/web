@@ -1,3 +1,4 @@
+from typing import Iterable
 import numpy.random as nprnd
 import numpy as np
 import pandas as pd
@@ -42,18 +43,17 @@ def get_txt(txtfile=None)->str:
 def l2_scaler(i,l):
     i=np.array(i,dtype=np.float64)
     base=i.prod()**(1/l)
-    dist=np.sqrt((i-base)**2)
-    return dist
+    return np.sqrt((i-base)**2)
 
 def chk_map_dict_mean(map:dict):
     return sum([q for q in map.values()])/len(map)
 
-def stdev():
-    obs="Iterable"
-    mean="mean"
-    #eachIterable-mean ** 2 sum divided by len(iterable)
-    np.sqrt(sum([(q-mean)**2 for q in iterableObs])/len(iterableObs))
-    return 0
+def stdev(ob:Iterable):
+    if isinstance(ob,Iterable):
+        mean="mean"
+        #foreach (observation - mean ** 2) sum divided by len(iterable)
+        return np.sqrt(sum([(q-mean)**2 for q in ob])/len(ob))
+    raise TypeError(f"{type(ob)}")
 
 def noun_freq(text,
     l_noun=2,
@@ -88,14 +88,6 @@ def quick_visual(occur_data):
     plot.get_legend().remove()
     print(f"quick_visual: elapsed in {t()-t0:.4f}s")
     plt.show()
-
-def quick_visual_bp(data,x,y):
-    fig,ax=plt.subplots(figsize=(5,8))
-    sns.boxplot(data=data,x="col0",y="col1")
-    plt.xlabel(f"{col0.name}")
-    plt.ylabel(f"{col1.name}")
-    plt.title(f"{p}")
-    ax.set(xticklabels=["col0Explanation","col1Explanation"])
 
 def make_wcld(f_noun,
     wc_font=font,
