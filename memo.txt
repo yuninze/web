@@ -495,3 +495,5 @@ donefilenameblock=dict()
 for x in range(blockSize)
     [blockindex:blockcontent for blockindex,blockcontent in range(blockcount),
     [donefilenamelist for x in range(blockSize 
+
+https://towardsdatascience.com/11-simple-code-blocks-for-complete-exploratory-data-analysis-eda-67c2817f56cd
