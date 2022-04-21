@@ -1,4 +1,6 @@
-append pd.DataFrame classes for preprocessed features, concatenate feature dataframes
+append pd.DataFrame classes for 
+preprocessed features, 
+concatenate feature dataframes
 
 def merging_dataframes(df0,df1,index:str):
     return df0.join(df1,on=[f"{index}"],how='left')
@@ -6,83 +8,56 @@ for names in features[1:]:
     final_df = merging_dataframes(final_df, names)
 
 const+coef*x
-
 In: 59: pyspark.vectorAssembler
-###Pipeline of transfomring final estimater
-###from sklearn.pipeline import Pipeline
-Pipeline(steps=list of tuple(name,transform))
-Pipeline.named_steps: access the steps by name
 
-0.prerequisiting
-###load q as target
-q=df.frame[targetColLabel]
-###load w as variable
-w=df.frame.drop(f"{targetColLabel",axis=1)
-
-00.preprocessing, classifying features
-###by using select_dtypes like sklearn.compose.make_column_selector
-###preprocessing would be better than using make_column_selector
-###as make_column_selector requires category requisite for tabulars
-from sklearn.compose import ColumnTransformer
-numeric features: (from_numeric) (to_numeric)
-categorical features: sex, occupation, ordinal int (e.g. rank)
-
-1.coding
-###missing value interpolation
-###imputation techniques: mean substitution, NMF, regression
-from sklearn.impute import SimpleImputer
-SimpleImputer(missing_values=np.nan
-	strategy="mean","median","most_frequent","constant",
-	fill_value:if strategy="constant" -> str
-	verbose=0)
-
-###scaling, standardazation
-###standardize features by removing the mean and scailing to unit variance
-###the result of a sample x is calculated as:
-from sklearn.preprocessing import StandardScaler
-StandardScaler(
-	with_mean=True,
-	with_std=True)
-
-num_feat=[numericDataColNames]
-num_tran=Pipeline(steps=[
-	("imputer",SimpleImputer(strategy="median")),("scaler",StandScaler())
-	])
-cat_feat=[colNames]
-cat_tran=OneHotEncoder(handle_unknown="ignore")
-
-2.append classifier for features
-lf=Pipeline(steps=[
-	("preprocess",preprocessor),
-	("classify",LogisiticRegression())
-	])
-
-3.assert a train, test set
-sklearn.model_selection.train_test_split(
-	arrayAlike,
-	test_size=.1,
-	train_size=1.,
-	#Pass an int for reproducible output across multiple function calls.
-	random_state=None,shuffle=True,
-	stratify=None
-	)
-Xtrain,Xtest,Ytrain,Ytest=train_test_split()
-
-4.execution
-lf.fit(Xtrain,Ytrain)
-print(f"score {clf.score(Xtest,Ytest):.4f}")
-
-
-###
-
-tgt
 Return a list of the words in the string, using sep as the delimiter string. If maxsplit is given, at most maxsplit splits are done (thus, the list will have at most maxsplit+1 elements). If maxsplit is not specified or -1, then there is no limit on the number of splits (all possible splits are made).
 
 q=[q for q in enumerate(tgt.split())]
 
-(t-test)와 회귀분석
-(DID, Fixed Effect, RDD 등)
-EDA, 퍼널 분석, 코호트 분석, 클러스터링: 유저군집화
+(t-test)
+(DID, Fixed Effect)
+퍼널 분석, 코호트 분석, 클러스터링: 유저군집화
+
+# 00.prerequisiting
+# load q as target
+# q=df.frame[targetColLabel]
+# load w as variable
+# w=df.frame.drop(f"{targetColLabel",axis=1)
+# 0.preprocessing, classifying features
+# by using select_dtypes like sklearn.compose.make_column_selector
+# preprocessing would be better than using make_column_selector
+# as make_column_selector requires category requisite for tabulars
+# from sklearn.compose import ColumnTransformer
+# numeric features: (from_numeric) (to_numeric)
+# categorical features: sex, occupation, ordinal int (e.g. rank)
+
+
+
+
+
+
+
+
+
+df = pd.read_csv("Fatalities.csv")
+
+# cdr, per-population
+df["fatal_rate"] = df["fatal"] /df["pop"] * 10000
+df_demean = df.copy()
+
+# per-state beer tax, meaning as per groupby results
+df_demean['Mean_beerTax_byState'] = df_demean.groupby('state').beertax.transform(np.mean)
+
+# per-state cdr per state
+df_demean['Mean_fatal_rate_byState'] = df_demean.groupby('state').fatal_rate.transform(np.mean)
+
+# subtract row by the mean (shape[0] would be same as used transform)
+df_demean["fatal_rate"] = df_demean["fatal_rate"] - df_demean['Mean_fatal_rate_byState']
+df_demean["beertax"] = df_demean["beertax"] - df_demean['Mean_beerTax_byState']
+
+model = sm.OLS(df_demean.fatal_rate, df_demean.beertax)
+results2 = model.fit()
+print(results2.summary())
 
 
 
@@ -96,23 +71,10 @@ os.environ->dict:environValues
 
 Attention Mechanism, Word Embedding
 
-shape=(1000,1000)
-shape_base=sum(shape)//len(shape)
-array=np.ogrid[:shape[0],:shape[1]]
-
-(x for x in array[x],y for y in array[y]) norm for False (0)
-(shape_base*0.85)**2 norm for True (255)
-
-mask = (x - 150) ** 2 + (y - 150) ** 2 > 130 ** 2
-get norm of (x,y) in array
-
-(shape_base*.85)**2
-
-
 
 피처 스케일링
-
-모델이 smooth function이라서 입출력 스케일이 영향됨 -> k-means, nn, rbf, euclidian distance
+모델이 smooth function이라서 입출력 스케일이 영향 -> 
+k-means, nn, rbf, euclidian distance
 
 logical function (step function)은 리절트가 binary
 decision tree model -> sequential step function
@@ -130,26 +92,14 @@ power transform, logarithm
 binning
 np.random.randint(start stop count)->array:sample
 np.floor_divide(sample,10)->10 bins
-
-np.random.randint(start stop count)->array
 np.floor(np.log10(array)) 지수 폭 비닝
 작은 수 확장, 큰 수 축소
-
 quantiling
 
-예측값이 연속형 수이면 단순성형회귀모델 사용
+예측값이 연속형 수 단순성형회귀
 R sqrt로 평가, 높을 수록 좋음, =<1
-###
-linear_model.LinearRegression()
-cross_val_score(a,tokenData,targetData,cv=?) cross validation?
-R sqrt 구하는 메소드를 -> print
-###
-binning하고 대상 variable에 대해 scatter로. 
-ax2.scatter(binnedData,targetVar)
-ax2.tick_params(labelsize=14)
-ax2.set_xlabel(binnedDataLabel,fontsize:int)
-ax2.set_ylabel(targetVar,fontsize:int)
-linearly dependant?
+
+
 
 ###
 mean 과 std의 동일화. 푸아송 분포.
