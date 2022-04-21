@@ -56,3 +56,10 @@ s=(20*np.random.rand(x.shape[0]))**2
 c=(np.random.rand(x.shape[0]))
 ax,fig=plt.subplots(figsize=(10,7))
 plt.scatter(x.a,x.b,s=s,c=c,alpha=0.5)
+
+#binning하고 대상 variable에 대해 scatter로. 
+ax.scatter(binnedData,targetVar)
+ax.tick_params(labelsize=14)
+ax.set_xlabel(binnedDataLabel,fontsize:int)
+ax.set_ylabel(targetVar,fontsize:int)
+linearly dependant?
