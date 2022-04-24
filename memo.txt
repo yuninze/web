@@ -10,12 +10,15 @@ for names in features[1:]:
 const+coef*x
 In: 59: pyspark.vectorAssembler
 
-Return a list of the words in the string, using sep as the delimiter string. If maxsplit is given, at most maxsplit splits are done (thus, the list will have at most maxsplit+1 elements). If maxsplit is not specified or -1, then there is no limit on the number of splits (all possible splits are made).
+Return a list of the words in the string, using sep as the delimiter string.
+If maxsplit is given, at most maxsplit splits are done 
+(thus, the list will have at most maxsplit+1 elements). 
+If maxsplit is not specified or -1, 
+then there is no limit on the number of splits (all possible splits are made).
 
 q=[q for q in enumerate(tgt.split())]
 
-(t-test)
-(DID, Fixed Effect)
+(t-test)(DID, Fixed Effect)
 퍼널 분석, 코호트 분석, 클러스터링: 유저군집화
 
 # 00.prerequisiting
@@ -34,7 +37,7 @@ q=[q for q in enumerate(tgt.split())]
 
 
 
-
+df.groupby('qtr').agg({"realgdp": ["mean",  "std"], "unemp": "mean"})
 
 
 
@@ -236,6 +239,7 @@ r"\((\d+.\d+).\)"
 ^\S+@\S+$
 
 ["rangeLabelGen {0}-{1}".format(q,q+10) for q in range(0,10000,10)]
+
 ijk
 start stop step
 [i:j:k]
