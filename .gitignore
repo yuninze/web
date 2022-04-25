@@ -1,6 +1,7 @@
 .vscode
 .vscode/settings.json
 .__pycache__
+.DS_Store
 *.png
 ko.txt
 GBR.ttf
