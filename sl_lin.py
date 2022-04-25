@@ -47,18 +47,15 @@ def clarify(q,cat=False,w=None,m=None,rg=None):
     r=chi2_contingency(q)
     if isinstance(q,pd.Series):
         name=q.name
-        return {"chi2":f"{r[0]:.10f}",
-            "p":f"{r[1]:.10f}",
-            "dof":f"{r[2]:.10f}",
-            "exp":pd.Series(r[3],
-            index=q.index.values,name=name)}
+        klas=pd.Series
     else:
         name=q.columns.values
-        return {"chi2":f"{r[0]:.10f}",
-            "p":f"{r[1]:.10f}",
-            "dof":f"{r[2]:.10f}",
-            "exp":pd.DataFrame(r[3],
-            index=q.index.values,columns=name)}
+        klas=pd.DataFrame
+    return {"chi2":f"{r[0]:.10f}",
+        "p":f"{r[1]:.10f}",
+        "dof":f"{r[2]:.10f}",
+        "exp":klas(r[3],
+        index=q.index.values,columns=name)}
 
 def sel_feature(q,w,m=chi2,f_num=1):
     #chi2 for categorical features
