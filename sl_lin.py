@@ -6,7 +6,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler,OneHotEncoder
 from sklearn.compose import ColumnTransformer
-from sklearn.feature_selection import SelectKBest,chi2,f_regression
+from sklearn.feature_selection import SelectKBest,chi2
 from sklearn.linear_model import LinearRegression,LogisticRegression
 from sklearn.model_selection import train_test_split
 
@@ -118,10 +118,9 @@ def regress(data,y,ccols=None,type="ren"):
     #fitting
     lr.fit(x0,y0)
     print(f"fitted. elasped {t()-t0:.5f}s")
-
     #get R**2
     if len(x1)==len(y1):
         print(f"R2: {lr.score(x1,y1):.5f}")
     
     return lr
-    #cross_val_score(a,tokenData,targetData,cv=?)
+#cross_val_score(a,tokenData,targetData,cv=?)

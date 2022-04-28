@@ -1,9 +1,23 @@
+from re import X
 from time import time as t
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
 rg=np.random.default_rng(9405)
+class uni:class bi:
+
+def hb(q,w):
+    q.w[:50].plot.barh()
+    plt.show(block=0)
+
+def pc(q,w):
+    if not q.w.dtype==float:
+        q.w.value_counts(normalize=True).plot.pie()
+        plt.show(block=0)
+        return None
+    raise TypeError(f"{q.w.dtype}")
 
 def bp(q,w,e,title="title"):
     t0=t()

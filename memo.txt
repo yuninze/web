@@ -36,9 +36,7 @@ q=[q for q in enumerate(tgt.split())]
 
 
 
-
 df.groupby('qtr').agg({"realgdp": ["mean",  "std"], "unemp": "mean"})
-
 
 
 
