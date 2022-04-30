@@ -59,7 +59,7 @@ def clarify(q,cat=False,w=None,m=None,rg=None):
 
 def sel_feature(q,w,m=chi2,f_num=1):
     #chi2 for categorical features
-    #f_regression for continous features
+    #f_regression for continuous features
     if not q and w is None:
         sk_cur=SelectKBest(score_func=m,k=f_num)
         sk_cur.fit_transform(X=q,y=w)
@@ -73,14 +73,14 @@ def regress(data,y,ccols=None,type="ren"):
         return f"y is not existing in the data"
     #customization
     x=list(set(data.columns)-{y})
+
     #Interpolation, imputation, scaling
     ###imputation techniques: mean substitution, NMF, regression
     #SimpleImputer(missing_values=np.nan|target value
     #    strategy="mean","median","most_frequent","constant",
     #    fill_value:if strategy "constant" -> str
     #   verbose=0)
-    ###Pipeline(steps=list of tuple(name,transform))
-    ###Pipeline.named_steps: access the steps by name
+
     #numeric data pipeline
     ###scaling, standardazation
     ###standardize features by removing
