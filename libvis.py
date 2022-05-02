@@ -5,7 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-rg=np.random.default_rng(94056485)
+rg=np.random.default_rng(9405)
 
 def hb(q:pd.DataFrame,w):
     t0=t()
@@ -26,7 +26,6 @@ def hb(q:pd.DataFrame,w):
 def pc(q:pd.DataFrame,w):
     t0=t()
     #a tuple is directly passed to indexer
-    w=[q for q in w]
     if not q[w].dtype==float:
         (q[w]
         .value_counts(normalize=True)

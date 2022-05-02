@@ -135,3 +135,24 @@ def pmo(frames:Iterable,pii:str='c:/')->pd.DataFrame:
     except (FileNotFoundError,OSError) as e:
         print(f"{e}")
         return frame
+
+def pdnp_test(q,w,a=1):
+    assert q.ndim!=w.ndim
+
+    if a==0:
+        assert q.shape[1]!=w.shape[1],"unmetColNum"
+        try:r=q.vstack(w)
+        except:r=pd.concat((q,w),axis=0)
+
+    elif a==1:
+        assert q.shape[0]!=w.shape[0],"unmetRowNum"
+        try:r=q.hstack(w)
+        except:r=pd.concat((q,w),axis=1)
+
+    else:
+        raise Exception("badMath")
+
+    assert r.ndim==q.ndim,"unmetNdim"
+    assert r.shape==q.shape,"unmetArrShape"
+
+    return r

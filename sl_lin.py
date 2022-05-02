@@ -10,27 +10,29 @@ from sklearn.feature_selection import SelectKBest,chi2
 from sklearn.linear_model import LinearRegression,LogisticRegression
 from sklearn.model_selection import train_test_split
 
-def captivate(seed=9405,type="gamma",size=1000):
+def captivate(seed=9405,type="r",size=1000):
     seed=np.random.default_rng(seed)
     if type=="gamma":
-        rg=seed.gamma(100,size=(size,4))
+        rg=seed.gamma(1,size=(size,4))
     elif type=="int":
-        rg=seed.randint(100,size=(size,4))
-    else:
+        rg=seed.integers(100,size=(size,4))
+    elif type=="rand":
         rg=seed.random(size=(size,4))
+    else:
+        rg=seed.uniform(0,100,size=(size,4))
     return pd.DataFrame(rg,
         columns=list("abcd"))
 
 def have_rng(q,var_name,q_num=4):
     if isinstance(q,(pd.DataFrame,pd.Series)):
-        q[f"{var_name}+rng"]=pd.qcut(var_name,q=q_num,labels=None)
+        q[f"{var_name}_rng"]=pd.qcut(var_name,q=q_num,labels=None)
         return q
     raise TypeError(f"{type(q)}")
 
 def sel_cat(q,idx):
     return q.cat.categories[idx]
 
-def clarify(q,cat=False,w=None,m=None,rg=None):
+def clar(q,cat=False,w=None,m=None,rg=None):
     if not cat:
         if m:
             r=ttest_1samp(q,popmean=m)
@@ -58,14 +60,12 @@ def clarify(q,cat=False,w=None,m=None,rg=None):
         index=q.index.values,columns=name)}
 
 def sel_feature(q,w,m=chi2,f_num=1):
-    #chi2 for categorical features
-    #f_regression for continuous features
-    if not q and w is None:
-        sk_cur=SelectKBest(score_func=m,k=f_num)
-        sk_cur.fit_transform(X=q,y=w)
-    raise NameError(f"no variables specified")
+    #VarianceThreshold for numeric features
+    #f_regression,f_classif,chi2 for numeric,cat. features
+    return (SelectKBest(score_func=m,k=f_num)
+        .fit_transform(X=q,y=w))
 
-def regress(data,y,ccols=None,type="ren"):
+def regre(data,y,ccols=None,type="ren"):
     #removable block
     if not isinstance(data,pd.DataFrame):
         return f"aceepts pd.DataFrame"
@@ -73,20 +73,17 @@ def regress(data,y,ccols=None,type="ren"):
         return f"y is not existing in the data"
     #customization
     x=list(set(data.columns)-{y})
-
-    #Interpolation, imputation, scaling
-    ###imputation techniques: mean substitution, NMF, regression
-    #SimpleImputer(missing_values=np.nan|target value
-    #    strategy="mean","median","most_frequent","constant",
-    #    fill_value:if strategy "constant" -> str
-    #   verbose=0)
-
     #numeric data pipeline
-    ###scaling, standardazation
-    ###standardize features by removing
-    # the mean and scailing to unit variance
+    #scaling, standardazation
+    #standardize features by removing
+    #the mean and scailing to unit variance
     ncols=x
     nt_si_ss=Pipeline(steps=[
+        #Interpolation, imputation, scaling
+        #mean substitution, NMF, regression
+        #SimpleImputer(missing_values=np.nan|target value
+        #strategy="mean","median","most_frequent","constant",
+        #fill_value:if strategy "constant" -> str,verbose=0)
         ("imputer",SimpleImputer(strategy="median")),
         ("scaler",StandardScaler(with_mean=True))])
 
@@ -120,7 +117,7 @@ def regress(data,y,ccols=None,type="ren"):
     print(f"fitted. elasped {t()-t0:.5f}s")
     #get R**2
     if len(x1)==len(y1):
-        print(f"R2: {lr.score(x1,y1):.5f}")
+        print(f"R**2: {lr.score(x1,y1):.5f}")
     
     return lr
 #cross_val_score(a,tokenData,targetData,cv=?)
