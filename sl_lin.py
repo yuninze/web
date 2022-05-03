@@ -61,11 +61,14 @@ def clar(q,cat=False,w=None,m=None,rg=None):
 
 def sel_feature(q,w,m=chi2,f_num=1):
     #VarianceThreshold for numeric features
-    #f_regression,f_classif,chi2 for numeric,cat. features
+    #   lower variance, lower k-score
+    #f_regerssion for numeric features
+    #f_classif,chi2 for cat. features
+    #   lower pvalues would get higher k-score
     return (SelectKBest(score_func=m,k=f_num)
         .fit_transform(X=q,y=w))
 
-def regre(data,y,ccols=None,type="ren"):
+def regre(data,y,ccols=None,type="con"):
     #removable block
     if not isinstance(data,pd.DataFrame):
         return f"aceepts pd.DataFrame"
@@ -73,10 +76,12 @@ def regre(data,y,ccols=None,type="ren"):
         return f"y is not existing in the data"
     #customization
     x=list(set(data.columns)-{y})
+
     #numeric data pipeline
     #scaling, standardazation
     #standardize features by removing
     #the mean and scailing to unit variance
+    #make_pipeline
     ncols=x
     nt_si_ss=Pipeline(steps=[
         #Interpolation, imputation, scaling
@@ -102,10 +107,12 @@ def regre(data,y,ccols=None,type="ren"):
         lr=Pipeline(steps=[
             ("pp",pp),
             ("logr",LogisticRegression(n_jobs=-1))])
-    else:
+    elif type=="con":
         lr=Pipeline(steps=[
             ("pp",pp),
             ("linr",LinearRegression(n_jobs=-1))])
+    else:
+        return None
 
     #split
     x0,x1,y0,y1=train_test_split(data[x],data[y],
