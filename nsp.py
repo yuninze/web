@@ -1,14 +1,12 @@
 from typing import Iterable
-import numpy.random as nprnd
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 from time import time as t
 from collections import Counter
 from seaborn import diverging_palette
 from wordcloud import WordCloud
 from konlpy.tag import Okt
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
 
 jvm="C:/Program Files/Java/jdk-18/bin/server/jvm.dll"
 font="C:/code/base/GBR.ttf"
@@ -30,7 +28,7 @@ def prac():
     cursor.vocabulary_.get("정신")
 
 def gdstrb()->tuple:
-    return tuple(nprnd.default_rng().integers(0,255,size=3))
+    return tuple(np.random.default_rng().integers(0,255,size=3))
 
 def get_txt(txtfile=None)->str:
     if not txtfile:

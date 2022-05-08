@@ -3,9 +3,8 @@ import csv
 import json
 import glob
 import shutil
-from typing import (
-    Iterable
-)
+from time import time as t
+from typing import Iterable
 from zipfile import ZipFile
 import datetime as dt
 import pandas as pd
@@ -24,7 +23,9 @@ def EndSwitch(switch):
     while switch:
         for x in ["--","//","\\\\"]:
             print("\b\b"+x,end="")
-    return None
+
+def print_elapsed_time(startup_time):
+    print(f"elapsed: {t()-startup_time:.5}s")
 
 def pathStrip(s):
     return str(s).upper().replace("D:\\82\\","")
@@ -33,9 +34,7 @@ def ima()->str:
     return dt.datetime.now().strftime("%y%m%d")
 
 def otherwise():
-    if __self__==False:
-        raise not Exception()
-    pass
+    raise not Exception()
 
 def magnolia():
     pass
@@ -206,8 +205,8 @@ def objT(prop):
         obj=j["result"][z][prop]["cat"]
         str(j["result"][z][prop]["data"][0]["value"]["coords"]["tl"])
         with open(str(fileNam),"w") as file:
-            file.write(str(objCat)+str(coord).replace("","",1))
-        print(str(fileNam)+": "+str(len(objCat)))
+            file.write(str("objCat")+str("coord").replace("","",1))
+        print(str(fileNam)+": "+str(len("objCat")))
         pass
     return None
 

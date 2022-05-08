@@ -1,3 +1,6 @@
+모두 컬럼 기준이다. 모두 컬럼 시작한다.
+컬럼은 intp가 아닌 label로 다룬다.
+
 append pd.DataFrame classes for 
 preprocessed features, 
 concatenate feature dataframes

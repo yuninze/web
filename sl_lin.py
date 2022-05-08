@@ -1,16 +1,21 @@
 import numpy as np
 import pandas as pd
 from time import time as t
-from scipy.stats import ttest_1samp,ttest_ind,chi2_contingency
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import StandardScaler,OneHotEncoder
-from sklearn.compose import ColumnTransformer
-from sklearn.feature_selection import SelectKBest,chi2
-from sklearn.linear_model import LinearRegression,LogisticRegression
 from sklearn.model_selection import train_test_split
+from scipy.stats import (
+    ttest_1samp,ttest_ind,chi2_contingency)
+from sklearn.preprocessing import (
+    StandardScaler,OneHotEncoder)
+from sklearn.compose import ColumnTransformer
+from sklearn.feature_selection import (
+    SelectKBest,chi2,VarianceThreshold)
+from sklearn.linear_model import (
+    LinearRegression,LogisticRegression)
 
-def captivate(seed=9405,type="r",size=1000):
+#removable blocks
+def captivate(seed=94056485,type="r",size=1000):
     seed=np.random.default_rng(seed)
     if type=="gamma":
         rg=seed.gamma(1,size=(size,4))
@@ -23,20 +28,32 @@ def captivate(seed=9405,type="r",size=1000):
     return pd.DataFrame(rg,
         columns=list("abcd"))
 
+def prep(q):
+    q=q.copy()
+    q["prep0"]=(q.select_dtypes(include="number")
+        .sum(axis=1))
+    #directly get np.array
+    q["prep1"]=q["prep0"]>np.mean(q["prep0"])
+    #get bin mapper
+    q["prep1"]=(q["prep1"]
+        .replace({True:"large",False:"small"}))
+    return q
+
+def sel_cat(q):
+        return q.cat.categories
+
 def have_rng(q,var_name,q_num=4):
     if isinstance(q,(pd.DataFrame,pd.Series)):
         q[f"{var_name}_rng"]=pd.qcut(var_name,q=q_num,labels=None)
         return q
     raise TypeError(f"{type(q)}")
 
-def sel_cat(q,idx):
-    return q.cat.categories[idx]
-
+#very high level interfaces
 def clar(q,cat=False,w=None,m=None,rg=None):
     if not cat:
         if m:
             r=ttest_1samp(q,popmean=m)
-            print(f"{r.pvalues:.10f}")
+            print(f"{r.pvalues:.5f}")
             return r
         else:
             if not q.shape[0]==w.shape[0]:
@@ -44,7 +61,7 @@ def clar(q,cat=False,w=None,m=None,rg=None):
                 print(f"resampled: {row_cnt}")
                 q,w=[e.sample(n=row_cnt,random_state=rg) for e in (q,w)]
                 r=ttest_ind(q,w)
-            print(f"{r.pvalues:.20f}")
+            print(f"{r.pvalues:.5f}")
             return r
     r=chi2_contingency(q)
     if isinstance(q,pd.Series):
@@ -53,22 +70,30 @@ def clar(q,cat=False,w=None,m=None,rg=None):
     else:
         name=q.columns.values
         klas=pd.DataFrame
-    return {"chi2":f"{r[0]:.10f}",
-        "p":f"{r[1]:.10f}",
-        "dof":f"{r[2]:.10f}",
+    return {"chi2":f"{r[0]:.5f}",
+        "p":f"{r[1]:.5f}",
+        "dof":f"{r[2]:.5f}",
         "exp":klas(r[3],
         index=q.index.values,columns=name)}
 
-def sel_feature(q,w,m=chi2,f_num=1):
-    #VarianceThreshold for numeric features
-    #   lower variance, lower k-score
-    #f_regerssion for numeric features
-    #f_classif,chi2 for cat. features
-    #   lower pvalues would get higher k-score
-    return (SelectKBest(score_func=m,k=f_num)
-        .fit_transform(X=q,y=w))
+def selfea(q,w=None,m=chi2,f_num=1,p=.9):
+    '''q:data,w:target_var'''
+    #VarianceThreshold for numerics
+    #larger variance, higher k-score
+    if m==VarianceThreshold:
+        var=p*(1-p)
+        #as fit results disregards w:y
+        #this returns VT cursor directly
+        return (m(threshold=var)
+            .fit(q))
+    else:
+        if not w is None:
+    #lower pvalues would get higher k-score
+            return (SelectKBest(score_func=m,k=f_num)
+                .fit(X=q,y=w))
+    raise TypeError(f"performing SelKBest but y:{w=}")
 
-def regre(data,y,ccols=None,type="con"):
+def regres(data,y,ccols=None,type="con"):
     #removable block
     if not isinstance(data,pd.DataFrame):
         return f"aceepts pd.DataFrame"
@@ -125,6 +150,5 @@ def regre(data,y,ccols=None,type="con"):
     #get R**2
     if len(x1)==len(y1):
         print(f"R**2: {lr.score(x1,y1):.5f}")
-    
     return lr
 #cross_val_score(a,tokenData,targetData,cv=?)
