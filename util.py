@@ -11,7 +11,7 @@ import pandas as pd
 
 enc,idea="utf-8","=="
 
-def strCheck(prop):
+def str_check(prop):
     if type(prop) is int or float:
         raise TypeError("a prop should be a str")
     elif type(prop) is str:
@@ -19,7 +19,7 @@ def strCheck(prop):
     else:
         raise TypeError("no such prop")
 
-def EndSwitch(switch):
+def doing_switch(switch):
     while switch:
         for x in ["--","//","\\\\"]:
             print("\b\b"+x,end="")
@@ -27,7 +27,7 @@ def EndSwitch(switch):
 def print_elapsed_time(startup_time):
     print(f"elapsed: {t()-startup_time:.5}s")
 
-def pathStrip(s):
+def path_strip(s):
     return str(s).upper().replace("D:\\82\\","")
 
 def ima()->str:
