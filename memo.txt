@@ -1,5 +1,21 @@
 모두 컬럼 기준이다. 모두 컬럼 시작한다.
 컬럼은 intp가 아닌 label로 다룬다.
+iloc
+loc
+iat
+at
+df.index[intp],label
+using callable to the select classes
+map, lambda chaining
+
+get_indexer
+get_loc
+
+for df-dicts...
+list(dict)
+list_indexer=row
+list[list_indexer].keys()=columns
+list[list_indexer].keys(columns)=df.at
 
 append pd.DataFrame classes for 
 preprocessed features, 
@@ -173,13 +189,19 @@ df.replace("nan",np.nan)
 *(df.loc[q,w] for q in df.index for w in df.columns),
 
 conditional listdir보다 scandir이 3배 빠름
-scandir->os.DirEntry
+os.scandir(path) returns iterator
+
+de=list(os.scandir([])) #os.DirEntry objects
 os.scandir.close()
 os.DirEntry.name
 os.DirEntry.path
 os.DirEntry.is_dir()
 os.DirEntry.is_file()
-os.DirEntry.stat().st_size
+
+os.DirEntry.stat() #contains os.stat_result attributes
+st_size
+#https://docs.python.org/3/library/os.html#os.stat_result
+
 
 A=12345
 if A>=500:

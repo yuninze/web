@@ -29,9 +29,9 @@ def captivate(seed=94056485,type="r",size=1000):
         columns=list("abcd"))
 
 def prep(q):
-    q=q.copy()
     q["prep0"]=(q.select_dtypes(include="number")
-        .sum(axis=1))
+        .sum(axis=1)
+        .copy())
     #directly get np.array
     q["prep1"]=q["prep0"]>np.mean(q["prep0"])
     #get bin mapper
@@ -46,7 +46,7 @@ def have_rng(q,var_name,q_num=4):
     if isinstance(q,(pd.DataFrame,pd.Series)):
         q[f"{var_name}_rng"]=pd.qcut(var_name,q=q_num,labels=None)
         return q
-    raise TypeError(f"{type(q)}")
+    raise TypeError(f"{type(q)=}")
 
 #very high level interfaces
 def clar(q,cat=False,w=None,m=None,rg=None):

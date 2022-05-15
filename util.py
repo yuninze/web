@@ -25,7 +25,7 @@ def doing_switch(switch):
             print("\b\b"+x,end="")
 
 def print_elapsed_time(startup_time):
-    print(f"elapsed: {t()-startup_time:.5}s")
+    print(f"elapsed: {t()-startup_time:f.5}s")
 
 def path_strip(s):
     return str(s).upper().replace("D:\\82\\","")
