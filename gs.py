@@ -28,7 +28,6 @@ if len(test)>1:
     if not docid is None:
         #get test gs object
         gapi_gs_sheet=gapi_gs.open_by_key(docid)
-
     else:
         #create test gs object
         gapi_gs_sheet=gapi_gs.create("ext_gspread")
@@ -40,7 +39,6 @@ if len(test)>1:
         with open(f"{pat}/docid.txt","w",encoding="utf-8") as idfile:
             idfile.writelines([docid])
         print(f"docid file has been written")
-
     try:
         gapi_gs_sheet_worksheet=(
             gapi_gs_sheet.add_worksheet(
