@@ -1,11 +1,14 @@
+from cgitb import small
 from time import time as t
 from typing import Iterable
+from sklearn.preprocessing import normalize,MinMaxScaler
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-rg=np.random.default_rng(9405)
+plt.rcParams["font.family"]="monospace"
+rg=np.random.default_rng(94056485)
 
 def hb(q:pd.DataFrame,w):
     t0=t()
@@ -19,42 +22,56 @@ def hb(q:pd.DataFrame,w):
     else:
         idxer=w
     (q.iloc[:50,idxer]
-    .plot.barh(figsize=(9,13),title=""))
+    .plot.barh(title=""))
     plt.show(block=0)
     return f"hb: shown in {t()-t0:.3f}s"
 
-def pc(q:pd.DataFrame,w):
+def pc(q:pd.DataFrame,w:str):
     t0=t()
     #a tuple is directly passed to indexer
     if not q[w].dtype==float:
         (q[w]
         .value_counts(normalize=True)
-        .plot.pie(figsize=(9,9),title=""))
+        .plot.pie(title=""))
         plt.show(block=0)
         return f"pc: shown in {t()-t0:.3f}s"
     #a pie chart is useless for type:
     raise TypeError(f"{q[w].dtype}")
 
-def sp(w,e,title="title",
-    a=10,figsize=(12,10)):
+def sp(w,e,
+    a=10,figsize=(12,10),c=None):
     t0=t()
     '''Indicates the innermost relevance'''
     #startup setting
     fg,ax=plt.subplots(figsize=figsize)
+
     #have area factor by target variable data
-    target_var_area=e*a
-    while target_var_area.mean()<np.prod(figsize)*.1:
-        target_var_area*=.03
-    c=rg.random(e.shape[0])
+    if e.mean()<1:
+        a*=10
+        small=False
+    if e.mean()>100:
+        r=normalize(np.vstack((w.to_numpy(),e.to_numpy())))
+        w=pd.Series(r[0],name=w.name)
+        e=pd.Series(r[1],name=e.name)
+        small=True
+    if small:
+        target_var_area=(e+10)*a
+    else:
+        target_var_area=e*a
+    while target_var_area.mean()<np.prod(figsize)*.5:
+        target_var_area*=.05
+    if c is None:
+        c=rg.random(e.shape[0])
+
     #plt object
     plt.scatter(x=w,
         y=e,
         s=target_var_area,
         c=c,
-        alpha=0.5)
+        alpha=0.7)
     plt.xlabel(w.name)
     plt.ylabel(e.name)
-    plt.title(title)
+    plt.title(f"{w.name} versus {e.name}")
     plt.show(block=False)
     return f"sp: shown in {t()-t0:.3f}s"
 
