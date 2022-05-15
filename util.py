@@ -27,9 +27,6 @@ def doing_switch(switch):
 def print_elapsed_time(startup_time):
     print(f"elapsed: {t()-startup_time:.5f}s")
 
-def path_strip(s):
-    return str(s).upper().replace("D:\\82\\","")
-
 def ima()->str:
     return dt.datetime.now().strftime("%y%m%d")
 

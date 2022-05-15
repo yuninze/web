@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 from time import time as t
+from sklearn.datasets import make_blobs
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.model_selection import train_test_split
@@ -15,18 +16,22 @@ from sklearn.linear_model import (
     LinearRegression,LogisticRegression)
 
 #removable blocks
-def captivate(seed=94056485,type="r",size=1000):
-    seed=np.random.default_rng(seed)
-    if type=="gamma":
-        rg=seed.gamma(1,size=(size,4))
-    elif type=="int":
-        rg=seed.integers(100,size=(size,4))
-    elif type=="rand":
-        rg=seed.random(size=(size,4))
+def captivate(type="r",size=1000,seed=94056485):
+    if type=="blob":
+        return make_blobs(n_samples=size,
+        n_features=4,random_state=seed)
     else:
-        rg=seed.uniform(0,100,size=(size,4))
-    return pd.DataFrame(rg,
-        columns=list("abcd"))
+        seed=np.random.default_rng(seed)
+        if type=="gamma":
+            rg=seed.gamma(1,size=(size,4))
+        elif type=="int":
+            rg=seed.integers(100,size=(size,4))
+        elif type=="rand":
+            rg=seed.random(size=(size,4))
+        else:
+            rg=seed.uniform(0,100,size=(size,4))
+        return pd.DataFrame(rg,
+            columns=list("abcd"))
 
 def prep(q):
     q["prep0"]=(q.select_dtypes(include="number")

@@ -1,11 +1,12 @@
-from cgitb import small
 from time import time as t
 from typing import Iterable
-from sklearn.preprocessing import normalize,MinMaxScaler
+from sklearn.preprocessing import normalize
+from sklearn.cluster import KMeans,AgglomerativeClustering
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import seaborn as sns
+import matplotlib.pyplot as plt
+import scipy.cluster.hierarchy as sch
 
 plt.rcParams["font.family"]="monospace"
 rg=np.random.default_rng(94056485)
@@ -50,7 +51,9 @@ def sp(w,e,
         a*=10
         small=False
     if e.mean()>100:
-        r=normalize(np.vstack((w.to_numpy(),e.to_numpy())))
+        r=normalize(
+            np.vstack(
+                (w.to_numpy(),e.to_numpy())))
         w=pd.Series(r[0],name=w.name)
         e=pd.Series(r[1],name=e.name)
         small=True
@@ -60,6 +63,8 @@ def sp(w,e,
         target_var_area=e*a
     while target_var_area.mean()<np.prod(figsize)*.5:
         target_var_area*=.05
+    
+    #colormap
     if c is None:
         c=rg.random(e.shape[0])
 
@@ -133,3 +138,31 @@ def bp(q,w,e,title="title"):
     plt.title(f"{title}")
     plt.show(block=False)
     return f"bp: shown in {t()-t0:.3f}s"
+
+def dngram(q):
+    return sch.dendrogram(sch.linkage(q,method="ward"))
+
+costco0=pd.read_csv("c:/code/costco.csv").iloc[:,2:]
+costco0.index.name="clientidx"
+costco1=pd.DataFrame(
+    normalize(costco0),columns=costco0.columns)
+
+plt.figure(figsize=(13,13))
+
+plt.subplot(311)
+gram=dngram(costco1)
+plt.title("dendrogram")
+
+blok0=AgglomerativeClustering(
+    n_clusters=2,affinity="euclidean",linkage="ward"
+    ).fit_predict(costco1)
+plt.subplot(312)
+plt.scatter(costco1.Milk,costco1.Fresh,c=blok0)
+plt.title("AC Milk:Fresh")
+
+blok1=KMeans(
+    n_clusters=2,random_state=94056485
+    ).fit_predict(costco1)
+plt.subplot(313)
+plt.scatter(costco1.Milk,costco1.Fresh,c=blok1)
+plt.title("KMeans Milk:Fresh")
