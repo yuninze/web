@@ -12,7 +12,6 @@ if exists(f"{pat}/docid.txt"):
         docid=idfile.readline()
 else:
     docid=None
-
 if len(test)>1:
     #get test api auth
     t0=t()
@@ -22,7 +21,6 @@ if len(test)>1:
         authorized_user_filename=f"{pat}/gapi_ouath_cert_user.json")
     print(f"got ouath cert")
     print_elapsed_time(t0)
-
     #get gsheet object
     t0=t()
     if not docid is None:
@@ -31,9 +29,7 @@ if len(test)>1:
     else:
         #create test gs object
         gapi_gs_sheet=gapi_gs.create("ext_gspread")
-        #share to someone
         #sh.share("ga",perm_type="user",role="writer")
-
         #have docid file as we created new docid
         docid=gapi_gs_sheet.id
         with open(f"{pat}/docid.txt","w",encoding="utf-8") as idfile:
@@ -49,10 +45,8 @@ if len(test)>1:
     finally:
         print(f"got worksheet")
         print_elapsed_time(t0)
-        
     #clear worksheet
     gapi_gs_sheet_worksheet.clear()
-
     #have things
     t0=t()
     #get test data object

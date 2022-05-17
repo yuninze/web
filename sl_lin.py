@@ -5,8 +5,6 @@ from sklearn.datasets import make_blobs
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
 from sklearn.model_selection import train_test_split
-from scipy.stats import (
-    ttest_1samp,ttest_ind,chi2_contingency)
 from sklearn.preprocessing import (
     StandardScaler,OneHotEncoder)
 from sklearn.compose import ColumnTransformer
@@ -14,6 +12,8 @@ from sklearn.feature_selection import (
     SelectKBest,chi2,VarianceThreshold)
 from sklearn.linear_model import (
     LinearRegression,LogisticRegression)
+from scipy.stats import (
+    ttest_1samp,ttest_ind,chi2_contingency)
 
 #removable blocks
 def captivate(type="r",size=1000,seed=94056485):

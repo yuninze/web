@@ -63,7 +63,7 @@ def sp(w,e,
         target_var_area=e*a
     while target_var_area.mean()<np.prod(figsize)*.5:
         target_var_area*=.05
-    
+
     #colormap
     if c is None:
         c=rg.random(e.shape[0])
@@ -147,22 +147,21 @@ costco0.index.name="clientidx"
 costco1=pd.DataFrame(
     normalize(costco0),columns=costco0.columns)
 
-plt.figure(figsize=(13,13))
-
+plt.figure(figsize=(12,12))
 plt.subplot(311)
 gram=dngram(costco1)
-plt.title("dendrogram")
+plt.title("sch.linkage dendrogram")
 
-blok0=AgglomerativeClustering(
+csc_ac=AgglomerativeClustering(
     n_clusters=2,affinity="euclidean",linkage="ward"
     ).fit_predict(costco1)
 plt.subplot(312)
-plt.scatter(costco1.Milk,costco1.Fresh,c=blok0)
+plt.scatter(costco1.Milk,costco1.Fresh,c=csc_ac)
 plt.title("AC Milk:Fresh")
 
-blok1=KMeans(
+csc_km=KMeans(
     n_clusters=2,random_state=94056485
     ).fit_predict(costco1)
 plt.subplot(313)
-plt.scatter(costco1.Milk,costco1.Fresh,c=blok1)
+plt.scatter(costco1.Milk,costco1.Fresh,c=csc_km)
 plt.title("KMeans Milk:Fresh")

@@ -25,7 +25,7 @@ def doing_switch(switch):
             print("\b\b"+x,end="")
 
 def print_elapsed_time(startup_time):
-    print(f"elapsed: {t()-startup_time:.5f}s")
+    print(f"elapsed: {t()-startup_time:.3f}s")
 
 def ima()->str:
     return dt.datetime.now().strftime("%y%m%d")
