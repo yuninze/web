@@ -34,19 +34,17 @@ def captivate(type="r",size=1000,seed=94056485):
             columns=list("abcd"))
 
 def prep(q):
-    q["prep0"]=(q.select_dtypes(include="number")
+    q["prep0"]=(q
+        .select_dtypes(include="number")
         .sum(axis=1)
         .copy())
-    #pd.Series(np.where(qb>50,"large","small"),name="qb")
-    #directly get np.array
-    q["prep1"]=q["prep0"]>np.mean(q["prep0"])
-    #get bin mapper
-    q["prep1"]=(q["prep1"]
-        .replace({True:"large",False:"small"}))
+    q["prep1"]=(np.where(
+        q["prep0"]>np.mean(q["prep0"]),"large","small"))
     return q
 
-def sel_cat(q):
-        return q.cat.categories
+def see_cat(q):
+    #df[df.catCol==df.catCol.cat.categories[x]]
+    return [q for q in q.cat.categories]
 
 def have_rng(q,var_name,q_num=4):
     if isinstance(q,(pd.DataFrame,pd.Series)):

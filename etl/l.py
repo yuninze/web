@@ -50,6 +50,73 @@ class db:
             con.close() #pd.to_sql automatically commits
             return None
 
+    def queryexec(cur,
+            query:str)->tuple:
+        '''
+        '''
+        try:
+            return cur.execute(query),1
+        except (sqlite3.ProgrammingError,
+                sqlite3.OperationalError,
+                sqlite3.NotSupportedError) as e:
+            return print(f"->{e} '{query}'"),2
+
+    def query()->None:
+        note={"true":[],"false":[]}
+        danger=("update","delete")
+        agree=("y","yes","ok")
+        dbname=input("db: ")
+        if not dbname:
+            dbname="c:/code/db.db"
+        with sqlite3.connect(dbname) as con:
+            cur=con.cursor()
+            print(f"connected: {dbname}")
+            while dbname:
+                query=input(f"{dbname}->")
+                #quit while status by False query
+                if not query:
+                    cur.close()
+                    break
+                #history feature
+                if query=="history":
+                    for q in enumerate(note["true"]):
+                        print(f"{q[0]}: {q[1]}")
+                    continue
+                #filter for select, pragma
+                if any(map(query.__contains__,("select","pragma"))):
+                    queryresult=db.queryexec(cur,query)
+                    if not queryresult[1]==1:
+                        note["false"].append(query)
+                        continue
+                    note["true"].append(query)
+                    selectresult=queryresult[0].fetchall()
+                    selectrows=len(selectresult)
+                    if selectrows>49:
+                        for q in selectresult[:49]:
+                            print(q)
+                        print(f"->remaining rows: {selectrows-49}")
+                    else:
+                        for q in selectresult:
+                            print(q)
+                        print(f"->rows: {selectrows}")
+                    continue
+                #filter for update, delete
+                if any(map(query.__contains__,danger)):
+                        if not "where" in query:
+                            warn=input("->no where clause ")
+                            if not any(map(warn.__contains__,agree)):
+                                continue
+                #execution block
+                queryresult=db.queryexec(cur,query)
+                if not queryresult[1]==1:
+                    note["false"].append(query)
+                else:
+                    note["true"].append(query)
+        con.commit()
+        con.close()
+        return None
+
+    #noop
     def from_row(db):
         con=sqlite3.connect(db)
         cur=con.cursor()
@@ -120,69 +187,3 @@ class db:
                     price1
                     ))
                 con.commit()
-
-    def queryexec(cur,
-            query:str)->tuple:
-        '''
-        '''
-        try:
-            return cur.execute(query),1
-        except (sqlite3.ProgrammingError,
-                sqlite3.OperationalError,
-                sqlite3.NotSupportedError) as e:
-            return print(f"->{e} '{query}'"),2
-
-    def query()->None:
-        note={"true":[],"false":[]}
-        danger=("update","delete")
-        agree=("y","yes","ok")
-        dbname=input("db: ")
-        if not dbname:
-            dbname="c:/code/db.db"
-        with sqlite3.connect(dbname) as con:
-            cur=con.cursor()
-            print(f"connected: {dbname}")
-            while dbname:
-                query=input(f"{dbname}->")
-                #quit while status by False query
-                if not query:
-                    cur.close()
-                    break
-                #history feature
-                if query=="history":
-                    for q in enumerate(note["true"]):
-                        print(f"{q[0]}: {q[1]}")
-                    continue
-                #filter for select, pragma
-                if any(map(query.__contains__,("select","pragma"))):
-                    queryresult=db.queryexec(cur,query)
-                    if not queryresult[1]==1:
-                        note["false"].append(query)
-                        continue
-                    note["true"].append(query)
-                    selectresult=queryresult[0].fetchall()
-                    selectrows=len(selectresult)
-                    if selectrows>49:
-                        for q in selectresult[:49]:
-                            print(q)
-                        print(f"->remaining rows: {selectrows-49}")
-                    else:
-                        for q in selectresult:
-                            print(q)
-                        print(f"->rows: {selectrows}")
-                    continue
-                #filter for update, delete
-                if any(map(query.__contains__,danger)):
-                        if not "where" in query:
-                            warn=input("->no where clause ")
-                            if not any(map(warn.__contains__,agree)):
-                                continue
-                #execution block
-                queryresult=db.queryexec(cur,query)
-                if not queryresult[1]==1:
-                    note["false"].append(query)
-                else:
-                    note["true"].append(query)
-        con.commit()
-        con.close()
-        return None
