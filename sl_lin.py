@@ -37,6 +37,7 @@ def prep(q):
     q["prep0"]=(q.select_dtypes(include="number")
         .sum(axis=1)
         .copy())
+    #pd.Series(np.where(qb>50,"large","small"),name="qb")
     #directly get np.array
     q["prep1"]=q["prep0"]>np.mean(q["prep0"])
     #get bin mapper
