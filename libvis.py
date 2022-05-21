@@ -123,16 +123,18 @@ def hm(q,title="title",figsize=(12,10),
     plt.show(block=False)
     return f"hm: shown in {t()-t0:.3f}s"
 
-def bp(q,w,e,title="title"):
+def bp(q,w=None,e=None,title="title"):
     '''Cat. vs num. variables: 
-    Indicates IQR, median, outliers
-    to avoid wrong accept of same median'''
+    Indicates IQR, median, outliers'''
     t0=t()
     fg,ax=plt.subplots(figsize=(12,10))
     #plt object
-    sns.boxplot(data=q,
-        x=w,
-        y=e)
+    if w and e is None:
+        sns.boxplot(x=q)
+    else:
+        sns.boxplot(data=q,
+            x=w,
+            y=e)
     plt.xlabel(f"{w}")
     plt.ylabel(f"{e}")
     plt.title(f"{title}")
@@ -140,7 +142,10 @@ def bp(q,w,e,title="title"):
     return f"bp: shown in {t()-t0:.3f}s"
 
 def dngram(q):
+    '''draw dendrogram from scipy linkage array'''
     return sch.dendrogram(sch.linkage(q,method="ward"))
+
+
 
 costco0=pd.read_csv("c:/code/costco.csv").iloc[:,2:]
 costco0.index.name="clientidx"
