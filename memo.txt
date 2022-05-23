@@ -125,7 +125,8 @@ R sqrt로 평가, 높을 수록 좋음, =<1
 mean 과 std의 동일화. 푸아송 분포.
 variance-stabilizing transformation
 bayesian method
-box-cox가 더 유효함(안좋았는 곳이 더 resoluting됨 대신 좋았던 곳 resoultion 떨어짐)
+box-cox가 더 유효함(안좋았는 곳이 더 resoluting됨 대신 좋았던 곳
+ resoultion 떨어짐)
 stats.boxcox(target,lmbda=0) _> 로가리듬 비닝
 nd화 param 검출을 해 줌
 q,w=stats.boxcox(targetData)
