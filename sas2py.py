@@ -1,2 +1,2 @@
 #2022-05-18
-from sklearn.
+from sklearn.preprocessing import StandardScaler
