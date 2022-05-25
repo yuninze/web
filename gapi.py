@@ -75,3 +75,5 @@ def gbq():
     from_gbq.read_gbq("select * from tbl0",
     project_id=proj_id,
     credentials=cred)
+
+#https://pandas-gbq.readthedocs.io/en/latest/writing.html
