@@ -57,7 +57,7 @@ q=[q for q in enumerate(tgt.split())]
 
 df.groupby('qtr').agg({"realgdp": ["mean",  "std"], "unemp": "mean"})
 
-
+[q.name for q in os.scandir() if "json" in q.name]
 
 df = pd.read_csv("Fatalities.csv")
 
@@ -151,7 +151,6 @@ preproc.normalize(binningTarget:array,axis=0)
 
 
 
-
 binningTarget의 수치 분포를 변화한다...
 :입력 피처의 정량적 크기가 크게 다를 때 사용한다.
 ###
@@ -176,10 +175,6 @@ trigram=CountVectorizer(input="",token_pattern="(?u)\\b\\w+\\b",ngram_range(3,3)
 bow.fit(rawdata:array)
 trigram.fit(rawdata:array)
 q for q in .get_feature_names(), len()
-
-
-
-
 
 
 

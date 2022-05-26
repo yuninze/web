@@ -138,9 +138,6 @@ def listfileImgSeq(p,fo="seqimglistfile.csv"):
     return print("..imagefileBad: "+str(len(imagefileBad)))
 
 def greatPuzzle_ZeungZuck():
-    '''
-    fuck
-    '''
     p="D:\\greatPuzzle\\1126_greatpuzzle\\"
     os.chdir(p)
     a=os.listdir()
