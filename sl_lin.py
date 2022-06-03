@@ -16,7 +16,7 @@ from scipy.stats import (
     ttest_1samp,ttest_ind,chi2_contingency)
 
 #removable blocks
-def captivate(type="r",size=1000,seed=94056485):
+def captivate(type="rand",size=1000,seed=94056485):
     if type=="blob":
         return make_blobs(n_samples=size,
         n_features=4,random_state=seed)

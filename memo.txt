@@ -53,11 +53,9 @@ q=[q for q in enumerate(tgt.split())]
 # numeric features: (from_numeric) (to_numeric)
 # categorical features: sex, occupation, ordinal int (e.g. rank)
 
-
+그냥 예를 들자면.
 
 df.groupby('qtr').agg({"realgdp": ["mean",  "std"], "unemp": "mean"})
-
-[q.name for q in os.scandir() if "json" in q.name]
 
 df = pd.read_csv("Fatalities.csv")
 
@@ -184,20 +182,23 @@ timedelta(days=90)
 df.replace("nan",np.nan)
 *(df.loc[q,w] for q in df.index for w in df.columns),
 
+
+######
 conditional listdir보다 scandir이 3배 빠름
 os.scandir(path) returns iterator
 
 de=list(os.scandir([])) #os.DirEntry objects
-os.scandir.close()
+os.scandir()
 os.DirEntry.name
 os.DirEntry.path
 os.DirEntry.is_dir()
 os.DirEntry.is_file()
+os.DirEntry.stat().st_size
 
 os.DirEntry.stat() #contains os.stat_result attributes
 st_size
 #https://docs.python.org/3/library/os.html#os.stat_result
-
+######
 
 A=12345
 if A>=500:
