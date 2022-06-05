@@ -1,10 +1,17 @@
+#temporary directories, py-caches
 .vscode/
-.__pycache__/
 .DS_Store/
+__pycache__/
+*.pyc
+*.pyo
+
+#mines
 *.png
 ko.txt
 GBR.ttf
 chinook.sql
+
+#credentials
 gcert.json
 gsak.json
 token.json

@@ -134,7 +134,24 @@ def pmo(frames:Iterable,pii:str='c:/')->pd.DataFrame:
         print(f"{e}")
         return frame
 
-def pdnp_test(q,w,a=1):
+def ctt(
+    q,
+    w,
+    rn:list=None,
+    cn:list=None):
+    if type(q).__name__=="ndarray":
+        if not (rn and cn) is None:
+            if type(rn).__name__+type(cn).__name__=="listlist":
+                return pd.crosstab(
+                    q,
+                    w,
+                    rownames=rn,
+                    colnames=cn)
+            return f"cn and rn"
+        return f"lenmatch"
+    return f"main data type"
+
+def pd2np(q,w,a=1):
     assert q.ndim!=w.ndim
 
     if a==0:
