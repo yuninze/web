@@ -8,8 +8,11 @@ df.index[intp],label
 using callable to the select classes
 map, lambda chaining
 
-get_indexer
-get_loc
+get_indexer(target:list)
+get_loc(target:list)
+
+sort_values(by)
+sort_index(axis,level)
 
 for df-dicts...
 list(dict)
@@ -55,7 +58,7 @@ q=[q for q in enumerate(tgt.split())]
 
 그냥 예를 들자면.
 
-df.groupby('qtr').agg({"realgdp": ["mean",  "std"], "unemp": "mean"})
+
 
 df = pd.read_csv("Fatalities.csv")
 
@@ -64,7 +67,8 @@ df["fatal_rate"] = df["fatal"] /df["pop"] * 10000
 df_demean = df.copy()
 
 # per-state beer tax, meaning as per groupby results
-df_demean['Mean_beerTax_byState'] = df_demean.groupby('state').beertax.transform(np.mean)
+df_demean['Mean_beerTax_byState'] = df_demean.groupby('state')
+.beertax.transform(np.mean)
 
 # per-state cdr per state
 df_demean['Mean_fatal_rate_byState'] = df_demean.groupby('state').fatal_rate.transform(np.mean)
@@ -79,8 +83,12 @@ print(results2.summary())
 
 
 
-{"key_"+a+b:"val_"+a+b for a,b in {a+b:a+b for a in "abcd" for b in "0123" if "a"!="b"}}
-({"color":gdstrb(),"tag":q,"size":w*mtl} for q,w in n_nouns.most_common(n_noun))
+{
+    "key_"+a+b:"val_"+a+b for a,b in 
+    {a+b:a+b for a in "abcd" for b in "0123" if "a"!="b"}
+}
+
+{"color":gdstrb(),"tag":q,"size":w*mtl} for q,w in n_nouns.most_common(n_noun))
 {q:int(w*mtl) for q,w in noun.most_common(n_noun)}
 
 
@@ -181,24 +189,6 @@ timedelta(days=90)
 
 df.replace("nan",np.nan)
 *(df.loc[q,w] for q in df.index for w in df.columns),
-
-
-######
-conditional listdir보다 scandir이 3배 빠름
-os.scandir(path) returns iterator
-
-de=list(os.scandir([])) #os.DirEntry objects
-os.scandir()
-os.DirEntry.name
-os.DirEntry.path
-os.DirEntry.is_dir()
-os.DirEntry.is_file()
-os.DirEntry.stat().st_size
-
-os.DirEntry.stat() #contains os.stat_result attributes
-st_size
-#https://docs.python.org/3/library/os.html#os.stat_result
-######
 
 A=12345
 if A>=500:
@@ -340,3 +330,20 @@ single
 float32
 double
 float64
+
+######
+conditional listdir보다 scandir이 3배 빠름
+os.scandir(path) returns iterator
+de=list(os.scandir([])) #os.DirEntry objects
+os.scandir()
+os.DirEntry.name
+os.DirEntry.path
+os.DirEntry.is_dir()
+os.DirEntry.is_file()
+os.DirEntry.stat().st_size
+os.DirEntry.stat() #contains os.stat_result attributes
+st_size
+#https://docs.python.org/3/library/os.html#os.stat_result
+######
+
+df.groupby('qtr').agg({"realgdp":["mean","std"],"unemp":"mean"})
