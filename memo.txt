@@ -345,5 +345,3 @@ os.DirEntry.stat() #contains os.stat_result attributes
 st_size
 #https://docs.python.org/3/library/os.html#os.stat_result
 ######
-
-df.groupby('qtr').agg({"realgdp":["mean","std"],"unemp":"mean"})

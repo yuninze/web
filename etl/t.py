@@ -151,6 +151,9 @@ def ctt(
         return f"lenmatch"
     return f"main data type"
 
+def agg(data,mapper):
+    return (data.agg(mapper))
+
 def pd2np(q,w,a=1):
     assert q.ndim!=w.ndim
 
