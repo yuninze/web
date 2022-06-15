@@ -52,6 +52,23 @@ def have_rng(q,var_name,q_num=4):
         return q
     raise TypeError(f"{type(q)=}")
 
+#
+def ci(
+    size_exrt_grp,
+    count_occur=None,
+    prob_occur=None):
+
+    if not count_occur is None:
+        prob=(size_exrt_grp/count_occur)*100
+    elif prob_occur>=1:
+        prob=prob_occur-1
+    else:
+        prob=prob_occur
+
+    count_occur_exrt_grp=np.sqrt(size_exrt_grp)*np.sqrt(prob(1-prob))
+    act_occur=(count_occur_exrt_grp/size_exrt_grp)*100
+    return ((prob*100)-act_occur,(prob*100)+act_occur)
+
 #very high level interfaces
 def clar(q,cat=False,w=None,m=None,rg=None):
     if not cat:
