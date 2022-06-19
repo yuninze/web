@@ -58,8 +58,6 @@ q=[q for q in enumerate(tgt.split())]
 
 그냥 예를 들자면.
 
-
-
 df = pd.read_csv("Fatalities.csv")
 
 # cdr, per-population
@@ -81,8 +79,6 @@ model = sm.OLS(df_demean.fatal_rate, df_demean.beertax)
 results2 = model.fit()
 print(results2.summary())
 
-
-
 {
     "key_"+a+b:"val_"+a+b for a,b in 
     {a+b:a+b for a in "abcd" for b in "0123" if "a"!="b"}
@@ -94,8 +90,8 @@ print(results2.summary())
 
 
 os.environ->dict:environValues
-
 Attention Mechanism, Word Embedding
+
 
 
 피처 스케일링
@@ -190,9 +186,6 @@ timedelta(days=90)
 df.replace("nan",np.nan)
 *(df.loc[q,w] for q in df.index for w in df.columns),
 
-A=12345
-if A>=500:
-
 Working set is a concept in computer science which defines the amount of 
 memory that a process requires in a given time interval.
 
@@ -216,7 +209,6 @@ origin=parseableDatetime
 unit=parseBasisUnit
 
 pd.to_datetime(target)
-
 pd.Timestamp()
 
 #returns containing-subset
@@ -231,14 +223,12 @@ orient index, keys to rows (index)
 oirent columns, keys to columns (columns)
 orient: location of keys
 
-
 select_dtypes(inc=,exc=)
-
 
 more than 10_000 rows
 eval()->boolVec
 query()->satisfying rows
-parser가 거의 가틍ㅁ
+parser가 거의 가틍
 
 noMoreRegex
 int(''.join([q for q in STRING if q.isdigit()]))
@@ -285,15 +275,6 @@ cache=[]
 with open('namu.json',encoding='utf-8') as jsonfile:
 	for q in range(100):
 		cache.append(json.loads(jsonfile.readline()))
-
-fileobject
-a=concoction('C:/code/concat/ca',10,10)
-b=concoction('C:/code/concat/cz',10,10)
-c=concoction('C:/code/concat/la',560,70)
-d=concoction('C:/code/concat/lz',560,70)
-e=concoction('C:/code/concat/nla',560,70)
-fs=[a,b,c,d,e]
-f=sansibar(fs,pii='C:/code/concat/pii.csv')
 
 zyeon=pd.pivot_table(a,values='money',index=['idx','name','cn','wm'],aggfunc=np.sum)
 zyeon.unstack().to_csv('zyeon.csv',encoding='utf-8-sig')

@@ -13,7 +13,7 @@ from sklearn.feature_selection import (
 from sklearn.linear_model import (
     LinearRegression,LogisticRegression)
 from scipy.stats import (
-    ttest_1samp,ttest_ind,chi2_contingency)
+    ttest_1samp,ttest_ind,ttest_ind_from_stats,chi2_contingency)
 
 #removable blocks
 def captivate(type="rand",size=1000,seed=94056485):
@@ -68,6 +68,31 @@ def ci(
     count_occur_exrt_grp=np.sqrt(size_exrt_grp)*np.sqrt(prob(1-prob))
     act_occur=(count_occur_exrt_grp/size_exrt_grp)*100
     return ((prob*100)-act_occur,(prob*100)+act_occur)
+
+#xx
+def recycle(
+    h0,h1,
+    grp_size,
+    h0_std,h1_std,
+    sam_size=0.3,
+    sampling=True):
+    try:
+        if not sampling:
+            sam_size=grp_size*sam_size
+        else:
+            sam_size=grp_size
+        h0_sem,h1_sem=(q/np.sqrt(sam_size) for q in (h0_std,h1_std))
+        z=h0-h1/((h0_sem+h1_sem)/2)
+        return z
+    except:
+        return ttest_ind_from_stats(
+            mean1=h0,
+            std1=h0_std,
+            nobs1=sam_size/2,
+            mean2=h1,
+            std2=h1_std,
+            nobs2=sam_size/2,
+            equal_var=False)
 
 #very high level interfaces
 def clar(q,cat=False,w=None,m=None,rg=None):
