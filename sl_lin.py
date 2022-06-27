@@ -23,13 +23,21 @@ def captivate(type="rand",size=1000,seed=94056485):
     else:
         seed=np.random.default_rng(seed)
         if type=="gamma":
-            rg=seed.gamma(1,size=(size,4))
+            rg=seed.gamma(1,
+                size=(size,4))
         elif type=="int":
-            rg=seed.integers(100,size=(size,4))
+            rg=seed.integers(
+                low=0,
+                high=1000,
+                size=(size,4))
         elif type=="rand":
-            rg=seed.random(size=(size,4))
+            rg=seed.random(
+                size=(size,4))
         else:
-            rg=seed.uniform(0,100,size=(size,4))
+            rg=seed.uniform(
+                low=0,
+                high=1000,
+                size=(size,4))
         return pd.DataFrame(rg,
             columns=list("abcd"))
 
@@ -116,7 +124,7 @@ def clar(q,cat=False,w=None,m=None,rg=None):
     else:
         name=q.columns.values
         klas=pd.DataFrame
-    return {"chi2":f"{r[0]:.5f}",
+    return {"chi2-statistic":f"{r[0]:.5f}",
         "p":f"{r[1]:.5f}",
         "dof":f"{r[2]:.5f}",
         "exp":klas(r[3],
