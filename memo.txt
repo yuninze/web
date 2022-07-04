@@ -55,7 +55,6 @@ q=[q for q in enumerate(tgt.split())]
 # from sklearn.compose import ColumnTransformer
 # numeric features: (from_numeric) (to_numeric)
 # categorical features: sex, occupation, ordinal int (e.g. rank)
-
 그냥 예를 들자면.
 
 df = pd.read_csv("Fatalities.csv")
