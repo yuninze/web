@@ -7,6 +7,7 @@ import pandas_gbq as from_gbq
 import pydata_google_auth
 
 test=input(f"sure?")
+
 pat="c:/code"
 cred=f"{pat}/gapi_oauth_cert.json"
 cred_username=f"{pat}/gapi_ouath_cert_user.json"
