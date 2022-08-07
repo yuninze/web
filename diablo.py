@@ -2,6 +2,8 @@ import requests
 from random import random
 from time import sleep
 
+#downloads diablo 2 bgms
+
 ua="py-yuninze-downdiablo2mp3"
 urlprefix="http://classic.battle.net/supersecrest/"
 
