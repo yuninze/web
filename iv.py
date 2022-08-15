@@ -37,11 +37,12 @@ def pro(cap):
         "20":w,
         "40":e,
         "50":r}
+
 def messij():
     pass
+
 def sig(startingFrom):
     startingFrom=pd.Timestamp(startingFrom)
     ima=pd.Timestamp(dt.now())
     delta=ima-startingFrom
-    print(f"{delta=}")
     return f"{(delta.components.hours*60)+delta.components.minutes}"

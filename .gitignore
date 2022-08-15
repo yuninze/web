@@ -1,9 +1,10 @@
-#temporary directories, py-caches
+#temporary directories, py-caches, logs
 .vscode/
 .DS_Store/
 __pycache__/
 *.pyc
 *.pyo
+*.log
 
 #mines
 *.png
