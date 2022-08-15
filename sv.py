@@ -1,9 +1,7 @@
 import os
 import requests
 import threading
-import random
 from concurrent.futures import ThreadPoolExecutor
-from time import time,sleep
 from bs4 import BeautifulSoup as bs
 
 ua={"user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) "\
@@ -36,7 +34,6 @@ def visit(param):
 
 def visita(idx):
     url=""
-    sleep(random.random()*2)
     try:
         w=bs(
             requests.get(
@@ -63,9 +60,7 @@ def mt(mx,mn):
         thread.join()
 
 def exec(mx,mn,max_workers=80):
-    t0=time()
     thread=ThreadPoolExecutor(max_workers=max_workers)
     for q in range(mx,mn,-1):
         thread.submit(visita,q)
     thread.shutdown(wait=True)
-    print(f"done in {time()-t0:.1f}s")
