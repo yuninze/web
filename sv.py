@@ -1,8 +1,8 @@
+from asyncio import as_completed
 import os
 import requests
 import threading
-from datetime import datetime
-from concurrent.futures import ThreadPoolExecutor
+import concurrent.futures
 from bs4 import BeautifulSoup as bs
 
 ua={"user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) "\
@@ -37,8 +37,8 @@ def visit(param):
     if param[3]:
         return vid
 
-def visita(idx):
-    url=""
+def visita(url,idx):
+    url=url
     try:
         w=bs(
             requests.get(
@@ -50,9 +50,10 @@ def visita(idx):
                 headers=ua).text)
         vidname=e.select("meta")[ 6]["content"]
         vidurl =e.select("meta")[17]["content"]
-        dn((vidname,vidurl))
+        #dn((vidname,vidurl))
+        return True
     except:
-        fails.append(idx)
+        return False
 
 def mt(mx,mn):
     threads=[]
@@ -64,7 +65,17 @@ def mt(mx,mn):
     for thread in threads:
         thread.join()
 
-def exec(mx,mn,max_workers=80):
-    with ThreadPoolExecutor(max_workers=max_workers) as t:
-        for q in range(mx,mn,-1):
-            t.submit(visita,q)
+def exec(url,mx,mn,max_workers=50):
+    rtn={}
+    with concurrent.futures.ThreadPoolExecutor(
+        max_workers=max_workers) as t:
+        works={t.submit(visita,url,q):q for q in range(mx,mn,-1)}
+        for work in concurrent.futures.as_completed(works):
+            q=works[work]
+            rslt=work.result()
+            rtn[q]=rslt
+            if rslt is False:
+                print(f"failed: {q}")
+            else:
+                print(f"got: {q}")
+    return rtn
