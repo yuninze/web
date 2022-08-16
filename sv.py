@@ -66,13 +66,20 @@ def mt(mx,mn):
         thread.join()
 
 def exec(url,mx,mn,max_workers=50):
+    #canvas for each results of threads
     rtn={}
+    #with with statement shutdown method is not needed
     with concurrent.futures.ThreadPoolExecutor(
         max_workers=max_workers) as t:
+        #specifies each threads by the indices
         works={t.submit(visita,url,q):q for q in range(mx,mn,-1)}
+        #result collection: as_completed
         for work in concurrent.futures.as_completed(works):
+            #assign thread
             q=works[work]
+            #yielded result from the callable, per thread
             rslt=work.result()
+            #saving result per index
             rtn[q]=rslt
             if rslt is False:
                 print(f"failed: {q}")
