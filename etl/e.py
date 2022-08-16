@@ -7,7 +7,7 @@ enc="utf-8-sig"
 
 def ima()->str:
     '''Get strings of current time'''
-    return datetime.now().strftime("%Y"+"-"+"%m"+"-"+"%d")
+    return datetime.now().strftime("%y%m%d")
 
 def load_json(filename:str):
     try:

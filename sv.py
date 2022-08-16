@@ -1,6 +1,7 @@
 import os
 import requests
 import threading
+from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
 from bs4 import BeautifulSoup as bs
 
@@ -13,7 +14,7 @@ def dn(v):
     #(vidname,vidurl)
     os.system(f'''
         ffmpeg -loglevel 32 -i "{v[1]}" \
-        -bsf:a aac_adtstoasc -c copy "C:/3888/{v[0]}.mp4"''')
+        -bsf:a aac_adtstoasc -c copy "C:/0/{v[0]}.mp4"''')
 
 def visit(param):
     #(url,mx,mn,dic)
@@ -21,9 +22,13 @@ def visit(param):
     for q in range(param[1],param[2],-1):
         try:
             w=bs(
-                requests.get(url=f"{param[0]}{q}",headers=ua).text)
+                requests.get(
+                    url=f"{param[0]}{q}",
+                    headers=ua).text)
             e=bs(
-                requests.get(url=w.iframe["src"],headers=ua).text)
+                requests.get(
+                    url=w.iframe["src"],
+                    headers=ua).text)
             vidname=e.select("meta")[ 6]["content"]
             vidurl =e.select("meta")[17]["content"]
             dn((vidname,vidurl))
@@ -60,7 +65,6 @@ def mt(mx,mn):
         thread.join()
 
 def exec(mx,mn,max_workers=80):
-    thread=ThreadPoolExecutor(max_workers=max_workers)
-    for q in range(mx,mn,-1):
-        thread.submit(visita,q)
-    thread.shutdown(wait=True)
+    with ThreadPoolExecutor(max_workers=max_workers) as t:
+        for q in range(mx,mn,-1):
+            t.submit(visita,q)

@@ -1,7 +1,9 @@
-import pandas as pd
-from datetime import datetime as dt
+from pandas import Timestamp as ts
+from time import time
+from datetime import datetime
 
 class etp:
+
     def __init__(self,type,lq,bv0,bv1,etc,name="etp"):
         self.name=name
         self.type=type
@@ -9,6 +11,7 @@ class etp:
         self.bv0=bv0
         self.bv1=bv1
         self.etc=etc
+
     def iv(self):
         delta=abs(self.bv1-self.bv0)/self.bv0
         if type>0:
@@ -24,6 +27,7 @@ class etp:
         return {"delta":delta,
             "difference":diff,
             "iv":iv}
+
     def vwp(alpha,beta,delta):
         return "vwap"
 
@@ -42,7 +46,7 @@ def messij():
     pass
 
 def sig(startingFrom):
-    startingFrom=pd.Timestamp(startingFrom)
-    ima=pd.Timestamp(dt.now())
+    startingFrom=ts(startingFrom)
+    ima=ts(datetime.now())
     delta=ima-startingFrom
     return f"{(delta.components.hours*60)+delta.components.minutes}"
