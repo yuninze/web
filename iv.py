@@ -4,7 +4,8 @@ from datetime import datetime
 
 class etp:
 
-    def __init__(self,type,lq,bv0,bv1,etc,name="etp"):
+    def __init__(self,
+    type,lq,bv0,bv1,etc,name="etp"):
         self.name=name
         self.type=type
         self.lq=lq
@@ -50,3 +51,8 @@ def sig(startingFrom):
     ima=ts(datetime.now())
     delta=ima-startingFrom
     return f"{(delta.components.hours*60)+delta.components.minutes}"
+
+def wrk(t0):
+    if isinstance(t0,(int,float)):
+        t1=time()
+        return f"{(t1-t0)//60}"
