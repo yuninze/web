@@ -1,4 +1,5 @@
 import os
+import csv
 import requests
 import threading
 import concurrent.futures
@@ -11,28 +12,64 @@ ua={"user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) "\
 def dn(v):
     #(vidname,vidurl)
     os.system(f'''
-        ffmpeg -loglevel 32 -i "{v[1]}" \
-        -bsf:a aac_adtstoasc -c copy "C:/0/{v[0]}.mp4"''')
+        ffmpeg -n -loglevel 24 -i "{v[1]}" -user_agent "{ua["user-agent"]}" -multiple_requests 0 -reconnect_at_eof 1 -reconnect_streamed 1 -reconnect_on_network_error 1 -bsf:a aac_adtstoasc -c copy "d:/rslt/{v[2]}_{v[0]}.mp4"
+        ''')
 
 def visit(url,idx):
-    url=url
+    url=f"{url}{idx}"
     try:
-        #if fail return None
-        w=bs(
-            requests.get(
-                url=f"{url}{idx}",
-                headers=ua).text)
-        #if fail return None
-        e=bs(
-            requests.get(
-                url=w.iframe["src"],
-                headers=ua).text)
+        w=bs(requests.get(url,headers=ua).text)
+        e=bs(requests.get(w.iframe["src"],headers=ua).text)
         vidname=e.select("meta")[ 6]["content"]
         vidurl =e.select("meta")[17]["content"]
-        #dn((vidname,vidurl))
-        return True
-    except:
-        return False
+        dn((vidname,vidurl,idx))
+        return True,f"{idx}_{vidname}.mp4"
+    except Exception as ng:
+        return False,url,ng
+
+def exec(url,mx,mn,max_workers=100):
+    #canvas for each results the callable
+    oks,ngs=[],[]
+    #with with statement shutdown method is not needed
+    with concurrent.futures.ThreadPoolExecutor(
+        max_workers=max_workers) as te:
+        #submit future objects
+        works={te.submit(visit,url,q):q for q in range(mx,mn,-1)}
+        #result collection: as_completed
+        for work in concurrent.futures.as_completed(works):
+            #get index by future
+            q=works[work]
+            #yielded result from the callable per future
+            try:
+                rslt=work.result(timeout=1800)
+                if rslt[0] is True:
+                    oks.append(rslt[1])
+                    print(f"ok: {q}")
+                elif rslt[0] is False:
+                    #idx+reason
+                    ngs.append((rslt[1],rslt[2]))
+                    print(f"ng: {q} ({rslt[2]})")
+            except TimeoutError as ng:
+                #idx+reason
+                ngs.append((q,ng))
+                work.interrupt
+    with open("d:/rslt.csv","w",encoding="utf-8",newline="") as csvfile:
+        q=csv.writer(csvfile)
+        q.writerows(ngs)
+    return oks,ngs
+
+def sanitize(oks=None,path="d:/rslt/"):
+    q=[q.name for q in os.scandir(path) 
+        if q.is_file and q.name.endswith(".mp4") and q.stat().st_size==0]
+    print(f"zero-sized files: {len(q)}")
+    for filename in q:
+        os.remove(path+filename)
+    if not oks is None:
+        q=list(set([q.name for q in os.scandir(path) 
+            if q.is_file and q.name.endswith(".mp4")])-set(oks))
+        for filename in q:
+            os.remove(path+filename)
+        return q
 
 def mt(mx,mn):
     threads=[]
@@ -44,27 +81,11 @@ def mt(mx,mn):
     for thread in threads:
         thread.join()
 
-def exec(url,mx,mn,max_workers=50):
-    #canvas for each results the callable
-    rtn=[]
-    #with with statement shutdown method is not needed
-    with concurrent.futures.ThreadPoolExecutor(
-        max_workers=max_workers) as t:
-        #submit future objects: 
-        works={t.submit(visit,url,q):q for q in range(mx,mn,-1)}
-        #result collection: as_completed
-        for work in concurrent.futures.as_completed(works):
-            #get index by future object
-            q=works[work]
-            #yielded result from the callable per future object
-            rslt=work.result()
-            if rslt is None:
-                print(f"exception: {url}{q}")
-                t.shutdown(wait=True,
-                cancel_futures=True)
-            elif rslt is False:
-                rtn.append(q)
-                print(f"failed: {q}")
-            else:
-                print(f"got: {q}")
-    return rtn
+def prof(q):
+    import cProfile
+    import pstats
+    with cProfile.Profile() as p:
+        exec(q[0],q[1],q[2])
+    stats=pstats.Stats(p)
+    stats.sort_stats(pstats.SortKey.TIME)
+    stats.print_stats()

@@ -14,7 +14,7 @@ def dia():
 
     while not urls==[]:
         for url in urls:
-            secs=(random()+1)*5,sleep(secs)
+            sleep(random())
             qfilename=url.replace(f"{urlprefix}","")
             try:
                 q=rqst.get(

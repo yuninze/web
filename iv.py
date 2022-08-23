@@ -3,7 +3,6 @@ from time import time
 from datetime import datetime
 
 class etp:
-
     def __init__(self,
     type,lq,bv0,bv1,etc,name="etp"):
         self.name=name
@@ -56,3 +55,7 @@ def wrk(t0):
     if isinstance(t0,(int,float)):
         t1=time()
         return f"{(t1-t0)//60}"
+
+def now():
+    print(datetime.now().strftime("%Y-%M-%d %H:%M"))
+    return time()
