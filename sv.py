@@ -3,6 +3,7 @@ import csv
 import requests
 import threading
 import concurrent.futures
+from time import time
 from bs4 import BeautifulSoup as bs
 
 ua={"user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) "\
@@ -10,16 +11,24 @@ ua={"user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) "\
     "Chrome/104.0.0.0 Safari/537.36"}
 
 def dn(v):
-    #(vidname,vidurl)
-    os.system(f'''
-        ffmpeg -n -loglevel 24 -i "{v[1]}" -user_agent "{ua["user-agent"]}" -multiple_requests 0 -reconnect_at_eof 1 -reconnect_streamed 1 -reconnect_on_network_error 1 -bsf:a aac_adtstoasc -c copy "d:/rslt/{v[2]}_{v[0]}.mp4"
-        ''')
+    # (vidname,vidurl)
+    os.system(
+        f'ffmpeg -n -loglevel 24 '
+        f'-i "{v[1]}" '
+        f'-user_agent "{ua["user-agent"]}" ' 
+        f'-multiple_requests 0 -reconnect_at_eof 1 ' 
+        f'-reconnect_streamed 1 -reconnect_on_network_error 1 ' 
+        f'-bsf:a aac_adtstoasc -c copy '
+        f'"d:/rslt/{v[2]}_{v[0]}.mp4"')
 
 def visit(url,idx):
     url=f"{url}{idx}"
     try:
         w=bs(requests.get(url,headers=ua).text)
-        e=bs(requests.get(w.iframe["src"],headers=ua).text)
+        e=requests.get(w.iframe["src"],headers=ua)
+        if not e.status_code==200:
+            return False,url,f"{e.status_code}"
+        e=bs(e.text)
         vidname=e.select("meta")[ 6]["content"]
         vidurl =e.select("meta")[17]["content"]
         dn((vidname,vidurl,idx))
@@ -27,8 +36,8 @@ def visit(url,idx):
     except Exception as ng:
         return False,url,ng
 
-def exec(url,mx,mn,max_workers=100):
-    #canvas for each results the callable
+def exec(url,mx,mn,max_workers=200):
+    t0=time()
     oks,ngs=[],[]
     #with with statement shutdown method is not needed
     with concurrent.futures.ThreadPoolExecutor(
@@ -41,7 +50,12 @@ def exec(url,mx,mn,max_workers=100):
             q=works[work]
             #yielded result from the callable per future
             try:
-                rslt=work.result(timeout=1800)
+                rslt=work.result(timeout=2048)
+            except TimeoutError as ng:
+                #idx+reason
+                ngs.append((q,ng))
+                te.shutdown(wait=True,cancel_futures=False)
+            else:
                 if rslt[0] is True:
                     oks.append(rslt[1])
                     print(f"ok: {q}")
@@ -49,13 +63,10 @@ def exec(url,mx,mn,max_workers=100):
                     #idx+reason
                     ngs.append((rslt[1],rslt[2]))
                     print(f"ng: {q} ({rslt[2]})")
-            except TimeoutError as ng:
-                #idx+reason
-                ngs.append((q,ng))
-                work.interrupt
     with open("d:/rslt.csv","w",encoding="utf-8",newline="") as csvfile:
         q=csv.writer(csvfile)
-        q.writerows(ngs)
+        [q.writerows(w) for w in (ngs)]
+    print(f"completed in {time()-t0:.2f}s")
     return oks,ngs
 
 def sanitize(oks=None,path="d:/rslt/"):
