@@ -1,14 +1,24 @@
-#cd("c:/code/q/jl")
-#include("init.jl")
-#include("jl.jl")
+# cd("c:/code/q/jl")
+# include("init.jl")
+# include("jl.jl")
 
-println("initiating")
+# import Pkg
+# [Pkg.add(q) for q=["Colors",
+# "ColorVectorSpace",
+# "ImageShow","FileIO","ImageIO",
+# "HypertextLiteral","PlutoUI",
+# "ColorSchemes","Images",
+# "Plots","LaTeXStrings",
+# "Statistics","LinearAlgebra",
+# "StatsBase","Distributions",
+# "DataFrames","CSV"]]
 
 import ImageMagick
-using PlutoUI
-using Colors, ColorSchemes, Images
+using ImageView,Images
+using Colors, ColorSchemes
+using LinearAlgebra
 using Plots
 using LaTeXStrings
-using Statistics, LinearAlgebra
+using Statistics
 
 println(":::",pwd())
