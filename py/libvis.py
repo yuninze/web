@@ -96,13 +96,9 @@ def pp(q,r=None,w=None,e=None,
     return f"pp: shown in {t()-t0:.3f}s"
 
 def hm(q,title="title",figsize=(12,10),
-    minmax=(None,None),fmt=".2f",
-    corner=""):
-    '''Indicates the innermost relevance
-    between variables'''
+    minmax=(None,None),fmt=".3f",
+    corner=False):
     t0=t()
-    #startup setting
-    fg,ax=plt.subplots(figsize=figsize)
     #have corr df
     q_corr=q.corr()
     if corner:
@@ -110,7 +106,8 @@ def hm(q,title="title",figsize=(12,10),
         mask=np.triu(np.ones_like(q_corr,dtype=bool))
     else:
         mask=None
-    cmap=sns.diverging_palette(4,155,as_cmap=True)
+    plt.subplots(figsize=figsize)
+    cmap=sns.diverging_palette(240,10,as_cmap=True)
     sns.set_theme(style="whitegrid",font="monospace")
     #plt object
     sns.heatmap(q_corr,
@@ -145,28 +142,26 @@ def dngram(q):
     '''draw dendrogram from scipy linkage array'''
     return sch.dendrogram(sch.linkage(q,method="ward"))
 
+# costco0=pd.read_csv("c:/code/costco.csv").iloc[:,2:]
+# costco0.index.name="clientidx"
+# costco1=pd.DataFrame(
+#     normalize(costco0),columns=costco0.columns)
 
+# plt.figure(figsize=(12,12))
+# plt.subplot(311)
+# gram=dngram(costco1)
+# plt.title("sch.linkage dendrogram")
 
-costco0=pd.read_csv("c:/code/costco.csv").iloc[:,2:]
-costco0.index.name="clientidx"
-costco1=pd.DataFrame(
-    normalize(costco0),columns=costco0.columns)
+# csc_ac=AgglomerativeClustering(
+#     n_clusters=2,affinity="euclidean",linkage="ward"
+#     ).fit_predict(costco1)
+# plt.subplot(312)
+# plt.scatter(costco1.Milk,costco1.Fresh,c=csc_ac)
+# plt.title("AC Milk:Fresh")
 
-plt.figure(figsize=(12,12))
-plt.subplot(311)
-gram=dngram(costco1)
-plt.title("sch.linkage dendrogram")
-
-csc_ac=AgglomerativeClustering(
-    n_clusters=2,affinity="euclidean",linkage="ward"
-    ).fit_predict(costco1)
-plt.subplot(312)
-plt.scatter(costco1.Milk,costco1.Fresh,c=csc_ac)
-plt.title("AC Milk:Fresh")
-
-csc_km=KMeans(
-    n_clusters=2,random_state=94056485
-    ).fit_predict(costco1)
-plt.subplot(313)
-plt.scatter(costco1.Milk,costco1.Fresh,c=csc_km)
-plt.title("KMeans Milk:Fresh")
+# csc_km=KMeans(
+#     n_clusters=2,random_state=94056485
+#     ).fit_predict(costco1)
+# plt.subplot(313)
+# plt.scatter(costco1.Milk,costco1.Fresh,c=csc_km)
+# plt.title("KMeans Milk:Fresh")

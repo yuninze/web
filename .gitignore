@@ -8,11 +8,14 @@ __pycache__/
 
 #mines
 *.png
+*.jpg
+*.jpeg
 ko.txt
 GBR.ttf
 chinook.sql
 
 #credentials
+key
 gcert.json
 gsak.json
 token.json

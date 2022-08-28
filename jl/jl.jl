@@ -66,12 +66,9 @@ sort!(v)
 
 temps=[15,16,18,20,24,26]
 mens=[100,200,3000,4000,5000,5500]
-
 plot(mens,temps,legend=false)
 scatter!(mens,temps,legend=false)
-
 xlabel!("xlabel");ylabel!("ylabel");title!("title")
-
 p1=plot(x,x);p2=plot(x,x.*3);p3=plot(x,x.^2);p4=plot(x,x.+10)
 plot(p1,p2,p3,p4,layout=(2,2),legend=false)
 
