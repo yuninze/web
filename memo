@@ -15,6 +15,25 @@ sort_values(by)
 sort_index(axis,level)
 
 for df-dicts...
+
+np.where(
+abs(fs0Tot["ng_zs"])>2
+
+
+
+target
+fs1Tot["ngZsRng"]=np.where(
+(abs(fs0Tot["ng_zs"])<=1),
+"q<=1",)
+fs1Tot["ngZsRng"]=np.where(
+(abs(fs0Tot["ng_zs"])>1) & (abs(df["zscore"])<=2)),
+"1<q<=2",)
+fs1Tot["ngZsRng"]=np.where(
+(abs(fs0Tot["ng_zs"])>2),
+"2>q",)
+
+
+
 list(dict)
 list_indexer=row
 list[list_indexer].keys()=columns

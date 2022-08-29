@@ -14,9 +14,10 @@ codes={
     "5yi":"T5YIE",
     "ng":"DHHNGSP",
     "wti":"DCOILWTICO",
+    "30ym":"MORTGAGE30US"
 }
 
-# join gets series,iterables,dataframes
+# join takes series,iterables,dataframes
 
 def sanitize(frame):
     for col in frame.columns:
@@ -35,7 +36,7 @@ fTot=[q for q in fs.values()]
 fChk=pd.concat(fs.values())
 fOrg=(pd.DataFrame(
     pd.date_range(fChk.index.min(),fChk.index.max()),columns=["date"])
-    .set_index("date"))
+    .set_index("date")) # for full-range datetime indices
 
 fRst=fOrg.join(fTot,how="left")
 fRst=sanitize(fRst).astype("float")
@@ -51,13 +52,20 @@ for col in fRst.columns:
     fs0[col]=pd.concat([target,zscore(target,nan_policy="omit")],axis=1)
     fs0[col].columns=[f"{col}",f"{col}_zs"]
 
-fs0Tot=fOrg.join([q for q in fs0.values()],how="left") # 1-99 with zscores
-fs1Tot=fOrg.join(fs1,how="left") # 1-99
+fs0Tot=fOrg.join([q for q in fs0.values()],how="left") # 1-99 w zscore
+fs1Tot=fOrg.join(fs1,how="left") # 1-99 wo zscore
 # pairplotting, coloring by zscore range
 # zscores recalc is not needed by nan_policy
 
-ng=fs0["ng"]
-print(ng[(ng["ng_zs"]>3)|(ng["ng_zs"]<-3)])
+# categorize per zscore range 1,2,3
+fs1Tot["ngZsRng"]=np.where(
+(abs(fs0Tot["ng_zs"])<=1),"q<=1",fs1Tot["ngZsRng"])
+fs1Tot["ngZsRng"]=np.where(
+(abs(fs0Tot["ng_zs"])>1) & (abs(fs0Tot["ng_zs"])<=2),
+"1<q<=2",fs1Tot["ngZsRng"])
+fs1Tot["ngZsRng"]=np.where(
+(abs(fs0Tot["ng_zs"])>2),
+"q>2",fs1Tot["ngZsRng"])
 
-sns.kdeplot(frame_rslt,x="ng")
-sns.displot(frame_rslt,x="ng",bins=10)
+# sns.kdeplot(frame_rslt,x="ng")
+# sns.displot(frame_rslt,x="ng",bins=10)
