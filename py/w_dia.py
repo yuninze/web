@@ -9,7 +9,7 @@ ua={"user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) "\
 def dia():
     urlprefix="http://classic.battle.net/supersecrest/"
 
-    with open("dia.txt",encoding="utf-8-sig") as listfile:
+    with open("w_dia",encoding="utf-8-sig") as listfile:
         urls=(listfile.read()).split(sep="\n\n")
 
     while not urls==[]:
