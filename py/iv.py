@@ -46,16 +46,15 @@ def messij():
     pass
 
 def sig(startingFrom):
-    startingFrom=ts(startingFrom)
-    ima=ts(datetime.now())
-    delta=ima-startingFrom
-    return f"{(delta.components.hours*60)+delta.components.minutes}"
-
-def wrk(t0):
-    if isinstance(t0,(int,float)):
-        t1=time()
-        return f"{(t1-t0)//60}"
+    delta=ts(datetime.now())-ts(startingFrom)
+    return ((
+    delta.components.hours*60)+
+    delta.components.minutes)
 
 def now():
     print(datetime.now().strftime("%Y-%m-%d %H:%M"))
     return time()
+
+def wrk(t0,ts):
+    t1=time()
+    return f"{(t1-t0)//60-ts}"

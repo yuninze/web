@@ -1,12 +1,12 @@
-from time import time as t
-from typing import Iterable
-from sklearn.preprocessing import normalize
-from sklearn.cluster import KMeans,AgglomerativeClustering
 import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import scipy.cluster.hierarchy as sch
+from time import time as t
+from typing import Iterable
+from sklearn.preprocessing import normalize
+from sklearn.cluster import KMeans,AgglomerativeClustering
 
 plt.rcParams["font.family"]="monospace"
 rg=np.random.default_rng(94056485)
@@ -95,7 +95,7 @@ def pp(q,r=None,w=None,e=None,
     plt.show(block=False)
     return f"pp: shown in {t()-t0:.3f}s"
 
-def hm(q,title="title",figsize=(12,10),
+def hm(q,title="title",figsize=(12,12),
     minmax=(None,None),fmt=".3f",
     corner=False):
     t0=t()
@@ -124,7 +124,7 @@ def bp(q,w=None,e=None,title="title"):
     '''Cat. vs num. variables: 
     Indicates IQR, median, outliers'''
     t0=t()
-    fg,ax=plt.subplots(figsize=(12,10))
+    fg,ax=plt.subplots(figsize=(12,8))
     #plt object
     if w and e is None:
         sns.boxplot(x=q)
