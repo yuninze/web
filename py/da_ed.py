@@ -1,15 +1,13 @@
 import numpy as np
 import pandas as pd
-import seaborn as sns
 import scipy.stats
 from full_fred.fred import Fred
 
-pd.options.display.min_rows=20
-pd.options.display.float_format=lambda q:f"{q:%.3f}"
+pd.options.display.min_rows=10
+pd.options.display.float_format=lambda q:f"{q:.5f}"
 
-# basic checks
-# df[columns].dtypes
-# df[columns].memory_usage(deep=1)
+# df[idumns].dtypes
+# df[idumns].memory_usage(deep=1)
 
 fredkey="c:/code/fed"
 
@@ -29,57 +27,92 @@ ids={
     "ng":"DHHNGSP",
     "wti":"DCOILWTICO",
     "30ym":"MORTGAGE30US",
-    "ri":"RECPROUSM156N"
+    "ri":"RECPROUSM156N",
+    "nfp":"ADPWNUSNERSA"
 }
 
 def sanitize(f):
-    for col in f.columns:
-        f[col][f[col]=="."]=np.nan
+    for id in f.columns:
+        f[id][f[id]=="."]=np.nan
     return f
+
+def truthy(*vals):
+    for x in vals:
+        if not x:
+            raise SystemExit(f"{x}")
 
 fed=Fred(fredkey)
 fs0={id:fed.get_series_df(ids[id]).loc[:,"date":] for id in ids}
 
-for f in fs0:
-    fs0[f].columns=["date",f]
-    fs0[f]=fs0[f].set_index("date")
-    fs0[f].index=pd.to_datetime(fs0[f].index,yearfirst=True)
+for id in fs0:
+    fs0[id].columns=["date",id]
+    fs0[id]=fs0[id].set_index("date")
+    fs0[id].index=pd.to_datetime(fs0[id].index,yearfirst=True)
+
 f0=[q for q in fs0.values()]
 
-f1=pd.concat(fs0.values())
+f1=pd.concat(fs0.values(),axis=1)
 f2=(pd.DataFrame(
     pd.date_range(f1.index.min(),f1.index.max()),columns=["date"])
-    .set_index("date")) # for full-range datetime indices
+    .set_index("date"))# frame with full-range date indices
 
-# join takes series,iterables,dataframes
-f3=f2.join(f1,how="left")
+f3=f2.join(f1,how="left")# takes series,iterables,dataframes
 f3=sanitize(f3).astype("float")
 f3i=f3.describe()
 
 # na-dropped, zscored
 fs1={}
-for col in f3.columns:
-    target=f3[col].dropna()
-    mm=np.percentile(target,[1,99])
-    target[(target<=mm[0])|(target>=mm[1])]=np.nan,fs1.append(target)
-    fs1[col]=pd.concat([target,
-        scipy.stats.zscore(target,nan_policy="omit")],axis=1)
-    fs1[col].columns=[f"{col}",f"{col}_zs"]
+for id in f3.columns:
+    target=f3[id].dropna()
+    mm=np.percentile(target,(0.7,99.3))
+    target[(target<=mm[0])|(target>=mm[1])]=np.nan
+    zs=scipy.stats.zscore(target,nan_policy="omit")
+    zsprb=pd.DataFrame(
+        1-scipy.stats.norm.cdf(zs),index=zs.index)
+    fs1[id]=pd.concat([target,pd.concat([zs,zsprb],axis=1)]
+        ,axis=1)
+    fs1[id].columns=[f"{id}",f"{id}zs",f"{id}zsprb"]
 
-fs0Tot=fOrg.join([q for q in fs0.values()],how="left") 
-fs1Tot=fOrg.join(fs1,how="left")
+f4=f2.join([q for q in fs1.values()],how="left")
 
-fs1Tot["ngZsRng"]=np.where(
-(abs(fs0Tot["ng_zs"])<=1),"q<=1",fs1Tot["ngZsRng"])
-fs1Tot["ngZsRng"]=np.where(
-(abs(fs0Tot["ng_zs"])>1) & (abs(fs0Tot["ng_zs"])<=2),
-"1<q<=2",fs1Tot["ngZsRng"])
-fs1Tot["ngZsRng"]=np.where(
-(abs(fs0Tot["ng_zs"])>2),
-"q>2",fs1Tot["ngZsRng"])
+id=f"ng"
+idzscolname=f"{id}zs" # not used
+zsrng=f"{id}zsrng"
 
-scipy.stats.norm.ppf({target_prob})->zscore
-scipy.stats.norm.cdf({zscore})->target_cum_prob
+f4[zsrng]=None
+f4[zsrng]=np.where(
+(abs(f4[f"{id}zs"])<=1),"q<=1",f4[zsrng])
+f4[zsrng]=np.where(
+(abs(f4[f"{id}zs"])>1) & (abs(f4[f"{id}zs"])<=2),
+"q>1",f4[zsrng])
+f4[zsrng]=np.where(
+(abs(f4[f"{id}zs"])>2),
+"q>2",f4[zsrng])
+f4[zsrng]=np.where(
+(abs(f4[f"{id}zs"])>2.5),
+"q>2.5",f4[zsrng])
 
-sns.kdeplot(fs0Tot["ng"],x="ng")
-sns.displot(fs0Tot["ng"],x="ng",bins=10)
+try:
+    if "nfp" in ids:
+        f4.ng[~pd.isna(f4.ng)].index.intersection(f4.nfp[~pd.isna(f4.nfp)].index)
+        f4.nfp.value_counts(dropna=False)
+        f4.nfp[np.isnan(f4.nfp)]
+        f4["nfp"]=f4["nfp"].interpolate()
+        opt=("nfp","ri")
+except:
+    ...
+else:
+    idsdatacols=list(set(fs0.keys())-set(opt))
+finally:
+    f5=f4.dropna(subset=zsrng)
+    f5=f5[idsdatacols+[zsrng]]
+
+pp(f5,hue=zsrng,corner=False)
+hm(f5,corner=True,minmax=(-1,1),title="0.7-99.3,dropna,non-interpolated")
+
+# scipy.stats.norm.pdf({obs})
+# scipy.stats.norm.ppf({target_prob})->zscore
+# scipy.stats.norm.cdf({zscore})->target_cum_prob
+
+# sns.kdeplot(fs0Tot["ng"],x="ng")
+# sns.displot(fs0Tot["ng"],x="ng",bins=10)

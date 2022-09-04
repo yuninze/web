@@ -55,6 +55,8 @@ def now():
     print(datetime.now().strftime("%Y-%m-%d %H:%M"))
     return time()
 
-def wrk(t0,ts):
+def wrk(t0,ts=None):
     t1=time()
-    return f"{(t1-t0)//60-ts}"
+    if not ts:
+        return (t1-t0)//60
+    return ((t1-t0)//60)-ts
