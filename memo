@@ -1,5 +1,38 @@
-모두 컬럼 기준이다. 모두 컬럼 시작한다.
-컬럼은 intp가 아닌 label로 다룬다.
+fe=sorted(glob("c:/code/da_**.csv"))
+fe=pd.concat((pd.read_csv(q).set_index("date") for q in fe),axis=1)
+fe.index=pd.to_datetime(fe.index)
+
+f4.describe()[[q for q in list(f4.describe().columns) if q.startswith("30ym")]]
+
+cond=~(f5[zsrng]=="q<=1")
+
+f5[cond].interpolate("cubic").dropna(thresh=8)
+
+cond=((f4["30ymzsrng"]=="q>=2")|(f4["30ymzsrng"]=="q>=2.5"))
+
+f4["30ymzsrng"][~pd.isna(f4["30ymzsrng"])]
+
+resampling
+
+per id zscoring, probability calculator
+f[f"{id}zsprb"]
+
+.8<=q
+.2<=q
+.1<=q
+.05<=q
+
+sns.pairplot(data=fff,vars=["fsi","cys","30ym","10y","wti","ng","zs"],hue="10yzsprbrng")
+
+
+###
+
+f=pd.concat((pd.read_csv(file) for file in files),ignore_index=True)
+pd.concat(iter,axis="columns")
+
+pd.cut(contDataCol,bins=[0,5,10,15],labels=list("abcd"))
+-> categoricalColumnData
+
 iloc
 loc
 iat
@@ -19,20 +52,7 @@ for df-dicts...
 np.where(
 abs(fs0Tot["ng_zs"])>2
 
-
-
-target
-fs1Tot["ngZsRng"]=np.where(
-(abs(fs0Tot["ng_zs"])<=1),
-"q<=1",)
-fs1Tot["ngZsRng"]=np.where(
-(abs(fs0Tot["ng_zs"])>1) & (abs(df["zscore"])<=2)),
-"1<q<=2",)
-fs1Tot["ngZsRng"]=np.where(
-(abs(fs0Tot["ng_zs"])>2),
-"2>q",)
-
-
+5만,5만,2.5만,2만
 
 list(dict)
 list_indexer=row

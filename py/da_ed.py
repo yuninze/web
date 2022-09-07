@@ -1,118 +1,125 @@
+from glob import glob
 import numpy as np
 import pandas as pd
 import scipy.stats
 from full_fred.fred import Fred
 
-pd.options.display.min_rows=10
-pd.options.display.float_format=lambda q:f"{q:.5f}"
+pd.options.display.min_rows=8
+pd.options.display.float_format=lambda q:f"{q:.10f}"
 
-# df[idumns].dtypes
-# df[idumns].memory_usage(deep=1)
+def full_range_idx(f:pd.DataFrame,test=False):
+    if test:# frame with full-range date indices
+        return np.arange(
+            f.index.min(),f.index.max(),dtype="datetime64[D]")
+    return (pd.DataFrame(
+        pd.date_range(
+            f.index.min(),f.index.max()),columns=["date"])
+            .set_index("date"))
 
-fredkey="c:/code/fed"
+def messij(f:pd.DataFrame)->pd.DataFrame:
+    return f.apply(pd.to_numeric,errors="coerce")
 
-class ed:
-    def __init__(self,f,n,id):
-        self.content=f
-        self.name=n
-        self.id=id
-        self.des=f.describe()
-    def zs(self):
-        return scipy.stats.zscore(self.content[self.id])
+def prbrng(f:pd.DataFrame,id:str,rng=6,
+    test=False)->pd.DataFrame:
+    if not id in f.columns:
+        raise NameError(f"{id} not exist in columns")
+    
+    colp=f"{id}zsprb"
+    rng=np.flip(np.geomspace(.05,1,rng))[1:]
+    f.loc[:,f"{colp}rng"]=None
+    for q in range(len(rng)):
+        f.loc[:,f"{colp}rng"]=np.where(
+            (f[colp]<=rng[q])&(~pd.isna(f[colp])),
+            f"{rng[q]}",f[f"{colp}rng"])
+    
+    return f.dropna(subset=f"{colp}rng")
+    # isna(colp) is worthless
 
-ids={
-    "fsi":"STLFSI3",
-    "cys":"BAMLH0A0HYM2",
-    "5yi":"T5YIE",
-    "ng":"DHHNGSP",
-    "wti":"DCOILWTICO",
-    "30ym":"MORTGAGE30US",
-    "ri":"RECPROUSM156N",
-    "nfp":"ADPWNUSNERSA"
-}
+local=True
+prbrngtgt="wti"
 
-def sanitize(f):
-    for id in f.columns:
-        f[id][f[id]=="."]=np.nan
-    return f
+if local:
+    f=(pd.read_csv("c:/code/data0.csv",
+        index_col="date",
+        converters={"date":pd.to_datetime},
+        na_filter=False)
+        .apply(pd.to_numeric,errors="coerce"))
+    print("success: got local")
 
-def truthy(*vals):
-    for x in vals:
-        if not x:
-            raise SystemExit(f"{x}")
+else:
+    int={
+        "fsi":"STLFSI3",
+        "cys":"BAMLH0A0HYM2",
+        "5yi":"T5YIE",
+        "ng":"DHHNGSP",
+        "wti":"DCOILWTICO",
+        "30ym":"MORTGAGE30US",
+        "ri":"RECPROUSM156N",
+        "nfp":"ADPWNUSNERSA",
+        "10yt":"DGS10"
+    }
+    ext={
+        "zs":"soybean",
+        "hg":"copper"
+    }
+    fed=Fred("c:/code/fed")
+    fs={id:fed.get_series_df(int[id])
+        .loc[:,"date":]
+        .astype({"date":"datetime64[ns]"})
+        .set_index("date")
+        .rename(columns={"value":id}) for id in int}
+    print("success: got fred")
 
-fed=Fred(fredkey)
-fs0={id:fed.get_series_df(ids[id]).loc[:,"date":] for id in ids}
+    fsincsv=[pd.read_csv(q,
+        index_col="date",
+        converters={"date":pd.to_datetime},
+        na_filter=False) for q in sorted(glob(r"c:/code/da_**.csv"))]
+    if not len(fsincsv)==len(ext):
+        raise IndexError("csv read error")
 
-for id in fs0:
-    fs0[id].columns=["date",id]
-    fs0[id]=fs0[id].set_index("date")
-    fs0[id].index=pd.to_datetime(fs0[id].index,yearfirst=True)
+    for q in range(len((fsincsv))):
+        fs[f"{fsincsv[q].columns[0]}"]=fsincsv[q]
 
-f0=[q for q in fs0.values()]
+    f=messij(pd.concat(fs.values(),axis=1))
+    f.to_csv("c:/code/data0.csv",encoding="utf-8-sig",)
 
-f1=pd.concat(fs0.values(),axis=1)
-f2=(pd.DataFrame(
-    pd.date_range(f1.index.min(),f1.index.max()),columns=["date"])
-    .set_index("date"))# frame with full-range date indices
-
-f3=f2.join(f1,how="left")# takes series,iterables,dataframes
-f3=sanitize(f3).astype("float")
-f3i=f3.describe()
-
-# na-dropped, zscored
-fs1={}
-for id in f3.columns:
-    target=f3[id].dropna()
-    mm=np.percentile(target,(0.7,99.3))
-    target[(target<=mm[0])|(target>=mm[1])]=np.nan
-    zs=scipy.stats.zscore(target,nan_policy="omit")
+fcache=[]
+for id in f.columns:
+    q=f[id].dropna()
+    mm=np.percentile(q,(0.3,99.7))
+    q[(q<=mm[0])|(q>=mm[1])]=np.nan
+    zs=scipy.stats.zscore(q,nan_policy="omit")
     zsprb=pd.DataFrame(
         1-scipy.stats.norm.cdf(zs),index=zs.index)
-    fs1[id]=pd.concat([target,pd.concat([zs,zsprb],axis=1)]
-        ,axis=1)
-    fs1[id].columns=[f"{id}",f"{id}zs",f"{id}zsprb"]
+    w=pd.concat([q,pd.concat([zs,zsprb],axis=1)],axis=1)
+    w.columns=[f"{id}",f"{id}zs",f"{id}zsprb"]
+    fcache.append(w)
 
-f4=f2.join([q for q in fs1.values()],how="left")
+ff=full_range_idx(f).join(pd.concat(fcache,axis=1),how="left")
+ff.to_csv("c:/code/data1.csv",encoding="utf-8-sig",)
 
-id=f"ng"
-idzscolname=f"{id}zs" # not used
-zsrng=f"{id}zsrng"
+# resampling
+fff=prbrng(ff,prbrngtgt,rng=5)
 
-f4[zsrng]=None
-f4[zsrng]=np.where(
-(abs(f4[f"{id}zs"])<=1),"q<=1",f4[zsrng])
-f4[zsrng]=np.where(
-(abs(f4[f"{id}zs"])>1) & (abs(f4[f"{id}zs"])<=2),
-"q>1",f4[zsrng])
-f4[zsrng]=np.where(
-(abs(f4[f"{id}zs"])>2),
-"q>2",f4[zsrng])
-f4[zsrng]=np.where(
-(abs(f4[f"{id}zs"])>2.5),
-"q>2.5",f4[zsrng])
+def eli(a,v)->tuple:
+    """array-like, value"""
+    i=np.abs(a-v).argmin()
+    return (i,a[i])
 
-try:
-    if "nfp" in ids:
-        f4.ng[~pd.isna(f4.ng)].index.intersection(f4.nfp[~pd.isna(f4.nfp)].index)
-        f4.nfp.value_counts(dropna=False)
-        f4.nfp[np.isnan(f4.nfp)]
-        f4["nfp"]=f4["nfp"].interpolate()
-        opt=("nfp","ri")
-except:
-    ...
-else:
-    idsdatacols=list(set(fs0.keys())-set(opt))
-finally:
-    f5=f4.dropna(subset=zsrng)
-    f5=f5[idsdatacols+[zsrng]]
+def waratah(a,i,id)->str:
+    """array-like, index of value, product id"""
+    ic=a.columns.get_indexer([f"{id}"])[0]
+    q=a.iloc[i,ic:ic+3]
+    print(f"{q[2]:.5f}%")
+    return q
 
-pp(f5,hue=zsrng,corner=False)
-hm(f5,corner=True,minmax=(-1,1),title="0.7-99.3,dropna,non-interpolated")
-
-# scipy.stats.norm.pdf({obs})
-# scipy.stats.norm.ppf({target_prob})->zscore
-# scipy.stats.norm.cdf({zscore})->target_cum_prob
+hm(fff[["fsi","cys","5yi","30ym","10y","wti","ng","zs","hg"]],
+corner=True,minmax=(-1,1),
+title="0.3-99.7,non-interpolated")
 
 # sns.kdeplot(fs0Tot["ng"],x="ng")
 # sns.displot(fs0Tot["ng"],x="ng",bins=10)
+
+tgt=prbrngtgt
+waratah(fff,eli(f[f"{tgt}"],85.5)[0],id=tgt)
+eli(fff[f"{tgt}"],85.5)
