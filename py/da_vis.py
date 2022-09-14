@@ -6,7 +6,7 @@ import scipy.cluster.hierarchy as sch
 from time import time as t
 from typing import Iterable
 from sklearn.preprocessing import normalize
-from sklearn.cluster import KMeans,AgglomerativeClustering
+# from sklearn.cluster import KMeans,AgglomerativeClustering
 
 plt.rcParams["font.family"]="monospace"
 rg=np.random.default_rng(94056485)
@@ -95,8 +95,8 @@ def pp(q,r=None,w=None,e=None,
     plt.show(block=False)
     return f"pp: shown in {t()-t0:.3f}s"
 
-def hm(q,title="title",figsize=(12,12),
-    minmax=(None,None),fmt=".3f",
+def hm(q,title="heatmap [-1,1]",figsize=(12,12),
+    minmax=(-1,1),fmt=".3f",
     corner=False):
     t0=t()
     #have corr df

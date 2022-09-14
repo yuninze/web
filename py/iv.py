@@ -28,29 +28,6 @@ class etp:
             "difference":diff,
             "iv":iv}
 
-    def vwp(alpha,beta,delta):
-        return "vwap"
-
-def pro(cap):
-    q=cap/10
-    w=q*2
-    e=w*2
-    r=q*5
-    return {
-        "10":q,
-        "20":w,
-        "40":e,
-        "50":r}
-
-def messij():
-    pass
-
-def sig(startingFrom):
-    delta=ts(datetime.now())-ts(startingFrom)
-    return ((
-    delta.components.hours*60)+
-    delta.components.minutes)
-
 def now():
     print(datetime.now().strftime("%Y-%m-%d %H:%M"))
     return time()

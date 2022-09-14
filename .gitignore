@@ -19,3 +19,7 @@ key
 gcert.json
 gsak.json
 token.json
+
+#rs
+rs/target/
+Cargo.lock
