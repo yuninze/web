@@ -20,6 +20,8 @@ gcert.json
 gsak.json
 token.json
 
-#rs
+#rust binaries
 rs/target/
 Cargo.lock
+main.exe
+main.pdb
