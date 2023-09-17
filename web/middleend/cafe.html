@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>카페 고르기</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+
+<body>
+<script src="./cafe.js" charset="utf-8"></script>
+<div id="demo">
+<h1>카페 고르기</h1>
+<button type="button" onclick='document.getElementById("sel").innerHTML=sel();'>결정</button>
+<button type="button" onclick='document.getElementById("sel").innerHTML=most();'>많이 걸린 데</button>
+<button type="button" onclick='document.getElementById("sel").innerHTML=mr();'>브랜드들</button>
+</div>
+<div id="sel">
+</div>
+<div id="nb_">
+<input type="text" name="새로운 브랜드 입력 칸" id="nb" value="">
+<button type="button" onclick='document.getElementById("nbResult").innerHTML=nb();'>새로운 브랜드 입력</button>
+</div>
+<div id="nbResult">
+</div>
+<div id="hist_">
+<button type="button" onclick='document.getElementById("hist").innerHTML=hist();'>얼마나 걸렸는지 보기</button>
+</div>
+<div id="hist">
+</div>
+<div id="fetch_">
+</div>
+
+<div>
+<h1>테스트 간</h1>
+<input type="text" id="cafeName" placeholder="카페이름">
+<button onclick="sendjson()">send</button>
+<div id="sentResult">
+</div>
+</div>
+
+</body>
+</html>
