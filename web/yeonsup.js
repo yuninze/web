@@ -154,6 +154,67 @@ for (const [first,second] of ㄴ) {
 	console.log(first,second);
 }
 
+// declaring function
+function sqrt(num) {
+	return num*num;
+}
+const _sqrt=sqrt(10);
+
+array.map((s)=>s.length)
+
+// for (col,row) in [[],[]]
+const [col,row] = [[col],[row]]
+
+// 문자열 접합과 즉할당
+let munza="samsung";
+munza+="buds";
+
+// status="major" if age>=18 else "major"
+let status=age>=18?"major":"minor"
+
+// comma 반복문 조건문에서 변수조작
+for (let col=0,idx=0; col<=idx; col++,idx++) {
+	console.log(col,idx);
+}
+
+// typeof object는 type 문자열로 줌
+// isinstance == instanceof
+if (string instanceof string) {..}
+
+// js에서 in은 오브젝트나 어트리뷰트 수준으로 판정함
+let phones=["samsung","apple","xiaomi"];
+0 in phones;
+5 in phones;
+"xiaomi" in phones;
+phones[0]=="samsung"
+
+let dataframe={row:[0,1],col:["a","b"]};
+"row" in dataframe;
+
+// self == this
+this.propertyName
+
+// new operator to create an instance of a user-defined object
+
+// Date... year, 
+let today=new Date();
+today=new Date("2000-01-01");
+xmas=new Date(1995,11,25); // datetime.datetime(1995,11,25)
+
+// string object is a wrapper
+let munza=new String("SOUND CLOUD"); // 이렇게 오브젝트 래퍼 사용 x
+munza="dududu";
+
+startsWith, endsWith
+munza.includes("du");
+munza.indexOf("dudu");
+munza.concat(" waratah");
+munza.substr(0,6);
+toLowerCase,toUpperCase
+trim
+
+
+
 
 
 
