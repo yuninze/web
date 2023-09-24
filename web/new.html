@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+	<meta charset="utf-8-sig"/>
+	<meta name="viewport" content="width=device-width"/>
+	<title>My Page</title>
+	<link href="../css.css" rel="stylesheet"/>
+	<style>
+	form {
+		margin: 0 auto;
+		width: 400px;
+		padding: 1em;
+		broder: 1px solid #ccc;
+		border-radius: 1em;
+	}
+	</style>
+</head>
+<body>
+	<section>
+	<h3>Forms</h3>
+	<form action="../form-handling" method="post">
+		<ul>
+			<li>
+				<label for="name">Name:</label>
+				<input type="text" id="text" name="userName" value="name"/>
+			</li>
+			<li>
+				<label for="mail">Mail:</label>
+				<input type="email" id="mail" name="userMail" value="mail"/>
+			<li>
+				<label for="msg">Msg:</label>
+				<textarea id="msg" name="msg">val</textarea>
+			</li>
+			<li class="button">
+				<button type="submit">Send Above</button>
+			</li>
+		</ul>
+	</form>
+	
+	<form action="../form-handling" method="post">
+	<fieldset>
+		<legend>Sbux Drinks</legend>
+		<p>
+			<label for="fizz">Fizzio (R)</label>
+			<input type="radio" name="fizz" id="fizz" value="fizz"/>
+		</p>
+		<p>
+			<label for="brew">Brewed Yesterday</label>
+			<input type="radio" name="brew" id="brew" value="brew"/>
+		</p>
+		<p>
+			<label for="drip">Dripped Today</label>
+			<input type="radio" name="drip" id="drip" value="drip"/>
+		</p>
+	</fieldset>
+	</form>
+	
+	<form action="../form-handling" method="post">
+	<fieldset>
+		<legend>Essential Inputs</legend>
+		<p>
+			<label for="soundcloud">SoundCloud URL</label>
+			<input type="text" id="soundcloud" name="soundcloud" required/>
+		</p>
+	</fieldset>
+	</section>
+</body>
+</html>
