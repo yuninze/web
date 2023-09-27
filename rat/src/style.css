@@ -1,0 +1,12 @@
+* {
+	font: jetbrains mono,cascadia,consolas;
+}
+
+body {
+	margin: 0;
+	backgroud: linear-gradient(to left,#aaa,#ff0);
+}
+
+ul, li {
+	list-style-type: None;
+}
