@@ -4,6 +4,16 @@ let q,w,e,r;
 [q,w,e,r].forEach(console.log);
 [q,w,...a]=["q","w","qwer","asdf"]; // a=["qwer","asdf"]
 
+// 램다 이름 넣으면 안됨
+(function () {console.log("lambda");})
+// 램다 실행
+();
+
+// array...
+arr.forEach((elem) => func(elem)) -> elem
+arr.map((elem) => elem+"!"); -> arr
+arr.filter((elem) => typeof elem == "number"); -> arr
+
 // array.forEach(elem, idx, arr) = applymap
 let q=[0,1,2,3];
 function muli(elem,idx,arr) {arr[idx]=elem*100;}
@@ -15,11 +25,6 @@ if (Math.random()>=.5) {const rnd=">=.5";} else {const rnd="ha";}
 // 선언 안됨을 eval.할 수 없고, initialize 안된 건 eval.가능
 let x;
 x==undefined;
-
-// 램다 이름 넣으면 안됨
-(function () {console.log("lambda");})
-// 램다 실행
-();
 
 // who랑 비슷
 globalThis
@@ -273,10 +278,6 @@ ndarray([ [] ])
 // arr.splice mutation
 arr.splice(start,count)
 
-arr.forEach((elem) => func(elem)) -> elem
-arr.map((elem) => elem+"!"); -> arr
-arr.filter((elem) => typeof elem == "number"); -> arr
-
 // all, any
 arr.every(func->bool)
 arr.some(func->bool)
@@ -289,7 +290,6 @@ devices=[
 {name:"apple",model:"test"},
 ];
 forEach((q) => console.error(q));
-forEach((q) => console.error(q.model));
 
 for (let q=0; q<=devices.length; q++) {
 	console.log(q);

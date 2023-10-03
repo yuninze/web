@@ -1,12 +1,16 @@
 * {
-	font: jetbrains mono,cascadia,consolas;
+	font-family: jetbrains mono,roboto mono,noto sans mono,cascadia,consolas;
 }
 
 body {
 	margin: 0;
-	backgroud: linear-gradient(to left,#aaa,#ff0);
+	background: linear-gradient(to left,#0ba,#d50);
 }
 
-ul, li {
+li {
 	list-style-type: None;
+}
+
+hr {
+	border-top: 2px solid black;
 }
