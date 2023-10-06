@@ -39,7 +39,7 @@ function ShowProfileOf({scientists}) {
 			</ul>
 		</article>
 	);
-};
+}
 
 function ShowDescsOf({scientists}) {
 	const _descs=[];
@@ -62,7 +62,7 @@ function ShowDescsOf({scientists}) {
 		</ul>
 		</article>
 	);
-};
+}
 
 function ShowBy({id,name,sex,race,friends}) {
 	if (Array.isArray(friends)) {
@@ -80,7 +80,7 @@ function ShowBy({id,name,sex,race,friends}) {
 			"FriendsIsNotAnArrayError"
 		);
 	}
-};
+}
 
 function Show({scientist}) {
 	const path=imgur[0]+scientist.id+".jpg";
@@ -98,7 +98,7 @@ function Show({scientist}) {
 			</ul>
 		</article>
 	);
-};
+}
 
 function IsFav({elem}) {
 	const isFav=elem.fav?"✔":"X";
@@ -107,7 +107,7 @@ function IsFav({elem}) {
 			<span>{elem.id}:::{isFav}</span>
 		</li>
 	);
-};
+}
 
 function ShowListing({arr}) {
 	const Shows=arr.map(elem=>
@@ -116,7 +116,7 @@ function ShowListing({arr}) {
 	return (
 		<li>{Shows}</li>
 	);
-};
+}
 
 function Main() {
 	return (
@@ -125,6 +125,6 @@ function Main() {
 			<ShowDescsOf scientists={scientists}/>
 		</div>
 	);
-};
+}
 
 export default Main
