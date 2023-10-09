@@ -1,4 +1,8 @@
-import "./style.css"; /* import {x} from "./x.js"; */
+import {
+	A,Header,WitChoc,BigBoldLetters,ShowThe,Back,ParseMatter
+} from "./base.js";
+
+import styleOf from "../components/styleOf.module.css";
 
 const imgur=[
 	"https://i.imgur.com/"
@@ -10,14 +14,13 @@ const scientists=[
 	{id:"yXOvdOSs",name:"Someone",sex:"Male",race:"Human",desc:["Cancer Coke","Applic Substance"],friends:[2,3,7],fav:true},
 	{id:"7vQD0fPs",name:"Bandcamp Freak",sex:"Unknown",race:"Human",desc:["Diasterous Water","Coming Something"],friends:[2,3,7],fav:true},
 ];
-const BigBoldLetters=({are})=>(<h3>{are}</h3>);
 
 function ShowProfileOf({scientists}) {
 	const size=80;
 	const alien=scientists.filter(one=>one.race==="Alien");
 	const others=scientists.filter(one=>one.race!=="Alien");
 	return (
-		<article>
+		<>
 			<BigBoldLetters are="Profile"/>
 			<h4>Alien</h4>
 			<ul>
@@ -37,7 +40,7 @@ function ShowProfileOf({scientists}) {
 					</li>
 				)}
 			</ul>
-		</article>
+		</>
 	);
 }
 
@@ -85,7 +88,7 @@ function ShowBy({id,name,sex,race,friends}) {
 function Show({scientist}) {
 	const path=imgur[0]+scientist.id+".jpg";
 	return (
-		<article>
+		<>
 			<ul>
 				<li key={scientist.id}>
 					<a href={path} target="_blank" rel="noreferrer">
@@ -96,7 +99,7 @@ function Show({scientist}) {
 						</p>
 				</li>
 			</ul>
-		</article>
+		</>
 	);
 }
 
@@ -118,13 +121,15 @@ function ShowListing({arr}) {
 	);
 }
 
-function Main() {
+export default function Main() {
 	return (
-		<div>
-			<ShowProfileOf scientists={scientists}/>
-			<ShowDescsOf scientists={scientists}/>
-		</div>
+		<>
+			<WitChoc/>
+			<div className={styleOf.container}>
+				<ShowProfileOf scientists={scientists}/>
+				<ShowDescsOf scientists={scientists}/>
+				<A href="/"><h1>Back</h1></A>
+			</div>
+		</>
 	);
 }
-
-export default Main

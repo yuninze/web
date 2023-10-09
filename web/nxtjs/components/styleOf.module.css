@@ -1,0 +1,27 @@
+.WitChoc {
+}
+
+.WitChocMenu {
+	font-size: 1.5rem;
+	margin: 0 3rem 0 0;
+}
+
+.WitChocMenuWitChoc {
+	margin: 1rem 0 0 0;
+}
+
+.WitChocLogoYeopChar {
+	font-size: 2rem;
+}
+
+.Back {
+	font-size: 1.5rem;
+}
+
+.container {
+	padding: .5rem;
+}
+
+.list {
+	list-style: none;
+}
