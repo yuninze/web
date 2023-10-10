@@ -1,4 +1,4 @@
-#temporary directories, py-caches, logs
+# temporary directories, py-caches, logs
 .vscode/
 .DS_Store/
 __pycache__/
@@ -6,21 +6,18 @@ __pycache__/
 *.pyo
 *.log
 
-#mines
-*.png
-*.jpg
-*.jpeg
+# mines
 ko.txt
 GBR.ttf
 chinook.sql
 
-#credentials
+# credentials
 key
 gcert.json
 gsak.json
 token.json
 
-#rust binaries
+# rust binaries
 rs/target/
 Cargo.lock
 main.exe
