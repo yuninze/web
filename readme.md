@@ -22,3 +22,9 @@
 3. ../ => 그 페이지의 ../
 4. export {f,h,g}; => import {f,h,g} from "module";
 
+#### git on commandline
+1. git remote show origin
+2. git remote get url-origin
+3. git remote show origin
+4. git remote -v
+4. git remote set-url origin https://github.com/yuninze/yeonsup

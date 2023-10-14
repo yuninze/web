@@ -1,25 +1,24 @@
 import {
-	A,Header,WitChoc,BigBoldLetters,ShowThe,Back,ParseMatter
-} from "./base.js";
+	A,Header,WitChoc,BigBoldLetters,ShowThe,Back,ParsePostSpecFrom
+} from "./front.js";
 import {
-	getPostsMatter
-} from "./base2.js";
-
+	getPostsSpec
+} from "./back.js";
 import styleOf from "../components/styleOf.module.css";
 
 export async function getStaticProps() {
-	const postsMatter=getPostsMatter();
+	const postsSpecs=getPostsSpec();
 	return {
 		props: {
-			postsMatter,
+			postsSpecs,
 		},
 	};
 }
 
-export default function Main({postsMatter}) {
+export default function Main({postsSpecs}) {
 	return (
 		<>
-			<Header title={["@S","@SitePageName"]}/>
+			<Header title={["yuninze","pgName"]}/>
 			<WitChoc/>
 			
 			<div className={styleOf.container}>
@@ -27,10 +26,8 @@ export default function Main({postsMatter}) {
 				<ShowThe img="/cafe.png"/>
 				<ShowThe img="/neoguri.jpg"/>
 				<BigBoldLetters are="Static Props"/>
-				<ParseMatter of={postsMatter}/>
+				<ParsePostSpecFrom of={postsSpecs}/>
 			</div>
-			
-			{Back}
 		</>
 	);
 }

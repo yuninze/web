@@ -1,5 +1,8 @@
 ---
-title: "동물 키우기"
-date: "2000-01-05"
+title: "nicotine auc"
+date: "2000-05-05"
 ---
-아이들이 동물을 키우는 데 도움을 주는 환경에서 자라는 것의 이점에 대해 자세히 설명해 줘. 동료 평가 기사의 평판 좋은 출처를 사용해 줘. 어휘는 대학원 연구 수준이어야 해. 이 글은 사회학 저널에 게재될 기사의 초안이 될 거야. 다른 작품을 인용할 때마다 APA 스타일 인용을 사용해 줘.
+
+Nicotine AUC typically peaks within 30 minutes of exposure and then declines gradually over time. The elimination half-life of nicotine is about 2 hours, which means that it takes about 2 hours for the nicotine concentration in the blood to be reduced by half.
+
+Nicotine AUC can vary depending on a number of factors, including the route of administration, the dose of nicotine, and the individual's metabolism. For example, nicotine AUC is typically higher in smokers than in non-smokers.

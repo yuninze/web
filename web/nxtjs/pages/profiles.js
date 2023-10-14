@@ -1,6 +1,6 @@
 import {
-	A,Header,WitChoc,BigBoldLetters,ShowThe,Back,ParseMatter
-} from "./base.js";
+	A,Header,WitChoc,BigBoldLetters,ShowThe,Back,ParsePostSpecFrom
+} from "./front.js";
 
 import styleOf from "../components/styleOf.module.css";
 
@@ -128,7 +128,6 @@ export default function Main() {
 			<div className={styleOf.container}>
 				<ShowProfileOf scientists={scientists}/>
 				<ShowDescsOf scientists={scientists}/>
-				<A href="/"><h1>Back</h1></A>
 			</div>
 		</>
 	);
