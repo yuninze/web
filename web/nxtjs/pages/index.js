@@ -15,7 +15,7 @@ export async function getStaticProps() {
 	};
 }
 
-export default function Main({postsSpecs}) {
+export default function IndexScreen({postsSpecs}) {
 	return (
 		<>
 			<Header title={["yuninze","pgName"]}/>

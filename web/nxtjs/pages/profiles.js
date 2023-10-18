@@ -1,7 +1,6 @@
 import {
 	A,Header,WitChoc,BigBoldLetters,ShowThe,Back,ParsePostSpecFrom
 } from "./front.js";
-
 import styleOf from "../components/styleOf.module.css";
 
 const imgur=[
@@ -121,7 +120,7 @@ function ShowListing({arr}) {
 	);
 }
 
-export default function Main() {
+export default function ProfilesScreen() {
 	return (
 		<>
 			<WitChoc/>

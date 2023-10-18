@@ -22,3 +22,5 @@ rs/target/
 Cargo.lock
 main.exe
 main.pdb
+
+# etc

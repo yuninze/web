@@ -32,6 +32,14 @@
 	text-decoration: none;
 }
 
+.container button {
+	margin: 0 .25rem 0 .25rem
+}
+
+.container span {
+	font: 1rem Serif;
+}
+
 .list {
 	list-style: none;
 }

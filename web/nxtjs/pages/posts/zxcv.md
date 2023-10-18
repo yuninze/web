@@ -1,5 +1,5 @@
 ---
-title: "nicotine auc"
+title: "Nicotine AUC"
 date: "2000-05-05"
 ---
 

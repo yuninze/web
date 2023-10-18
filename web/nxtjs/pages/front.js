@@ -1,10 +1,9 @@
 import Head from "next/head";
 import A from "next/link";
 import Image from "next/image";
-
 import styleOf from "../components/styleOf.module.css";
 
-const originUrl="http://localhost:3000/";
+const OriginUrl="http://localhost:3000/";
 
 export function Header({title}) {
 	if (Array.isArray(title)) {
@@ -29,15 +28,14 @@ export const WitChoc=()=>{
 		</span>
 	);
 	return (
-		<div>
+		<>
 			{WitChocLogo}{WitChocLogoYeopChar}
 			<div className={styleOf.WitChocMenuWitChoc}>
-			<Menu name="Main" goes={originUrl}/>
-			<Menu name="Request" goes="/profiles"/>
-			<Menu name="Contact" goes="/profiles"/>
-			<Menu name="Back" goes="/"/>
+			<Menu name="Main" goes={OriginUrl}/>
+			<Menu name="Ppl." goes="/profiles"/>
+			<Menu name="Req." goes="/requests"/>
 			</div>
-		</div>
+		</>
 	);
 }
 
