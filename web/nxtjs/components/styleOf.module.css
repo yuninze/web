@@ -18,13 +18,9 @@
 	font-size: 1.75rem;
 }
 
-.Back {
-	font-size: 1.5rem;
-}
-
 .container {
-	padding: 1rem 0 0 0;
-	font: 1.2rem Serif;
+	margin: 1rem 0 0 0;
+	font: 1.25rem Serif;
 }
 
 .container A {
@@ -32,12 +28,17 @@
 	text-decoration: none;
 }
 
-.container button {
-	margin: 0 .25rem 0 .25rem
-}
-
 .container span {
 	font: 1rem Serif;
+}
+
+.interactives {
+	margin: 1rem 0 0 0;
+	font: 1.5rem Serif
+}
+
+.interactives button {
+	margin: 0 .25rem 0 .25rem
 }
 
 .list {
@@ -50,7 +51,7 @@
 
 .post {
 	margin: 1rem 0 0 0;
-	font: 1.2rem Serif;
+	font: 1.25rem Serif;
 }
 
 .post span {

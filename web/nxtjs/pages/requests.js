@@ -1,49 +1,97 @@
 import {
-	A,Header,WitChoc,BigBoldLetters,ShowThe,Back,
+	A,Header,WitChoc,BigBoldLetters,ShowThe,ShowAsListingFrom
 } from "./front.js"
 import styleOf from "../components/styleOf.module.css"
 import {useState} from "react"
 
 const SandwichBrands=[
-	{name:"맘스 터치",enabled:true},
 	{name:"맥 도널드",enabled:true},
-	{name:"맥 오더",enabled:true},
-	{name:"K.F.C.",enabled:true},
+	{name:"맘스터치",enabled:true},
 	{name:"서브웨이",enabled:true},
 	{name:"B.G.K.",enabled:true},
 	{name:"E.M.T.",enabled:true},
+	{name:"K.F.C.",enabled:true},
 ]
 
-function Interactives() {
-	const [count,setCount]=useState(null)
-	const [picked,pick]=useState(null)
-	const RandomInteger=(max)=>{
-		return Math.floor(Math.random()*max)
+function CountButton() {
+	const [click,setClick]=useState(0)
+	function setSetClick() {
+		setClick(click+1)
 	}
-	const PickSomething=(from)=>{
-		const RandomNumber=RandomInteger(from.length)
-		return from[RandomNumber].name
+	function delSetClick() {
+		setClick(0)
+	}
+	return (
+		<section>
+			<button onClick={setSetClick}>
+				{click} times
+			</button>
+			<button onClick={delSetClick}>
+				Delete
+			</button>
+		</section>
+	)
+}
+
+function StringForm() {
+	const [value,setValue]=useState(null)
+	function setSetValue(evnt) {
+		setValue(evnt.target.value)
 	}
 	return (
 		<>
-			<section>
-				<ShowThe img="/ngr.png"/>
-				<ShowThe img="/lotty.png"/>
-				<ShowThe img="/neoguri.jpg"/>
-			</section>
-			<section>
-				골라진 숫자
-				<button onClick={()=>setCount(RandomInteger(SandwichBrands.length))}>실행</button>
-				<button onClick={()=>setCount(null)}>
-				삭제</button>
-				<span>{count}</span>
-			</section>
-			<section>
-				골라진 밥집
-				<button onClick={()=>pick(PickSomething(SandwichBrands))}>실행</button>
-				<button onClick={()=>pick(null)}>삭제</button>
-				<span className={styleOf.answer}>{picked}</span>
-			</section>
+			<input value={value} onChange={setSetValue}/>
+			<button onClick={()=>setValue("")}>Reset</button>
+			{value?value.length:"null value"}
+		</>
+	)
+}
+
+function CheckBox() {
+	const [checked,setChecked]=useState(false)
+	function setSetChecked(evnt) {
+		setChecked(evnt.target.checked)
+	}
+	return (
+		<>
+			<input type="checkbox" checked={checked} onChange={setSetChecked}/>
+			plcHldrChkBox:::
+			<span>{checked?"true":"false"}</span>
+		</>
+	)
+}
+
+function PushToDraw({from}) {
+	function DrawSomethingFrom(the) {
+		const DrawRandomInteger=(max)=>(
+			Math.floor(Math.random()*max)
+		)
+		return (
+			the[DrawRandomInteger(the.length)].name
+		)
+	}
+	
+	const [drawed,setDrawed]=useState("Nothing")
+	function setSetDrawed() {
+		setDrawed(DrawSomethingFrom(from))
+	}
+	return (
+		<>
+			<p>
+				<button onClick={setSetDrawed}>PTD</button>
+				<span>was {drawed}</span>
+			</p>
+		</>
+	)
+}
+
+function Interactives() {
+	return (
+		<>
+			<StringForm/>
+			<CountButton/>
+			<CheckBox/>
+			<PushToDraw from={SandwichBrands}/>
 		</>
 	)
 }
@@ -53,8 +101,7 @@ export default function RequestsScreen() {
 		<>
 			<Header title={["yuninze","Requests"]}/>
 			<WitChoc/>
-			
-			<div className={styleOf.container}>
+			<div className={styleOf.interactives}>
 				<Interactives/>
 			</div>
 		</>

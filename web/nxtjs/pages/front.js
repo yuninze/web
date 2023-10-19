@@ -46,29 +46,24 @@ export const BigBoldLetters=({are,goto})=>{
 			<A href={goto}>
 				<h3>{are}</h3>
 			</A>
-		);
+		)
 	} else {
 		return (
 			<h3>{are}</h3>
-		);
+		)
 	}
 }
 
-export const ShowThe=({img})=>(
-	<A href={img}>
-		<Image src={img} alt="" height={230} width={330}/>
-	</A>
-);
-
-export const Back=(
-	<span className={styleOf.Back}>
-		<A href="/">Back</A>
-	</span>
-);
+export function ShowThe({img,about}) {
+	const HasAlt=about?about:"placeholder"
+	return (
+		<Image src={img} alt={HasAlt} width={200} height={200}/>
+	)
+}
 
 export const ParsePostSpecFrom=({of})=>(
 	<ul>
-		{of.map( ({id,date,title}) => (
+		{of.map(({id,date,title})=>(
 			<li className={styleOf.list} key={id}>
 				<A href={`/posts/${id}`}>
 				{title} <span>{id}</span> {date} 
@@ -76,4 +71,13 @@ export const ParsePostSpecFrom=({of})=>(
 			</li>
 		))}
 	</ul>
-);
+)
+
+export function ShowAsListingFrom({arr}) {
+	const SomethingInArr=arr.map(something=>
+		<span>{something} 골라짐</span>
+	)
+	return (
+		<>{SomethingInArr}</>
+	)
+}

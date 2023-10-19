@@ -1,10 +1,10 @@
 import {
 	A,Header,WitChoc,BigBoldLetters,ShowThe
-} from "../front.js";
+} from "../front.js"
 import {
 	getPostsIds,getPostData
-} from "../back.js";
-import styleOf from "../../components/styleOf.module.css";
+} from "../back.js"
+import styleOf from "../../components/styleOf.module.css"
 
 export async function getStaticPaths() {
 	const paths=getPostsIds();
