@@ -15,7 +15,7 @@
 }
 
 .WitChocLogoYeopChar {
-	font-size: 1.75rem;
+	font-size: 1.8rem;
 }
 
 .container {
@@ -34,11 +34,10 @@
 
 .interactives {
 	margin: 1rem 0 0 0;
-	font: 1.5rem Serif
 }
 
 .interactives button {
-	margin: 0 .25rem 0 .25rem
+	margin: 0 .5rem 0 .5rem
 }
 
 .list {
@@ -60,4 +59,16 @@
 
 .post h1 {
 	font: 1rem Serif;
+}
+
+.error {
+	display: inline-block;
+	margin: ;
+	font: 2rem Serif;
+    border-right: 1px solid rgba(0,0,0,1);
+}
+
+.test {
+	font: 1rem Jetbrains Mono,Cascadia,Consolas,Monospace;
+	list-style: none;
 }

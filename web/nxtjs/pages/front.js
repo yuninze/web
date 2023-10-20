@@ -3,7 +3,7 @@ import A from "next/link";
 import Image from "next/image";
 import styleOf from "../components/styleOf.module.css";
 
-const OriginUrl="http://localhost:3000/";
+const OriginUrl="/";
 
 export function Header({title}) {
 	if (Array.isArray(title)) {
@@ -18,8 +18,12 @@ export function Header({title}) {
 }
 
 export const WitChoc=()=>{
-	const WitChocLogo=<Image src="/logo.png" width={110} height={70}/>;
-	const WitChocLogoYeopChar=<span className={styleOf.WitChocLogoYeopChar}>Placeholder: Welcome Testers</span>;
+	const WitChocLogo=(
+		<Image src="/logo.png" alt="logo" width={120} height={80}/>
+	)
+	const WitChocLogoYeopChar=(
+		<span className={styleOf.WitChocLogoYeopChar}>Yun Inze</span>
+	)
 	const Menu=({name,goes})=>(
 		<span className={styleOf.WitChocMenu}>
 			<A href={goes}>
@@ -31,9 +35,9 @@ export const WitChoc=()=>{
 		<>
 			{WitChocLogo}{WitChocLogoYeopChar}
 			<div className={styleOf.WitChocMenuWitChoc}>
-			<Menu name="Main" goes={OriginUrl}/>
-			<Menu name="Ppl." goes="/profiles"/>
-			<Menu name="Req." goes="/requests"/>
+			<Menu name="Intro" goes={OriginUrl}/>
+			<Menu name="Display" goes="/monitor"/>
+			<Menu name="Feature" goes="/feature"/>
 			</div>
 		</>
 	);
@@ -55,7 +59,7 @@ export const BigBoldLetters=({are,goto})=>{
 }
 
 export function ShowThe({img,about}) {
-	const HasAlt=about?about:"placeholder"
+	const HasAlt=about?about:"alt Placeholder"
 	return (
 		<Image src={img} alt={HasAlt} width={200} height={200}/>
 	)
@@ -73,11 +77,11 @@ export const ParsePostSpecFrom=({of})=>(
 	</ul>
 )
 
-export function ShowAsListingFrom({arr}) {
-	const SomethingInArr=arr.map(something=>
-		<span>{something} 골라짐</span>
-	)
+export function ShowAsListFrom({arr}) {
 	return (
-		<>{SomethingInArr}</>
+		arr.map(elem=>
+			<span className={styleOf.test}>
+				{elem.name}, </span>
+		)
 	)
 }

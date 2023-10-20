@@ -2,8 +2,8 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "dev": "next dev",
-    "start": "next start"
+    "dev": "next dev -p 11118",
+    "start": "next start -p 11118"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",

@@ -1,16 +1,17 @@
 import {
-	A,Header,WitChoc,BigBoldLetters,ShowThe,ShowAsListingFrom
+	A,Header,WitChoc,BigBoldLetters,ShowThe,ShowAsListFrom
 } from "./front.js"
 import styleOf from "../components/styleOf.module.css"
 import {useState} from "react"
 
 const SandwichBrands=[
-	{name:"맥 도널드",enabled:true},
-	{name:"맘스터치",enabled:true},
-	{name:"서브웨이",enabled:true},
-	{name:"B.G.K.",enabled:true},
-	{name:"E.M.T.",enabled:true},
-	{name:"K.F.C.",enabled:true},
+	{name:"M.D.",file:"/mcd.png",enabled:true},
+	{name:"M.T.",file:"/mt.png",enabled:true},
+	{name:"SUB",file:"/sub.png",enabled:true},
+	{name:"B.G.K.",file:"/bk.png",enabled:true},
+	{name:"E.M.T.",file:"/em.png",enabled:true},
+	{name:"K.F.C.",file:"/kfc.png",enabled:true},
+	{name:"SBUX",file:"/sbux.png",enabled:true},
 ]
 
 function CountButton() {
@@ -34,7 +35,7 @@ function CountButton() {
 }
 
 function StringForm() {
-	const [value,setValue]=useState(null)
+	const [value,setValue]=useState("")
 	function setSetValue(evnt) {
 		setValue(evnt.target.value)
 	}
@@ -42,7 +43,7 @@ function StringForm() {
 		<>
 			<input value={value} onChange={setSetValue}/>
 			<button onClick={()=>setValue("")}>Reset</button>
-			{value?value.length:"null value"}
+			{value?value.length:"empty"}
 		</>
 	)
 }
@@ -55,7 +56,7 @@ function CheckBox() {
 	return (
 		<>
 			<input type="checkbox" checked={checked} onChange={setSetChecked}/>
-			plcHldrChkBox:::
+			ChkBox:::
 			<span>{checked?"true":"false"}</span>
 		</>
 	)
@@ -66,8 +67,9 @@ function PushToDraw({from}) {
 		const DrawRandomInteger=(max)=>(
 			Math.floor(Math.random()*max)
 		)
+		
 		return (
-			the[DrawRandomInteger(the.length)].name
+			the[DrawRandomInteger(the.length)]
 		)
 	}
 	
@@ -75,12 +77,19 @@ function PushToDraw({from}) {
 	function setSetDrawed() {
 		setDrawed(DrawSomethingFrom(from))
 	}
+	
 	return (
 		<>
-			<p>
-				<button onClick={setSetDrawed}>PTD</button>
-				<span>was {drawed}</span>
-			</p>
+			<section>
+				<ShowAsListFrom arr={SandwichBrands}/>
+			</section>
+			<section>
+				<button onClick={setSetDrawed}>햄버거집 고르기</button>
+				<span>{drawed.name}</span>
+			</section>
+			<section>
+				<ShowThe img={drawed.file} alt={drawed.name}/>
+			</section>
 		</>
 	)
 }
@@ -88,21 +97,25 @@ function PushToDraw({from}) {
 function Interactives() {
 	return (
 		<>
-			<StringForm/>
-			<CountButton/>
-			<CheckBox/>
-			<PushToDraw from={SandwichBrands}/>
+			<BigBoldLetters are="Hamburger on Web"/>
+				<PushToDraw from={SandwichBrands}/>
+			<BigBoldLetters are="Tests"/>
+				<StringForm/>
+				<CountButton/>
+				<CheckBox/>
 		</>
 	)
 }
 
-export default function RequestsScreen() {
+export default function FeatureScreen() {
 	return (
 		<>
-			<Header title={["yuninze","Requests"]}/>
+			<Header title={["yuninze","features"]}/>
 			<WitChoc/>
-			<div className={styleOf.interactives}>
-				<Interactives/>
+			<div className={styleOf.container}>
+				<section className={styleOf.interactives}>
+					<Interactives/>
+				</section>
 			</div>
 		</>
 	)
