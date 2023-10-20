@@ -14,6 +14,7 @@
 2. .../ 
 3. npm install react react-dom next
 4. package.json에 dependencies가 써짐
+5. package.json으로 npm install
 
 #### 앱 작성
 1. Create a folder named pages
@@ -22,8 +23,12 @@
 3. npm run dev
 
 #### git on commandline
-1. git remote show origin
-2. git remote get-url origin
-3. git remote -v
-4. git remote set-url origin https://github.com/yuninze/yeonsup
-5. git push -u origin main
+- git remote show origin
+- git remote set-url origin https://github.com/yuninze/yeonsup
+- git remote get-url origin
+- git remote -v
+- git status -z -uall
+- git fetch
+- git status -z -uall
+- git pull origin master
+- git push -u origin master
