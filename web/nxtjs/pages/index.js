@@ -20,10 +20,11 @@ export default function IndexScreen({postsSpecs}) {
 		<>
 			<Header title={["yuninze","test-dev-build"]}/>
 			<WitChoc/>
-			
 			<div className={styleOf.container}>
-				<BigBoldLetters are="Profile"/>
-				<ShowThe img="/yiz.jpg"/>
+				<div>
+					<BigBoldLetters are="Profile"/>
+					<ShowThe img="/yiz.jpg"/>
+				</div>
 				<BigBoldLetters are="Related Props"/>
 				<ParsePostSpecFrom of={postsSpecs}/>
 			</div>

@@ -12,9 +12,8 @@
 #### npm => Next.js
 1. Create a file named package.json with {}
 2. .../ 
-3. npm install react react-dom next
-4. package.json에 dependencies가 써짐
-5. package.json으로 npm install
+3. npm install react react-dom next remark gray-matter
+4. package.json에 dependencies.. npm install
 
 #### 앱 작성
 1. Create a folder named pages
@@ -30,5 +29,7 @@
 - git status -z -uall
 - git fetch
 - git status -z -uall
+- git diff
 - git pull origin master
+- git commit
 - git push -u origin master

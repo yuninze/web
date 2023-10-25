@@ -61,7 +61,7 @@ export const BigBoldLetters=({are,goto})=>{
 export function ShowThe({img,about}) {
 	const HasAlt=about?about:"alt Placeholder"
 	return (
-		<Image src={img} alt={HasAlt} width={200} height={200}/>
+		<Image src={img} alt={HasAlt} width={150} height={150}/>
 	)
 }
 
@@ -79,9 +79,10 @@ export const ParsePostSpecFrom=({of})=>(
 
 export function ShowAsListFrom({arr}) {
 	return (
-		arr.map(elem=>
-			<span className={styleOf.test}>
-				{elem.name}, </span>
-		)
+		<ul>
+			{arr.map(elem=>
+				<li key={elem.name} className={styleOf.test} style={{color: elem.name.startsWith("M")?"magenta":"black"}}>{elem.name}</li>
+				)}
+		</ul>
 	)
 }

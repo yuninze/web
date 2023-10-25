@@ -25,7 +25,7 @@ function CountButton() {
 	return (
 		<section>
 			<button onClick={setSetClick}>
-				{click} times
+				Clicked {click} Times
 			</button>
 			<button onClick={delSetClick}>
 				Delete
@@ -40,11 +40,11 @@ function StringForm() {
 		setValue(evnt.target.value)
 	}
 	return (
-		<>
+		<section>
 			<input value={value} onChange={setSetValue}/>
 			<button onClick={()=>setValue("")}>Reset</button>
 			{value?value.length:"empty"}
-		</>
+		</section>
 	)
 }
 
@@ -54,11 +54,11 @@ function CheckBox() {
 		setChecked(evnt.target.checked)
 	}
 	return (
-		<>
+		<section>
 			<input type="checkbox" checked={checked} onChange={setSetChecked}/>
-			ChkBox:::
-			<span>{checked?"true":"false"}</span>
-		</>
+			ChkBox 
+			<span style={{color: checked?"black":"red"}}> {checked?"true":"false"}</span>
+		</section>
 	)
 }
 
@@ -73,37 +73,41 @@ function PushToDraw({from}) {
 		)
 	}
 	
-	const [drawed,setDrawed]=useState("Nothing")
+	const [drawed,setDrawed]=useState("None")
 	function setSetDrawed() {
 		setDrawed(DrawSomethingFrom(from))
 	}
 	
+	let Drawed
+	if (drawed==="None") {
+		Drawed=(
+			<>
+				Nothing Been Drawed
+			</>
+			)
+	} else {
+		Drawed=<ShowThe img={drawed.file} alt={drawed.name}/>
+	}
+	
 	return (
-		<>
+		<article>
 			<section>
-				<ShowAsListFrom arr={SandwichBrands}/>
-			</section>
-			<section>
-				<button onClick={setSetDrawed}>햄버거집 고르기</button>
+				<button onClick={setSetDrawed}>고르기</button>
 				<span>{drawed.name}</span>
 			</section>
 			<section>
-				<ShowThe img={drawed.file} alt={drawed.name}/>
+				{Drawed}
 			</section>
-		</>
+		</article>
 	)
 }
 
-function Interactives() {
+function ShowBrands({expr}) {
 	return (
-		<>
-			<BigBoldLetters are="Hamburger on Web"/>
-				<PushToDraw from={SandwichBrands}/>
-			<BigBoldLetters are="Tests"/>
-				<StringForm/>
-				<CountButton/>
-				<CheckBox/>
-		</>
+		<section>
+			<BigBoldLetters are={expr+": "+SandwichBrands.length}/>
+			<ShowAsListFrom arr={SandwichBrands}/>
+		</section>
 	)
 }
 
@@ -114,7 +118,14 @@ export default function FeatureScreen() {
 			<WitChoc/>
 			<div className={styleOf.container}>
 				<section className={styleOf.interactives}>
-					<Interactives/>
+					<ShowBrands expr="Brands"/>
+					<BigBoldLetters are="Draw"/>
+					<PushToDraw from={SandwichBrands}/>
+					<BigBoldLetters are="Test"/>
+					<StringForm/>
+					<CountButton/>
+					<CountButton/>
+					<CheckBox/>
 				</section>
 			</div>
 		</>
