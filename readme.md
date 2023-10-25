@@ -23,13 +23,17 @@
 
 #### git on commandline
 - git remote show origin
-- git remote set-url origin https://github.com/yuninze/yeonsup
 - git remote get-url origin
 - git remote -v
-- git status -z -uall
+
+- git remote set-url origin https://github.com/yuninze/yeonsup
+
+- git diff
+- git add .
+- git commit -m "git:cmd"
+- git push origin master
+
 - git fetch
 - git status -z -uall
-- git diff
+
 - git pull origin master
-- git commit
-- git push -u origin master
