@@ -1,9 +1,9 @@
-import Head from "next/head";
-import A from "next/link";
-import Image from "next/image";
-import styleOf from "../components/styleOf.module.css";
+import Head from "next/head"
+import A from "next/link"
+import Image from "next/image"
+import styleOf from "../components/styleOf.module.css"
 
-const OriginUrl="/";
+const OriginUrl="/"
 
 export function Header({title}) {
 	if (Array.isArray(title)) {
@@ -62,7 +62,7 @@ export const BigBoldLetters=({are,goto})=>{
 export function ShowThe({img,about}) {
 	const HasAlt=about?about:"alt Placeholder"
 	return (
-		<Image src={img} alt={HasAlt} width={150} height={150}/>
+		<Image src={img} alt={HasAlt} width={100} height={100}/>
 	)
 }
 

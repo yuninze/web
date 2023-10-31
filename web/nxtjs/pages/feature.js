@@ -104,27 +104,23 @@ function PushToDraw({from}) {
 		setDrawed(DrawSomethingFrom(from))
 	}
 	
-	let Drawed
-	if (drawed==="None") {
-		Drawed=(
-			<>
-				Nothing Been Drawed
-			</>
-			)
-	} else {
+	let Drawed="Nothing Been Drawed"
+	if (drawed!=="None") {
 		Drawed=<ShowThe img={drawed.file} alt={drawed.name}/>
 	}
 	
 	return (
-		<article>
-			<section>
-				<button onClick={setSetDrawed}>고르기</button>
-				<span>{drawed.name}</span>
-			</section>
-			<section>
+		<>
+			<div>
+				<button onClick={setSetDrawed}>
+					고르기
+				</button>
+			</div>
+			<div>
+				{drawed.name}
 				{Drawed}
-			</section>
-		</article>
+			</div>
+		</>
 	)
 }
 
