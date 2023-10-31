@@ -22,18 +22,25 @@
 3. npm run dev
 
 #### git on commandline
+##### repo path
 - git remote show origin
 - git remote get-url origin
 - git remote -v
 
+##### set repo path
 - git remote set-url origin https://github.com/yuninze/yeonsup
 
-- git diff
-- git add .
-- git commit -m "git:cmd"
-- git push origin master
-
+##### fetch
 - git fetch
+
+##### pull
+- git pull origin master
+
+##### set target files in repo
+- git add .
+- git diff
 - git status -z -uall
 
-- git pull origin master
+##### commit
+- git commit -m "git:cmd"
+- git push origin master

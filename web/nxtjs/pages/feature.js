@@ -1,16 +1,17 @@
 import {
 	A,Header,WitChoc,BigBoldLetters,ShowThe,ShowAsListFrom
-} from "./front.js"
+} from "./front"
 import styleOf from "../components/styleOf.module.css"
 import {useState} from "react"
+import {things} from "./tobuy"
 
 const SandwichBrands=[
-	{name:"M.D.",file:"/mcd.png",enabled:true},
-	{name:"M.T.",file:"/mt.png",enabled:true},
+	{name:"MD",file:"/mcd.png",enabled:true},
+	{name:"MT",file:"/mt.png",enabled:true},
 	{name:"SUB",file:"/sub.png",enabled:true},
-	{name:"B.G.K.",file:"/bk.png",enabled:true},
-	{name:"E.M.T.",file:"/em.png",enabled:true},
-	{name:"K.F.C.",file:"/kfc.png",enabled:true},
+	{name:"BGK",file:"/bk.png",enabled:true},
+	{name:"EMT.",file:"/em.png",enabled:true},
+	{name:"KFC",file:"/kfc.png",enabled:true},
 	{name:"SBUX",file:"/sbux.png",enabled:true},
 ]
 
@@ -30,6 +31,31 @@ function CountButton() {
 			<button onClick={delSetClick}>
 				Delete
 			</button>
+		</section>
+	)
+}
+
+function ActionButton({label,count,onClick}) {
+	return (
+		<>
+			<button onClick={onClick}>
+				{label}
+			</button>
+		</>
+	)
+}
+
+function ActionButtonStateShared() {
+	const [count,setCount]=useState(0)
+	
+	return (
+		<section>
+			<ActionButton label="addi" count={count} onClick={()=>setCount(count+1)}/>
+			<ActionButton label="addi" count={count} onClick={()=>setCount(count+1)}/>
+			<ActionButton label="reset" count={count} onClick={()=>setCount(0)}/>
+			<p>
+				{count}
+			</p>
 		</section>
 	)
 }
@@ -118,13 +144,18 @@ export default function FeatureScreen() {
 			<WitChoc/>
 			<div className={styleOf.container}>
 				<section className={styleOf.interactives}>
-					<ShowBrands expr="Brands"/>
-					<BigBoldLetters are="Draw"/>
+					<BigBoldLetters are="State-shared Counter"/>
+				<ul>
+					<ActionButtonStateShared/>
+				</ul>
+					<BigBoldLetters are="Things"/>
+					<ShowAsListFrom arr={things}/>
+					<BigBoldLetters are="Draw Brand"/>
+				<ul>
 					<PushToDraw from={SandwichBrands}/>
-					<BigBoldLetters are="Test"/>
+				</ul>
+					<BigBoldLetters are="Others"/>
 					<StringForm/>
-					<CountButton/>
-					<CountButton/>
 					<CheckBox/>
 				</section>
 			</div>

@@ -38,6 +38,7 @@ export const WitChoc=()=>{
 			<Menu name="Intro" goes={OriginUrl}/>
 			<Menu name="Display" goes="/monitor"/>
 			<Menu name="Feature" goes="/feature"/>
+			<Menu name="I-frame" goes="/iframe"/>
 			</div>
 		</>
 	);
@@ -81,7 +82,7 @@ export function ShowAsListFrom({arr}) {
 	return (
 		<ul>
 			{arr.map(elem=>
-				<li key={elem.name} className={styleOf.test} style={{color: elem.name.startsWith("M")?"magenta":"black"}}>{elem.name}</li>
+				<li key={elem.name} className={styleOf.test} style={{color: elem.status?"black":"magenta"}}>{elem.name}</li>
 				)}
 		</ul>
 	)
