@@ -69,6 +69,6 @@
 }
 
 .test {
-	font: 1rem Jetbrains Mono,Cascadia,Consolas,Monospace;
+	font: 1rem "Helvetica Neue",Helvetica,sans-serif,"Jetbrains Mono",Cascadia,Consolas;
 	list-style: none;
 }

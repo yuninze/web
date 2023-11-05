@@ -81,9 +81,17 @@ export const ParsePostSpecFrom=({of})=>(
 export function ShowAsListFrom({arr}) {
 	return (
 		<ul>
-			{arr.map(elem=>
-				<li key={elem.name} className={styleOf.test} style={{color: elem.status?"black":"magenta"}}>{elem.name}</li>
-				)}
+			{arr.map(elem=>{
+				let condRenderString=null
+				if (elem.quantity>1) {
+					condRenderString=" (More Than)"
+				}
+				return (
+					<li key={elem.name} className={styleOf.list} style={{color: elem.status?"black":"red"}}>
+						{elem.name} <span>{elem.quantity+condRenderString}</span>
+					</li>
+				)
+			})}
 		</ul>
 	)
 }
