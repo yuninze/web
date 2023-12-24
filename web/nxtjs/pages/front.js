@@ -1,9 +1,9 @@
-import Head from "next/head";
-import A from "next/link";
-import Image from "next/image";
-import styleOf from "../components/styleOf.module.css";
+import Head from "next/head"
+import A from "next/link"
+import Image from "next/image"
+import styleOf from "../components/styleOf.module.css"
 
-const OriginUrl="/";
+const OriginUrl="/"
 
 export function Header({title}) {
 	if (Array.isArray(title)) {
@@ -38,6 +38,7 @@ export const WitChoc=()=>{
 			<Menu name="Intro" goes={OriginUrl}/>
 			<Menu name="Display" goes="/monitor"/>
 			<Menu name="Feature" goes="/feature"/>
+			<Menu name="I-frame" goes="/iframe"/>
 			</div>
 		</>
 	);
@@ -61,7 +62,7 @@ export const BigBoldLetters=({are,goto})=>{
 export function ShowThe({img,about}) {
 	const HasAlt=about?about:"alt Placeholder"
 	return (
-		<Image src={img} alt={HasAlt} width={150} height={150}/>
+		<Image src={img} alt={HasAlt} width={100} height={100}/>
 	)
 }
 
@@ -80,9 +81,17 @@ export const ParsePostSpecFrom=({of})=>(
 export function ShowAsListFrom({arr}) {
 	return (
 		<ul>
-			{arr.map(elem=>
-				<li key={elem.name} className={styleOf.test} style={{color: elem.name.startsWith("M")?"magenta":"black"}}>{elem.name}</li>
-				)}
+			{arr.map(elem=>{
+				let condRenderString=null
+				if (elem.quantity>1) {
+					condRenderString=" (More Than)"
+				}
+				return (
+					<li key={elem.name} className={styleOf.list} style={{color: elem.status?"black":"red"}}>
+						{elem.name} <span>{elem.quantity+condRenderString}</span>
+					</li>
+				)
+			})}
 		</ul>
 	)
 }
