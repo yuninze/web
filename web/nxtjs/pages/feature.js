@@ -1,18 +1,29 @@
 import {
-	A,Header,WitChoc,BigBoldLetters,ShowThe,ShowAsListFrom
+	A,Header,WitChoc,BigBoldLetters,ShowThe
 } from "./front"
 import styleOf from "../components/styleOf.module.css"
 import {useState} from "react"
 import {things} from "./tobuy"
 
 const SandwichBrands=[
-	{name:"MD",file:"/mcd.png",enabled:true},
-	{name:"MT",file:"/mt.png",enabled:true},
-	{name:"SUB",file:"/sub.png",enabled:true},
-	{name:"BGK",file:"/bk.png",enabled:true},
-	{name:"EMT.",file:"/em.png",enabled:true},
-	{name:"KFC",file:"/kfc.png",enabled:true},
-	{name:"SBUX",file:"/sbux.png",enabled:true},
+	{name:"MD",file:"/mcd.png",
+	desc:"미국과 서민의 상징 맥 도널드.",
+	enabled:true},
+	{name:"MT",file:"/mt.png",
+	desc:"쫄깃한 치킨 샌드위치.",
+	enabled:true},
+	{name:"SUB",file:"/sub.png",
+	desc:"푸짐한 속.",
+	enabled:true},
+	{name:"BGK",file:"/bk.png",
+	desc:"샌드위치보다는 한끼의 느낌.",
+	enabled:true},
+	{name:"KFC",file:"/kfc.png",
+	desc:"치킨 샌드위치의 표준.",
+	enabled:true},
+	{name:"SBUX",file:"/sbux.png",
+	desc:"씹는 것도 맛나는 스벅.",
+	enabled:true},
 ]
 
 function CountButton() {
@@ -124,15 +135,6 @@ function PushToDraw({from}) {
 	)
 }
 
-function ShowBrands({expr}) {
-	return (
-		<section>
-			<BigBoldLetters are={expr+": "+SandwichBrands.length}/>
-			<ShowAsListFrom arr={SandwichBrands}/>
-		</section>
-	)
-}
-
 export default function FeatureScreen() {
 	return (
 		<>
@@ -140,15 +142,13 @@ export default function FeatureScreen() {
 			<WitChoc/>
 			<div className={styleOf.container}>
 				<section className={styleOf.interactives}>
+					<BigBoldLetters are="뽑기"/>
+				<ul>
+					<PushToDraw from={SandwichBrands}/>
+				</ul>
 					<BigBoldLetters are="State-shared Counter"/>
 				<ul>
 					<ActionButtonStateShared/>
-				</ul>
-					<BigBoldLetters are="Things"/>
-					<ShowAsListFrom arr={things}/>
-					<BigBoldLetters are="Draw Brand"/>
-				<ul>
-					<PushToDraw from={SandwichBrands}/>
 				</ul>
 					<BigBoldLetters are="Others"/>
 					<StringForm/>

@@ -21,6 +21,15 @@
 > npx create-next-app@latest nextjs-blog --use-npm --example "https://github.com/vercel/next-learn/tree/main/basics/learn-starter"
 3. npm run dev
 
+#### cloning
+- git clone -v <path>
+- git remote set-url origin <path>
+- git remote -v
+- git init
+- git add .
+- git branch -M <qwer>
+- git push origin qwer
+
 #### git on commandline
 ##### repo path
 - git remote show origin
@@ -28,18 +37,21 @@
 - git remote -v
 
 ##### set repo path
-- git remote set-url origin https://github.com/yuninze/yeonsup
+- git remote add qwer https://github.com/yuninze/*.git
+- git remote set-url origin https://github.com/yuninze/*.git
+
+##### add files
+- git add .
 
 ##### fetch
 - git fetch
 
+##### see delta
+- git status
+- git diff
+
 ##### pull
 - git pull origin master
-
-##### set target files in repo
-- git add .
-- git diff
-- git status -z -uall
 
 ##### commit
 - git commit -m "git:cmd"

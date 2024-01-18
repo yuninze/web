@@ -14,7 +14,7 @@ export function Header({title}) {
 			<link rel="icon" href="favicon.ico"/>
 			<title>{title}</title>
 		</Head>
-	);
+	)
 }
 
 export const WitChoc=()=>{
@@ -30,7 +30,7 @@ export const WitChoc=()=>{
 				{name}
 			</A>
 		</span>
-	);
+	)
 	return (
 		<>
 			{WitChocLogo}{WitChocLogoYeopChar}
@@ -38,10 +38,10 @@ export const WitChoc=()=>{
 			<Menu name="Intro" goes={OriginUrl}/>
 			<Menu name="Display" goes="/monitor"/>
 			<Menu name="Feature" goes="/feature"/>
-			<Menu name="I-frame" goes="/iframe"/>
+			<Menu name="Cameras" goes="/iframe"/>
 			</div>
 		</>
-	);
+	)
 }
 
 export const BigBoldLetters=({are,goto})=>{
@@ -60,10 +60,12 @@ export const BigBoldLetters=({are,goto})=>{
 }
 
 export function ShowThe({img,about}) {
-	const HasAlt=about?about:"alt Placeholder"
-	return (
-		<Image src={img} alt={HasAlt} width={100} height={100}/>
-	)
+	if (img) {
+		const hasAlt=about?about:"alt Placeholder"
+		return (
+			<Image src={img} alt={hasAlt} width={100} height={100}/>
+		)
+	}
 }
 
 export const ParsePostSpecFrom=({of})=>(
@@ -77,21 +79,3 @@ export const ParsePostSpecFrom=({of})=>(
 		))}
 	</ul>
 )
-
-export function ShowAsListFrom({arr}) {
-	return (
-		<ul>
-			{arr.map(elem=>{
-				let condRenderString=null
-				if (elem.quantity>1) {
-					condRenderString=" (More Than)"
-				}
-				return (
-					<li key={elem.name} className={styleOf.list} style={{color: elem.status?"black":"red"}}>
-						{elem.name} <span>{elem.quantity+condRenderString}</span>
-					</li>
-				)
-			})}
-		</ul>
-	)
-}

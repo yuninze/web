@@ -112,7 +112,7 @@ function ShowDescsOf({scientists}) {
 	_descs.pop()
 	return (
 		<>
-		<BigBoldLetters are="Descriptions of Above"/>
+		<BigBoldLetters are="Buggy Component"/>
 		<ul key="descs">
 			{_descs}
 		</ul>

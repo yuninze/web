@@ -1,0 +1,43 @@
+<html>
+
+<head>
+	<title>Init</title>
+	<style>
+		canvas {
+		width: 450px;
+		height: 253px;
+		}
+	</style>
+</head>
+
+<body>
+	  <div class="box">
+	  <canvas id="Gilga"></canvas>
+	  
+	  
+	  <canvas id="Hyunguan"></canvas></div>
+	  
+	  <div class="box">
+	  <canvas id="Gastong"></canvas>
+	  
+	  
+	  <canvas id="Duitchok"></canvas></div>
+</body>
+  
+<script type="text/javascript" src="jsmpeg.min.js"></script>
+<script type="text/javascript">
+	const a=new JSMpeg.Player(
+		'ws://172.30.1.18:92',
+		{canvas: document.getElementById("Gilga")})
+	const b=new JSMpeg.Player(
+		'ws://172.30.1.18:91',
+		{canvas: document.getElementById("Hyunguan")})
+	const c=new JSMpeg.Player(
+		'ws://172.30.1.18:90',
+		{canvas: document.getElementById("Gastong")})
+	const d=new JSMpeg.Player(
+		'ws://172.30.1.18:93',
+		{canvas: document.getElementById("Duitchok")})
+</script>
+
+</html>
