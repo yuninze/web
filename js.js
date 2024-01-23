@@ -6,7 +6,7 @@ const Util=require("./Util")
 const Stream=require("node-rtsp-stream")
 
 const assert=()=>{
-	return ". ".repeat(3)+Util.ima()+": "
+	return ". ".repeat(3)+Util.ima()
 }
 
 const hostname="172.30.1.18"
@@ -46,7 +46,7 @@ setTimeout(()=>{
 		stream.stop()
 	})
 	streams=callStreams()
-},60000 * 30)
+},60000 * 10)
 
 const server=http.createServer(
 	(req,res)=>{
@@ -75,49 +75,56 @@ const server=http.createServer(
 			return res.end()
 		}
 		
-		let filePath
-		if (req.url.length>1) {
-			filePath="."+new URL(hostpath+req.url).pathname
-		} else {
-			filePath=mainPage
-		}
-		
-		console.log(`${assert()} ${req.socket.remoteAddress} (${browser}) => ${filePath}`)
-		
-		fs.readFile(filePath,
-			(error,data)=>{
-				if (error) {
-					console.log(assert()+error)
-					sendContent("Something went wrong",error.toString().replace("Error: ",""))
-					return res.end()
-				}
-				
-				let fileContentType
-				if (filePath.endsWith(".html")) {
-					fileContentType="text/html"
-				} else if (filePath.endsWith(".js")) {
-					fileContentType="text/javascript"
-				} else if (filePath.endsWith(".css")) {
-					fileContentType="text/css"
-				} else if (filePath.endsWith(".png")) {
-					fileContentType="image/png"
-				} else {
-					sendContent("Something went wrong","Wrong Content Type")
-					return res.end()
-				}
-				
-				res.writeHead(200,{
-					"Content-Type": fileContentType+"; charset=utf-8",
-				})
-				res.write(data,"utf-8")
-				return res.end()
+		if (req.method=="GET") {
+			let filePath
+			if (req.url.length>1) {
+				filePath="."+new URL(hostpath+req.url).pathname
+			} else {
+				filePath=mainPage
 			}
-		)
+			
+			console.log(`${assert()}: GET: ${req.socket.remoteAddress}: ${browser}: ${filePath}`)
+			
+			fs.readFile(filePath,
+				(error,data)=>{
+					if (error) {
+						console.log(assert()+error)
+						sendContent("Something went wrong",error.toString().replace("Error: ",""))
+						return res.end()
+					}
+					
+					let fileContentType
+					if (filePath.endsWith(".html")) {
+						fileContentType="text/html"
+					} else if (filePath.endsWith(".js")) {
+						fileContentType="text/javascript"
+					} else if (filePath.endsWith(".css")) {
+						fileContentType="text/css"
+					} else if (filePath.endsWith(".png")) {
+						fileContentType="image/png"
+					} else {
+						sendContent("Something went wrong","Wrong Content Type")
+						return res.end()
+					}
+					
+					res.writeHead(200,{
+						"Content-Type": fileContentType+"; charset=utf-8",
+					})
+					res.write(data,"utf-8")
+					return res.end()
+				}
+			)
+		} else if (request.method=="POST") {
+			console.log("Got a POST")
+			res.end()
+		} else {
+			console.log("Unknown Request Method")
+		}
 	}
 )
 
 server.listen(port,hostname,
 	()=>{
-		console.log(`${assert()}Running at ${hostname}:${port}`)
+		console.log(`${assert()}: Run at ${hostname}:${port}`)
 	}
 )
