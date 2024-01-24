@@ -49,8 +49,11 @@
 	)
 	
 	const sendSomething=(inputElementName)=>{
-		const somethingInInputElement=document.getElementById(inputElementName).value
-		fetch("/sending",
+		let somethingInInputElement
+		if (document.getElementById(inputElementName)) {
+			somethingInInputElement=document.getElementById(inputElementName).value
+		}
+		fetch("/sendSomething",
 			{
 				method:"POST",
 				headers:{"Content-Type":"application/json"},
