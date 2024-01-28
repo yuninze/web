@@ -10,8 +10,10 @@
 <body>
 	<div>
 		<h2>무언가 입력</h2>
-		<input type="text" id="foremostInput" name="foremostInput">
-		<button onclick="sendSomething(foremostInput)">Send</button>
+		<form action="/sendSomething" method="POST">
+			<input type="text" id="thing" required>
+			<button type="submit">submit</button>
+		</form>
 	</div>
 
 	  <div>
@@ -25,7 +27,7 @@
 	  </div>
 	  
 	  <div>
-		<h2>This is to showing streams다. 백앤드에서 10분마다 streams을 다시 연다. 글꼴은 Pretendard다.</h2>
+		<h2>This is to showing streams. 글꼴은 Pretendard.</h2>
 	  </div>
 </body>
 
@@ -47,30 +49,6 @@
 		'ws://172.30.1.18:93',
 		{canvas: document.getElementById("Duitchok")}
 	)
-	
-	const sendSomething=(inputElementName)=>{
-		let somethingInInputElement
-		if (document.getElementById(inputElementName)) {
-			somethingInInputElement=document.getElementById(inputElementName).value
-		}
-		fetch("/sendSomething",
-			{
-				method:"POST",
-				headers:{"Content-Type":"application/json"},
-				body:JSON.stringify({somethingInInputElement})
-			}
-		).then(
-			(res)=>res.json()
-		).then(
-			(data)=>{
-				console.log(data)
-			}
-		).catch(
-			(error)=>{
-				console.error(error)
-			}
-		)
-	}
 </script>
 
 </html>

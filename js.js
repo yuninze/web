@@ -6,7 +6,7 @@ const Util=require("./Util")
 const Stream=require("node-rtsp-stream")
 
 const assert=()=>{
-	return ". ".repeat(3)+Util.ima()
+	return ". ".repeat(2)+Util.ima()
 }
 
 const hostname="172.30.1.18"
@@ -50,6 +50,7 @@ setTimeout(()=>{
 
 const server=http.createServer(
 	(req,res)=>{
+		
 		const sendContent=(title,content)=>{
 			res.writeHead(200,{"Content-Type": "text/html; charset=utf-8"})
 			res.write(`
@@ -73,6 +74,48 @@ const server=http.createServer(
 		if (browser===false) {
 			console.log(`${assert()} ${req.socket.remoteAddress} (${browser}) => dropped`)
 			return res.end()
+		}
+		
+		const post=(url,data)=>{
+			
+			console.log(`${assert()}: POST: ${req.socket.remoteAddress}: ${browser}`)
+			
+			const dataString=JSON.stringify(data)
+			
+			const options={
+				method:"POST",
+				headers:{
+					"content-type":"application/json",
+					"content-length":dataString.length
+				},
+				timeout:1000,
+			}
+		
+			return new Promise((resolve,reject)=>{
+				const req=http.request(url,options,
+					(res)=>{
+						if (res.statusCode!=200) return reject(new Error("statusCode!=200"))
+						
+						let body=[]
+						res.on("data",(data)=>body.push(data))
+						res.on("end",()=>{
+							const resString=Buffer.concat(body).toString()
+							resolve(resString)
+						})
+					})
+				
+				req.on("error",(error)=>{
+					reject(error)
+				})
+				
+				req.on("timeout",(timeout)=>{
+					req.destory()
+					reject(new Error(assert() + "Timeout"))
+				})
+				
+				req.write(dataString)
+				req.end()
+			}) // promise
 		}
 		
 		if (req.method=="GET") {
@@ -114,12 +157,15 @@ const server=http.createServer(
 					return res.end()
 				}
 			)
-		} else if (request.method=="POST") {
-			console.log("Got a POST")
-			res.end()
-		} else {
-			console.log("Unknown Request Method")
+			
+			if (req.method=="POST") {
+				async ()=>{
+					const res=await post("http://172.30.1.18/sendSomething",data)
+				}
+			}
+			
 		}
+		
 	}
 )
 

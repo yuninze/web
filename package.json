@@ -1,5 +1,8 @@
 {
   "dependencies": {
-    "node-rtsp-stream": "^0.0.9"
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.1.5",
+    "node-rtsp-stream": "^0.0.9",
+    "serve-favicon": "^2.5.0"
   }
 }
