@@ -15,7 +15,7 @@ const root="c:/code/web/"
 const assert=(indent)=>{
 	let datetime=new Date()
 	datetimeString=datetime.toISOString().split(".")[0].replace("T",": ")
-	return "  ".repeat(indent) + datetimeString + ": "
+	return " ".repeat(indent) + datetimeString + ": "
 }
 
 const camData=JSON.parse(fs.readFileSync("../cam.json"))
@@ -52,6 +52,7 @@ const limiter=rateLimit({
 
 server.use(express.static(root))
 server.use(express.json())
+server.use(express.urlencoded({extended:true}))
 server.use(limiter)
 server.use(favicon(root + "favicon.ico"))
 
@@ -84,26 +85,22 @@ server.use((req,res,next)=>{
 		}
 	} else if (req.method="POST") {
 		message.method="POST"
-		message.about="..."
 	} else {
-		message.method=req.method
-		message.about="..."
+		message.method="UNKNOWN"
 	}
 	
 	messaging(2,message)
-	
 	next()
 })
 
 server.get("/",(req,res)=>{
-	res.send("Hello World")
+	res.send("/")
 })
 
-server.post("/sendSomething",(req,res)=>{
-	const thing=req.body.thing
-	message.about=thing
+server.post("/send",(req,res)=>{
+	console.dir(req.body)
 	messaging(3,message)
-	res.json({got:true})
+	res.send("got: ")
 })
 
 server.listen(port,()=>{
