@@ -1,5 +1,6 @@
 // common librires
 const express=require("express")
+const path=require("path")
 const rateLimit=require("express-rate-limit")
 const favicon=require("serve-favicon")
 const fs=require("node:fs")
@@ -50,7 +51,6 @@ const limiter=rateLimit({
 	max:100
 })
 
-server.use(express.static(root))
 server.use(express.json())
 server.use(express.urlencoded({extended:true}))
 server.use(limiter)
@@ -77,7 +77,6 @@ server.use((req,res,next)=>{
 		let fileName=req.originalUrl
 		message.method="GET"
 		message.about=fileName
-		
 		if (sessionInfo.ua==false) {
 			message.about+=" (dropped)"
 			messaging(2,message)
@@ -94,7 +93,11 @@ server.use((req,res,next)=>{
 })
 
 server.get("/",(req,res)=>{
-	res.send("/")
+	res.end()
+})
+
+server.get("*",(req,res)=>{
+	res.sendFile(path.join(__dirname,fileName))
 })
 
 server.post("/send",(req,res)=>{
