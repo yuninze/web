@@ -3,52 +3,37 @@
 
 <head>
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0">
 	<link rel="stylesheet" href="./style.css">
-	<title>Init</title>
+	<title>증적 업로드</title>
 </head>
 
 <body>
 	<div>
-		<h2>무언가 입력</h2>
-		<form action="/send" method="POST">
-			<input type="text" id="thing" required>
-			<button type="submit">submit</button>
+		<h2>증적 업로드</h2>
+		<form method="POST" action="/upload" enctype="multipart/form-data">
+			<input type="file" name="file">
+			<button type="submit" id="uploadButton">Upload</button>
 		</form>
 	</div>
-
-	  <div>
-	  <canvas id="Gilga"></canvas>
-	  <canvas id="Hyunguan"></canvas>
-	  </div>
-	  
-	  <div>
-	  <canvas id="Gastong"></canvas>
-	  <canvas id="Duitchok"></canvas>
-	  </div>
-	  
-	  <div>
-		<h2>This is to showing streams. 글꼴은 Pretendard.</h2>
-	  </div>
+	
+	<div id="uploadResult">
+	</div>
+	
+	<div>
+		<a href="./main.html"><h2>Go Back</h2></a>
+	</div>
 </body>
 
-<script type="text/javascript" src="./jsmpeg.min.js"></script>
 <script type="text/javascript">
-	const a=new JSMpeg.Player(
-		'ws://172.30.1.18:92',
-		{canvas: document.getElementById("Gilga")}
-	)
-	const b=new JSMpeg.Player(
-		'ws://172.30.1.18:91',
-		{canvas: document.getElementById("Hyunguan")}
-	)
-	const c=new JSMpeg.Player(
-		'ws://172.30.1.18:90',
-		{canvas: document.getElementById("Gastong")}
-	)
-	const d=new JSMpeg.Player(
-		'ws://172.30.1.18:93',
-		{canvas: document.getElementById("Duitchok")}
-	)
+	const uploadButton=document.getElementById("uploadButton")
+	const uploadResult=document.getElementById("uploadResultContainer")
+	const resPath="/upload"
+	uploadButton.addEventListener("click",async()=>{
+		const res=fetch(resPath)
+		const resJson=await res.json()
+		uploadResult.innerHTML=`<h3>${resJson.body}</h3>`
+	})
 </script>
 
 </html>

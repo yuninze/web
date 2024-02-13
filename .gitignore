@@ -5,6 +5,7 @@ __pycache__/
 *.pyc
 *.pyo
 *.log
+nikki.csv
 
 # mines
 ko.txt
@@ -16,11 +17,5 @@ key
 gcert.json
 gsak.json
 token.json
-
-# rust binaries
-rs/target/
-Cargo.lock
-main.exe
-main.pdb
 
 # etc
