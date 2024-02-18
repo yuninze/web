@@ -1,15 +1,6 @@
 const path=require("path")
 const fs=require("node:fs")
-
 const Stream=require("node-rtsp-stream")
-const Job=require("./job.js")
-
-const assert=(indent=0)=>{
-	let datetime=new Date()
-	datetimeString=datetime.toISOString().split(".")[0].replace("T",": ")
-	return " ".repeat(indent) + datetimeString
-}
-
 const camData=JSON.parse(fs.readFileSync("../camData.json"))
 const cam=camData.camera.map((cam)=>{
 		return [
@@ -39,55 +30,10 @@ setTimeout(()=>{
 	camStream=Streaming()
 },60000 * 10)
 
-const express=require("express")
-const favicon=require("serve-favicon")
-const rateLimit=require("express-rate-limit")
-const multer=require("multer")
-
-const server=express()
-const port=80
-const root="c:/code/web/"
-
-const limiter=rateLimit({
-	windowMs:1 * 30000,
-	max:100,
-	message:async(req,res)=>{
-		return sendHtmlString("It's done","Reached the rate limit")
-	}
-})
-
-const disk=multer.diskStorage({
-	destination:(req,file,cb)=>{
-		cb(null,"uploads/")
-	},
-	filename:(req,file,cb)=>{
-		let extDotPosition=extractExt(file.originalname)
-		let name
-		let ext
-		if (extDotPosition>0) {
-			name=file.originalname.slice(0,extDotPosition)
-			ext=file.originalname.slice(extDotPosition)
-		} else {
-			name=file.originalname
-			ext=""
-		}
-		cb(null,req.body.idx+"_"+name+"_"+Date.now()+ext)
-	}
-})
-const upload=multer({storage:disk})
-
-server.use(express.static("./res"))
-server.use(limiter)
-server.use(favicon("./res/favicon.ico"))
-
-let filename
-let sessionInfo=new Array()
-let message={"method":null,"about":null}
-
-const extractExt=(filenameString)=>{
-	const filenameStringBooleanVector=Array.from(filenameString).map(char=>char===".")
-	const extDotPosition=filenameStringBooleanVector.findLastIndex(vector=>vector===true)
-	return extDotPosition
+const assert=(indent=0)=>{
+	let datetime=new Date()
+	datetimeString=datetime.toISOString().split(".")[0].replace("T",": ")
+	return " ".repeat(indent) + datetimeString
 }
 
 const nikki=(datetime,ip,ua,method,path)=>{
@@ -100,6 +46,15 @@ const nikki=(datetime,ip,ua,method,path)=>{
 	)
 }
 
+const extractExt=(filenameString)=>{
+	const filenameStringBooleanVector=Array.from(filenameString).map(char=>char===".")
+	const extDotPosition=filenameStringBooleanVector.findLastIndex(vector=>vector===true)
+	return extDotPosition
+}
+
+let filename
+let sessionInfo=new Array()
+let message={"method":null,"about":null}
 const messaging=(indent,message)=>{
 	const {method,about}=message
 	if (method=="LOW") {
@@ -132,6 +87,49 @@ const sendHtmlString=(title,content)=>{
 		</html>
 		`)
 }
+
+const express=require("express")
+const favicon=require("serve-favicon")
+const server=express()
+const port=80
+const root="c:/code/web/"
+
+const rateLimit=require("express-rate-limit")
+const limiter=rateLimit({
+	windowMs:1 * 2000,
+	max:10,
+	message:async(req,res)=>{
+		message.method=req.method
+		message.about="BLOCKED"
+		messaging(3,message)
+		return sendHtmlString("It's done","Reached the rate limit")
+	}
+})
+
+const multer=require("multer")
+const disk=multer.diskStorage({
+	destination:(req,file,cb)=>{
+		cb(null,"uploads/")
+	},
+	filename:(req,file,cb)=>{
+		let extDotPosition=extractExt(file.originalname)
+		let name
+		let ext
+		if (extDotPosition>0) {
+			name=file.originalname.slice(0,extDotPosition)
+			ext=file.originalname.slice(extDotPosition)
+		} else {
+			name=file.originalname
+			ext=""
+		}
+		cb(null,req.body.idx+"_"+name+"_"+Date.now()+ext)
+	}
+})
+const upload=multer({storage:disk})
+
+server.use(express.static("./res"))
+server.use(limiter)
+server.use(favicon("./res/favicon.ico"))
 
 server.use((req,res,next)=>{
 	sessionInfo.ip=req.headers["x-forwarded-for"] || req.socket.remoteAddress
