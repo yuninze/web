@@ -1,21 +1,11 @@
-# temporary directories, py-caches, logs
+uploads/
 .vscode/
 .DS_Store/
 __pycache__/
-*.pyc
-*.pyo
-*.log
+node_modules/
 nikki.csv
 
-# mines
-ko.txt
-GBR.ttf
-chinook.sql
-
-# credentials
 key
 gcert.json
 gsak.json
 token.json
-
-# etc
