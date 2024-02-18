@@ -1,10 +1,10 @@
 uploads/
+node_modules/
 .vscode/
 .DS_Store/
 __pycache__/
-node_modules/
-nikki.csv
 
+nikki.csv
 key
 gcert.json
 gsak.json
