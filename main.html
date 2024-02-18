@@ -11,13 +11,20 @@
 <body>
 	<div>
 		<h2>증적 업로드</h2>
-		<form method="POST" action="/upload" enctype="multipart/form-data">
-			<input type="file" name="file">
-			<button type="submit" id="uploadButton">Upload</button>
-		</form>
+			<form>
+				<h3>
+					<label for="proofIdx">학번 10자리</label>
+					<input type="text" id="proofIdx" required maxlength=10/>
+				</h3>
+				<h3 id="proofFileContainer" style="display:none">
+					<label for="proofFile">업로딩할 PDF나 사진 같은 증적</label>
+					<input type="file" id="proofFile">
+				</h3>
+			</form>
 	</div>
 	
-	<div id="uploadResult">
+	<div id="uploadProofResult">
+		<h2>File is uploaded immediately upon selection.</h2>
 	</div>
 	
 	<div>
@@ -25,15 +32,50 @@
 	</div>
 </body>
 
-<script type="text/javascript">
-	const uploadButton=document.getElementById("uploadButton")
-	const uploadResult=document.getElementById("uploadResultContainer")
-	const resPath="/upload"
-	uploadButton.addEventListener("click",async()=>{
-		const res=fetch(resPath)
-		const resJson=await res.json()
-		uploadResult.innerHTML=`<h3>${resJson.body}</h3>`
-	})
+<script>
+	document.getElementById("proofIdx").onchange=(evnt)=>{
+		idxChallenge()
+	}
+
+	function idxChallenge() {
+		let afterElement=document.getElementById("proofFileContainer")
+		let beforeElement=document.getElementById("proofIdx")
+		if (beforeElement.value.length===10) {
+			afterElement.style.display="block"
+		} else {
+			afterElement.style.display="none"
+		}
+	}
+	
+	document.getElementById("proofFile").onchange=(evnt)=>{
+		uploadProof(evnt)
+	}
+	
+	function uploadProof(evnt){
+		let proofIdx=document.getElementById("proofIdx").value.trim()
+		proofIdx=proofIdx?proofIdx:"1234123456"
+		
+		let proofFile=evnt.target.files[0]
+		let data=new FormData()
+		
+		data.append("idx",proofIdx)
+		data.append("proofFile",proofFile)
+		
+		fetch(
+			"/uploadProof",{
+				method:"POST",
+				body:data
+			}).then(res=>{
+				return res.json()
+			}).then(resJson=>{
+				console.log(resJson)
+				document.getElementById("uploadProofResult").innerHTML=`<h2>${resJson.content}</h2>`
+			}).catch(error=>{
+				document.getElementById("uploadProofResult").innerHTML=`<h2>There was an error</h2>`
+			}).then(
+				document.getElementById("proofFile").value=""
+			)
+	}
 </script>
 
 </html>

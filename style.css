@@ -5,6 +5,10 @@
     font-style: normal;
 }
 
+input:invalid {
+  border: 4px solid crimson;
+}
+
 canvas {
 	width:480px;
 	height:255px;

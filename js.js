@@ -2,6 +2,7 @@ const path=require("path")
 const fs=require("node:fs")
 
 const Stream=require("node-rtsp-stream")
+const Job=require("./job.js")
 
 const assert=(indent=0)=>{
 	let datetime=new Date()
@@ -48,7 +49,7 @@ const port=80
 const root="c:/code/web/"
 
 const limiter=rateLimit({
-	windowMs:1 * 60000,
+	windowMs:1 * 30000,
 	max:100,
 	message:async(req,res)=>{
 		return sendHtmlString("It's done","Reached the rate limit")
@@ -60,13 +61,21 @@ const disk=multer.diskStorage({
 		cb(null,"uploads/")
 	},
 	filename:(req,file,cb)=>{
-		cb(null,Date.now()+"_"+file.originalname)
+		let extDotPosition=extractExt(file.originalname)
+		let name
+		let ext
+		if (extDotPosition>0) {
+			name=file.originalname.slice(0,extDotPosition)
+			ext=file.originalname.slice(extDotPosition)
+		} else {
+			name=file.originalname
+			ext=""
+		}
+		cb(null,req.body.idx+"_"+name+"_"+Date.now()+ext)
 	}
 })
 const upload=multer({storage:disk})
 
-server.use(express.json())
-server.use(express.urlencoded({extended:true}))
 server.use(express.static("./res"))
 server.use(limiter)
 server.use(favicon("./res/favicon.ico"))
@@ -75,13 +84,19 @@ let filename
 let sessionInfo=new Array()
 let message={"method":null,"about":null}
 
+const extractExt=(filenameString)=>{
+	const filenameStringBooleanVector=Array.from(filenameString).map(char=>char===".")
+	const extDotPosition=filenameStringBooleanVector.findLastIndex(vector=>vector===true)
+	return extDotPosition
+}
+
 const nikki=(datetime,ip,ua,method,path)=>{
 	const nikkiStream=fs.createWriteStream(
 		"./nikki.csv",
 		{flags:"a"}
 	)
 	nikkiStream.write(
-		`${datetime},${ip},${ua},${method},${path}\n`
+		`"${datetime}","${ip}","${ua}","${method}","${path}"\n`
 	)
 }
 
@@ -162,15 +177,17 @@ server.get("*",(req,res)=>{
 	}
 })
 
-server.post("/upload",upload.single("file"),(req,res)=>{
+server.post("/uploadProof",upload.single("proofFile"),(req,res)=>{
+	message.method="POST: UPLOAD"
+	
 	if (req.file) {
-		const filename=req.file.filename
-		message.method="POST: UPLOAD"
-		message.about=filename
-		res.status(200).json({"success":true,"filename":filename})
-	} else if (!req.file) {
-		res.status(400).send(`This POST req. is likely null`)
+		message.about=req.body.idx+"_"+req.file.originalname
+		res.status(200).json({content:`업로딩 성공 (${message.about})`})
+	} else {
+		message.about="A Failed Upload"
+		res.status(400).json({content:`업로딩 실패`})
 	}
+	
 	messaging(3,message)
 })
 
