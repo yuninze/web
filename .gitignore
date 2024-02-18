@@ -3,7 +3,6 @@ node_modules/
 .vscode/
 .DS_Store/
 __pycache__/
-
 nikki.csv
 key
 gcert.json
