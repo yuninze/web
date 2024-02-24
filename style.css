@@ -5,8 +5,12 @@
     font-style: normal;
 }
 
-input:invalid {
-  border: 4px solid crimson;
+.defenseInit {
+  border: 5px solid crimson;
+}
+
+.defense {
+	display:none;
 }
 
 canvas {

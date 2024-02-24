@@ -4,6 +4,7 @@
     "express-rate-limit": "^7.1.5",
     "multer": "^1.4.5-lts.1",
     "node-rtsp-stream": "^0.0.9",
+    "papaparse": "^5.4.1",
     "serve-favicon": "^2.5.0"
   }
 }

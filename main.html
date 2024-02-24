@@ -12,19 +12,28 @@
 	<div>
 		<h2>증적 업로드</h2>
 			<form>
-				<h3>
+				<h3 id="proofIdxContainer">
 					<label for="proofIdx">학번 10자리</label>
-					<input type="text" id="proofIdx" required maxlength=10/>
+					<input type="text" class="defenseInit" id="proofIdx" maxlength=10/>
 				</h3>
-				<h3 id="proofFileContainer" style="display:none">
-					<label for="proofFile">업로딩할 PDF나 사진 같은 증적</label>
+				<h3 class="defense" id="proofTypeContainer">
+					증적 유형 
+					<input type="radio" name="proofType" id="proofTypePx" value="Px">
+					<label for="proofTypePx">Px</label>
+					<input type="radio" name="proofType" id="proofTypeEx" value="Ex">
+					<label for="proofTypeEx">Ex</label>
+					<input type="radio" name="proofType" id="proofTypeNOS" value="NOS">
+					<label for="proofTypeNOS">NOS</label>
+				</h3>
+				<h3 class="defense" id="proofFileContainer">
+					<label for="proofFile">증적 파일 선택</label>
 					<input type="file" id="proofFile">
+					<div>File is uploaded immediately upon selection.</div>
 				</h3>
 			</form>
 	</div>
 	
 	<div id="uploadProofResult">
-		<h2>File is uploaded immediately upon selection.</h2>
 	</div>
 	
 	<div>
@@ -33,17 +42,46 @@
 </body>
 
 <script>
-	document.getElementById("proofIdx").onchange=(evnt)=>{
-		idxChallenge()
+	document.getElementById("proofIdx").oninput=()=>{
+		idxDefense()
 	}
 
-	function idxChallenge() {
-		let afterElement=document.getElementById("proofFileContainer")
+	function idxDefense() {
 		let beforeElement=document.getElementById("proofIdx")
-		if (beforeElement.value.length===10) {
+		let afterElement=document.getElementById("proofTypeContainer")
+		let vitalElement=Array.from(document.getElementsByClassName("defense"))
+		if (beforeElement.value.length===10&&beforeElement.value.startsWith("2")) {
+			beforeElement.style.border="0px"
 			afterElement.style.display="block"
 		} else {
-			afterElement.style.display="none"
+			beforeElement.style.border="5px solid crimson"
+			vitalElement.forEach(x=>x.style.display="none")
+		}
+	}
+
+	function typingProofType(proofTypeRadios) {
+		let proofType=Array.from(proofTypeRadios).filter(radio=>radio.checked)
+		if (proofType.length===0) {
+			return false
+		} else {
+			return proofType[0].value
+		}
+	}
+	
+	let proofTypeRadios=document.getElementsByName("proofType")
+	let proofType=typingProofType(proofTypeRadios)
+	if (proofType==false) {
+		proofTypeRadios.forEach(radio=>radio.addEventListener("change",()=>{
+			proofType=typingProofType(proofTypeRadios)
+			typeDefense(proofType)
+		}))
+	} else {
+		typeDefense(proofType)
+	}
+
+	function typeDefense(proofType) {
+		if (proofType) {
+			document.getElementById("proofFileContainer").style.display="block"
 		}
 	}
 	
@@ -51,14 +89,13 @@
 		uploadProof(evnt)
 	}
 	
-	function uploadProof(evnt){
+	function uploadProof(evnt) {
 		let proofIdx=document.getElementById("proofIdx").value.trim()
-		proofIdx=proofIdx?proofIdx:"1234123456"
-		
-		let proofFile=evnt.target.files[0]
 		let data=new FormData()
+		let proofFile=evnt.target.files[0]
 		
 		data.append("idx",proofIdx)
+		data.append("proofType",proofType)
 		data.append("proofFile",proofFile)
 		
 		fetch(
@@ -72,9 +109,7 @@
 				document.getElementById("uploadProofResult").innerHTML=`<h2>${resJson.content}</h2>`
 			}).catch(error=>{
 				document.getElementById("uploadProofResult").innerHTML=`<h2>There was an error</h2>`
-			}).then(
-				document.getElementById("proofFile").value=""
-			)
+			})
 	}
 </script>
 

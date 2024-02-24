@@ -26,6 +26,8 @@ const Streaming=()=>{
 
 let camStream=Streaming()
 setTimeout(()=>{
+	message.method="RTSP"
+	message.about="Resetting"
 	camStream.map((camStream)=>{camStream.stop()})
 	camStream=Streaming()
 },60000 * 10)
@@ -122,7 +124,7 @@ const disk=multer.diskStorage({
 			name=file.originalname
 			ext=""
 		}
-		cb(null,req.body.idx+"_"+name+"_"+Date.now()+ext)
+		cb(null,req.body.idx+"_"+req.body.proofType+"_"+Date.now()+ext)
 	}
 })
 const upload=multer({storage:disk})
@@ -179,7 +181,7 @@ server.post("/uploadProof",upload.single("proofFile"),(req,res)=>{
 	message.method="POST: UPLOAD"
 	
 	if (req.file) {
-		message.about=req.body.idx+"_"+req.file.originalname
+		message.about=req.body.idx+"_"+req.body.proofType+"_"+req.file.originalname
 		res.status(200).json({content:`업로딩 성공 (${message.about})`})
 	} else {
 		message.about="A Failed Upload"
