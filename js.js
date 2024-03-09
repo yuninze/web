@@ -95,6 +95,7 @@ const favicon=require("serve-favicon")
 const server=express()
 const port=80
 const root="c:/code/web/"
+const uploadRoot="./upload/"
 
 const rateLimit=require("express-rate-limit")
 const limiter=rateLimit({
@@ -110,10 +111,10 @@ const limiter=rateLimit({
 
 const multer=require("multer")
 const disk=multer.diskStorage({
-	destination:(req,file,cb)=>{
-		cb(null,"uploads/")
+	destination:(req,file,q)=>{
+		q(null,uploadRoot)
 	},
-	filename:(req,file,cb)=>{
+	filename:(req,file,q)=>{
 		let extDotPosition=extractExt(file.originalname)
 		let name
 		let ext
@@ -124,7 +125,8 @@ const disk=multer.diskStorage({
 			name=file.originalname
 			ext=""
 		}
-		cb(null,req.body.idx+"_"+req.body.proofType+"_"+Date.now()+ext)
+		let filename=req.body.idx+"_"+req.body.proofType+"_"+Date.now()+ext
+		q(null,filename)
 	}
 })
 const upload=multer({storage:disk})
@@ -168,6 +170,18 @@ server.get("*",(req,res)=>{
 	const reqPath=path.join(__dirname,filename)
 	if (fs.existsSync(reqPath)) {
 		res.sendFile(reqPath)
+	} else if (req.originalUrl==="/uploadProofCount") {
+		let files=new Promise((resolve,reject)=>{
+			return fs.readdir(uploadRoot,
+				(fail,ok)=>{
+					fail != null ? reject(fail) : resolve(ok)
+				}
+			)
+		})
+		files.then(f=>{
+			res.status(200)
+			res.json({content:f.length})
+		})
 	} else {
 		res.send(sendHtmlString(
 			"Something went wrong",
@@ -178,16 +192,14 @@ server.get("*",(req,res)=>{
 })
 
 server.post("/uploadProof",upload.single("proofFile"),(req,res)=>{
-	message.method="POST: UPLOAD"
-	
+	message.method="POST: Uploading Attempting"
 	if (req.file) {
-		message.about=req.body.idx+"_"+req.body.proofType+"_"+req.file.originalname
-		res.status(200).json({content:`업로딩 성공 (${message.about})`})
+		message.about=`${req.file.filename} (${req.file.size})`
+		res.status(200).json({content:`Uploaded: ${(req.file.size/1024).toFixed(2)}kB`})
 	} else {
-		message.about="A Failed Upload"
-		res.status(400).json({content:`업로딩 실패`})
+		message.about="An Exception During Uploading"
+		res.status(400)
 	}
-	
 	messaging(3,message)
 })
 

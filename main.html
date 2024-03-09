@@ -33,7 +33,10 @@
 			</form>
 	</div>
 	
-	<div id="uploadProofResult">
+	<div id="uploadProofResultContainer">
+	</div>
+	
+	<div id="uploadProofCountContainer">
 	</div>
 	
 	<div>
@@ -68,6 +71,13 @@
 		}
 	}
 	
+	function typeDefense(proofType) {
+		if (proofType) {
+			console.log(`proofType=${proofType}`)
+			document.getElementById("proofFileContainer").style.display="block"
+		}
+	}
+	
 	let proofTypeRadios=document.getElementsByName("proofType")
 	let proofType=typingProofType(proofTypeRadios)
 	if (proofType==false) {
@@ -78,16 +88,20 @@
 	} else {
 		typeDefense(proofType)
 	}
-
-	function typeDefense(proofType) {
-		if (proofType) {
-			document.getElementById("proofFileContainer").style.display="block"
-		}
-	}
 	
-	document.getElementById("proofFile").onchange=(evnt)=>{
-		uploadProof(evnt)
+	function uploadProofCount() {
+		fetch(
+			"/uploadProofCount",{
+				method:"GET", body:null
+			}).then(res=>{
+				return res.json()
+			}).then(resJson=>{
+				document.getElementById("uploadProofCountContainer").innerHTML=`<h3>지금까지 업로딩된 파일 ${resJson.content}개 있음</h3>`
+			}).catch(error=>{
+				document.getElementById("uploadProofCountContainer").innerHTML=""
+			})
 	}
+	document.getElementById("uploadProofCountContainer").onload=uploadProofCount()
 	
 	function uploadProof(evnt) {
 		let proofIdx=document.getElementById("proofIdx").value.trim()
@@ -105,12 +119,16 @@
 			}).then(res=>{
 				return res.json()
 			}).then(resJson=>{
-				console.log(resJson)
-				document.getElementById("uploadProofResult").innerHTML=`<h2>${resJson.content}</h2>`
+				document.getElementById("uploadProofResultContainer").innerHTML=`<h2>${resJson.content}</h2>`
+				uploadProofCount()
 			}).catch(error=>{
-				document.getElementById("uploadProofResult").innerHTML=`<h2>There was an error</h2>`
+				document.getElementById("uploadProofResultContainer").innerHTML=`<h2>There was an error</h2>`
 			})
 	}
+	document.getElementById("proofFile").onchange=(evnt)=>{
+		uploadProof(evnt)
+	}
+		
 </script>
 
 </html>
