@@ -1,5 +1,6 @@
 const path=require("path")
 const fs=require("node:fs")
+const Papa=require("papaparse")
 const Stream=require("node-rtsp-stream")
 const camData=JSON.parse(fs.readFileSync("../camData.json"))
 const cam=camData.camera.map((cam)=>{
@@ -182,12 +183,21 @@ server.get("*",(req,res)=>{
 			res.status(200)
 			res.json({content:f.length})
 		})
-	} else {
+	} else if (req.originalUrl==="/trainingIdx") {
+		const fp=fs.readFileSync("c:/code/x.arrow","utf8")
+		const training=Papa.parse(fp,{
+			delimiter:",",
+			header:true
+		})
+		const idx=[...new Set(training.data.map(d=>d.idx))]
+		res.status(200)
+		res.json({content:idx,len:idx.length})
+	}	else {
 		res.send(sendHtmlString(
 			"Something went wrong",
 			`'${filename}' does not exist`
 		))
-		return res.end()
+		res.end()
 	}
 })
 
@@ -197,7 +207,7 @@ server.post("/uploadProof",upload.single("proofFile"),(req,res)=>{
 		message.about=`${req.file.filename} (${req.file.size})`
 		res.status(200).json({content:`Uploaded: ${(req.file.size/1024).toFixed(2)}kB`})
 	} else {
-		message.about="An Exception During Uploading"
+		message.about="There was an exception"
 		res.status(400)
 	}
 	messaging(3,message)
@@ -205,6 +215,6 @@ server.post("/uploadProof",upload.single("proofFile"),(req,res)=>{
 
 server.listen(port,()=>{
 	message.method="LOW"
-	message.about="..."
+	message.about="."
 	messaging(1,message)
 })
