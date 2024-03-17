@@ -33,10 +33,17 @@
 			</form>
 	</div>
 	
-	<div id="uploadProofResultContainer">
+	<div>
+		<form>
+			<h3>Controls</h3>
+				<label for="getCount">Count Files</label>
+				<input type="button" id="getCount" value="Count Files">
+				<label for="getColumns">Get Columns</label>
+				<input type="button" id="getColumns" value="Get Columns">
+		</form>
 	</div>
 	
-	<div id="uploadProofCountContainer">
+	<div id="resultContainer">
 	</div>
 	
 	<div>
@@ -45,10 +52,6 @@
 </body>
 
 <script>
-	document.getElementById("proofIdx").oninput=()=>{
-		idxDefense()
-	}
-
 	function idxDefense() {
 		let beforeElement=document.getElementById("proofIdx")
 		let afterElement=document.getElementById("proofTypeContainer")
@@ -78,31 +81,6 @@
 		}
 	}
 	
-	let proofTypeRadios=document.getElementsByName("proofType")
-	let proofType=typingProofType(proofTypeRadios)
-	if (proofType==false) {
-		proofTypeRadios.forEach(radio=>radio.addEventListener("change",()=>{
-			proofType=typingProofType(proofTypeRadios)
-			typeDefense(proofType)
-		}))
-	} else {
-		typeDefense(proofType)
-	}
-	
-	function uploadProofCount() {
-		fetch(
-			"/uploadProofCount",{
-				method:"GET", body:null
-			}).then(res=>{
-				return res.json()
-			}).then(resJson=>{
-				document.getElementById("uploadProofCountContainer").innerHTML=`<h3>지금까지 업로딩된 파일 ${resJson.content}개 있음</h3>`
-			}).catch(error=>{
-				document.getElementById("uploadProofCountContainer").innerHTML=""
-			})
-	}
-	document.getElementById("uploadProofCountContainer").onload=uploadProofCount()
-	      
 	function uploadProof(evnt) {
 		let proofIdx=document.getElementById("proofIdx").value.trim()
 		let data=new FormData()
@@ -119,16 +97,67 @@
 			}).then(res=>{
 				return res.json()
 			}).then(resJson=>{
-				document.getElementById("uploadProofResultContainer").innerHTML=`<h2>${resJson.content}</h2>`
-				uploadProofCount()
+				document.getElementById("resultContainer").innerHTML=`<h5>${resJson.content}</h5>`
+				getCount()
 			}).catch(error=>{
-				document.getElementById("uploadProofResultContainer").innerHTML=`<h2>There was an error</h2>`
+				document.getElementById("resultContainer").innerHTML=`<h5>There was an error</h5>`
 			})
 	}
+	
+	function getCount() {
+		fetch(
+			"/count",{
+				method:"GET", body:null
+			}).then(res=>{
+				return res.json()
+			}).then(resJson=>{
+				document.getElementById("resultContainer").innerHTML=`<h5>File Uploaded Count So Far:  ${resJson.content}</h5>`
+			}).catch(error=>{
+				document.getElementById("resultContainer").innerHTML=""
+			})
+	}
+	
+	function getColumns() {
+		fetch(
+			"/csvData",{
+				method:"GET",body:null
+			}).then(res=>{
+				return res.json()
+			}).then(resJson=>{
+				document.getElementById("resultContainer").innerHTML=`<h5>${resJson.data.columns.join(", ")}</h5>`
+			}).catch(error=>{
+				document.getElementById().innerHTML=""
+			})
+	}
+
+	let proofTypeRadios=document.getElementsByName("proofType")
+	let proofType=typingProofType(proofTypeRadios)
+	if (proofType==false) {
+		proofTypeRadios.forEach(radio=>radio.addEventListener("change",()=>{
+			proofType=typingProofType(proofTypeRadios)
+			typeDefense(proofType)
+		}))
+	} else {
+		typeDefense(proofType)
+	}
+	
+	document.getElementById("resultContainer").onload=getCount()
+
+	document.getElementById("proofIdx").oninput=()=>{
+		idxDefense()
+	}
+
+	document.getElementById("getCount").addEventListener("click",()=>{
+		getCount()
+	})
+	
+	document.getElementById("getColumns").addEventListener("click",()=>{
+		getColumns()
+	})
+	
 	document.getElementById("proofFile").onchange=(evnt)=>{
 		uploadProof(evnt)
 	}
-		
 </script>
 
 </html>
