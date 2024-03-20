@@ -8,7 +8,7 @@ const cam=cams.cam.map(
 	(cam)=>{
 		return [
 			cam.name,
-			cams.protocol+"://"+cams.account+"@"+cams.internAddress+cam.channel+":554"+cams.addressSuffix
+			cams.protocol+'://'+cams.account+'@'+cams.internAddress+cam.channel+cams.addressSuffix
 		]
 	})
 
@@ -16,11 +16,13 @@ const loadStreams=()=>{
 	return cam.map((camEach)=>{
 		return new Stream({
 			name:camEach[0],
+			width:704,
+			height:480,
 			streamUrl:camEach[1],
 			wsPort:90+cam.indexOf(camEach),
 			ffmpegOptions:{
-				'-loglevel':'warning',
-				'-nostats':''
+				"-r":24,
+				"-loglevel":"warning"
 			}
 		})
 	})
@@ -155,6 +157,7 @@ server.use((req,res,next)=>{
 	}
 	
 	messaging(2,message)
+	
 	next()
 })
 
@@ -166,7 +169,6 @@ server.get("*",(req,res)=>{
 	
 	} else if (req.originalUrl==="/camStreams") {
 		res.set("content-type","text/html").send(errorPage("Went wrong","Not Implemented"))
-		res.end()
 			
 	} else if (req.originalUrl==="/count") {
 		let files=new Promise((resolve,reject)=>{
