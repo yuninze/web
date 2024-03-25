@@ -3,16 +3,17 @@ const fs=require("node:fs")
 const Papa=require("papaparse")
 
 const Stream=require("node-rtsp-stream")
-const cams=JSON.parse(fs.readFileSync("../camData.json"))
-const cam=cams.cam.map(
-	(cam)=>{
+const camData=JSON.parse(fs.readFileSync("../camData.json"))
+const cam=camData.cam.map((c)=>{
+		const address=camData.internAddress
 		return [
-			cam.name,
-			cams.protocol+'://'+cams.account+'@'+cams.internAddress+cam.channel+cams.addressSuffix
+			c.name,
+			"rtsp://"+camData.account+'@'+address+c.channel+camData.addressSuffix
 		]
 	})
 
-const loadStreams=()=>{
+const streamCam=()=>{
+	cam.map(c=>console.log(c[0],"=>",c[1]))
 	return cam.map((camEach)=>{
 		return new Stream({
 			name:camEach[0],
@@ -21,13 +22,13 @@ const loadStreams=()=>{
 			streamUrl:camEach[1],
 			wsPort:90+cam.indexOf(camEach),
 			ffmpegOptions:{
-				"-r":24,
-				"-loglevel":"warning"
+				"-loglevel":"warning",
+				"-nostats":""
 			}
 		})
 	})
 }
-const camStreams=loadStreams()
+const camStream=streamCam()
 
 const express=require("express")
 const favicon=require("serve-favicon")
@@ -39,13 +40,13 @@ const uploadRoot="./upload/"
 
 const rateLimit=require("express-rate-limit")
 const limiter=rateLimit({
-	windowMs:1 * 2000,
+	windowMs:1 * 1000,
 	max:10,
 	message:async(req,res)=>{
 		message.method=req.method
-		message.about="BLOCKED"
+		message.about="*"
 		messaging(3,message)
-		return errorPage("It's done","Reached limit")
+		return errorPage("There was an exception","Reached Rate Limit")
 	}
 })
 
@@ -143,7 +144,7 @@ server.use((req,res,next)=>{
 		if (sessionInfo.ua==false || req.originalUrl.length<3 || req.originalUrl.endsWith("php")) {
 			message.about+=" (dropped)"
 			messaging(2,message)
-			res.set("content-type","text/html").send(errorPage("Something went wrong","Error"))
+			res.send(errorPage("There was an exception","*"))
 			res.end()
 		}
 		
@@ -157,7 +158,6 @@ server.use((req,res,next)=>{
 	}
 	
 	messaging(2,message)
-	
 	next()
 })
 
@@ -167,9 +167,15 @@ server.get("*",(req,res)=>{
 	if (fs.existsSync(reqPath)) {
 		res.sendFile(reqPath)
 	
-	} else if (req.originalUrl==="/camStreams") {
-		res.set("content-type","text/html").send(errorPage("Went wrong","Not Implemented"))
-			
+	} else if (req.originalUrl==="/camAddress") {
+		let ctnt
+		if (["127","192","172"].some(prefix=>sessionInfo.ip.startsWith(prefix))) {
+			ctnt=null
+		} else {
+			ctnt=camData.externAddress
+		}
+		res.status(200).json({content:ctnt})
+		
 	} else if (req.originalUrl==="/count") {
 		let files=new Promise((resolve,reject)=>{
 			return fs.readdir(uploadRoot,(fail,ok)=>{
@@ -199,30 +205,30 @@ server.get("*",(req,res)=>{
 		})
 		
 	}	else {
-		res.send(errorPage("Went wrong",`An action for '${req.originalUrl}' does not exist`))
+		res.send(errorPage("There was an exception",`An action for '${req.originalUrl}' does not exist`))
 		res.end()
 	
 	}
 })
 
 server.post("/uploadProof",upload.single("proofFile"),(req,res)=>{
-	message.method="POST: Uploading Attempting"
+	message.method="POST"
 	
 	if (req.file) {
 		message.about=`${req.file.filename} (${req.file.size})`
 		res.status(200).json({content:`Uploaded: ${(req.file.size/1024).toFixed(2)}kB`})
 		
 	} else {
-		message.about="There was an exception"
+		message.about="*"
 		res.status(400)
 		
 	}
-	messaging(3,message)
 	
+	messaging(3,message)
 })
 
 server.listen(port,()=>{
 	message.method="LOW"
-	message.about="."
+	message.about="*"
 	messaging(1,message)
 })

@@ -20,31 +20,46 @@
 	  
 	  <div>
 		<h2>This is to showing streams.</h2>
-		<a href="../"><h2>Go Back</h2></a>
+		<a href="view.html"><h2>Go Back</h2></a>
 	  </div>
 </body>
 
 <script type="text/javascript" src="./jsmpeg.min.js"></script>
 <script type="text/javascript">
+	const camAddress=[
+		["ws://172.30.1.18:92","q"],
+		["ws://172.30.1.18:91","w"],
+		["ws://172.30.1.18:90","e"],
+		["ws://172.30.1.18:93","r"],
+	]
 
+	function setCamAddress() {
+		fetch("/camAddress",{method:"GET",body:null}
+		).then(res=>{return res.json()}
+		).then(resJson=>{
+			if (!resJson.content) {
+				for (const c of camAddress) {
+					new JSMpeg.Player(
+						c[0],
+						{canvas:document.getElementById(c[1])}
+					)
+				}
 
-
-	const a=new JSMpeg.Player(
-		'ws://172.30.1.18:92',
-		{canvas: document.getElementById("q")}
-	)
-	const b=new JSMpeg.Player(
-		'ws://172.30.1.18:91',
-		{canvas: document.getElementById("w")}
-	)
-	const c=new JSMpeg.Player(
-		'ws://172.30.1.18:90',
-		{canvas: document.getElementById("e")}
-	)
-	const d=new JSMpeg.Player(
-		'ws://172.30.1.18:93',
-		{canvas: document.getElementById("r")}
-	)
+			} else {
+				const content=resJson.content
+				for (const c of camAddress) {
+					let camAddressParsed="ws://"+content+c[0].substring(c[0].indexOf(":",5))
+					console.log(camAddressParsed)
+					new JSMpeg.Player(
+						camAddressParsed,
+						{canvas:document.getElementById(c[1])}
+					)
+				}
+			}
+		})
+	}
+	
+	setCamAddress()
 </script>
 
 </html>
